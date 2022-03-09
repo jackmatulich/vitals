@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="https://dweet.io/client/dweet.io.min.js"></script>
 <style>
 background{
 background-color:black;
@@ -168,6 +169,19 @@ function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
 }
+  
+
+dweetio.listen_for("vitalsigns", function(dweet){
+dweetio.get_latest_dweet_for("vitalsigns", function(err, dweet){
+
+
+    var dweet = dweet[0]; // Dweet is always an array of 1
+    
+    console.log(dweet.content); // The content of the dweet
+ 
+   var hr = dweet.content["hr"];
+}
+
 </script>
 
 <table>
