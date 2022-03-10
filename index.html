@@ -169,10 +169,7 @@ function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
 }
-  </script>
-  
-  
-   <script type="text/javascript">
+
 dweetio.listen_for("vitalsigns", function(dweet){
 dweetio.get_latest_dweet_for("vitalsigns", function(err, dweet){
 
@@ -182,6 +179,7 @@ dweetio.get_latest_dweet_for("vitalsigns", function(err, dweet){
     console.log(dweet.content); // The content of the dweet
  
    var hr = dweet.content["hr"];
+}
 }
 
 </script>
@@ -193,7 +191,7 @@ dweetio.get_latest_dweet_for("vitalsigns", function(err, dweet){
   <span style="font-size:25px; padding:0px"> ⚕</span></td>
 <td colspan="3">123456</td>
 <td colspan="5">Registered Nurse</td>
-<td colspan="3">🕔<span id='time'></span></td>
+<td colspan="3">🕔1<span id='time'></span></td>
 <td colspan="4"></td>
 <td colspan="2"></td>
 <td colspan="2">🔌🔋 (97%)</td>
