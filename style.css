@@ -1,0 +1,64 @@
+body{
+  background:black;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid black;
+  text-align: center;
+  padding: 0px;
+   Font-size: 3em;
+   font-weight: 550;
+background: linear-gradient(0deg, rgba(52,52,52,1) 0%, rgba(40,40,40,1) 17%, rgba(0,0,0,1) 100%);
+}
+.waveform{
+background: linear-gradient(0deg, rgba(33,33,33,1) 0%, rgba(19,19,19,1) 17%, rgba(0,0,0,1) 100%);
+}
+.heads{
+background: linear-gradient(90deg, rgba(52,52,52,1) 0%, rgba(40,40,40,1) 17%, rgba(0,0,0,1) 100%);
+color:white;
+ font-size:1em;
+ text-align:left;
+ Padding:5px 0px 5px 10px;
+
+ font-weight:bold;
+
+}
+.menu{
+font-weight:bold;
+background: linear-gradient(229deg, rgba(180,180,180,1) 0%, rgba(138,138,138,1) 55%, rgba(131,131,131,1) 100%);
+ box-shadow:         inset 0 -5px 10px rgba(131,131,131,1);
+  text-shadow: 1px 1px 2px  rgba(0, 0, 0, 0.2);
+  
+}
+.alarm{
+  background:gold;
+}
+.ecg {
+  color:#00ff00; 
+}
+.art {
+  color:red; 
+}
+.cvp {
+  color:cornflowerblue; 
+}
+.spo2 {
+  color:deeppink; 
+
+}
+.co2 {
+  color:gold; 
+}
+.resp {
+  color:mediumblue; 
+}
+
+canvas {
+ width:100%;
+
+}
