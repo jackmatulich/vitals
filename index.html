@@ -1,157 +1,18 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="https://dweet.io/client/dweet.io.min.js"></script>
 <style>
-background{
-background-color:black;
-}
-table {
-  font-family: helvetica, sans-serif;
- 
-  width: 100%;
-  color:white;
-    border-collapse: collapse;
-       border-radius:20px;
-    border:solid #202020 5px;
- 
-}
-
-td, th {
-  border:solid black 0px;
-
-  text-align: left;
-  padding: 8px;
-  padding-left:10px;
-}
-
-.gradient {
-background: linear-gradient(180deg,grey,1%, black);
-
-}
-.left{
-border-top-left-radius:20px;
-border-bottom-left-radius:20px;
-
-}
-
-.right{
-border-top-right-radius:20px;
-border-bottom-right-radius:20px;
-
-}
-.center{
-     
-}
-
-
-
-.intbutton {
-background: linear-gradient(180deg,grey,1%, black);
-font-size:25px;
-text-align: center;
-border-radius:10px;
- box-shadow: 2px 2px 4px grey inset;
-
-
-}
-.fullblack {
-background: black;
-}
-.grey {
-background: #303030;
-}
-.selected{
-background: linear-gradient(0deg,grey,10%, white);
-color:#47A2D0;
-font-size:22px;
-text-align: center;
-font-weight:bold;
-border-radius:10px;
-}
-.notselected{
-background: linear-gradient(0deg,white,10%, grey);
-font-size:19px;
-text-align: center;
-font-weight:bold;
-border-radius:10px;
-box-shadow: 2px 1px 4px black inset;
-}
-.null{
-background: linear-gradient(180deg,#303030,1%, #202020);
-}
-.save{
-background: linear-gradient(150deg, #4D9CB0,70%, #265F81);
-font-size:20px;
-text-align: center;
-font-weight:bold;
- box-shadow: 2px 2px 4px lightblue inset;
-    border-radius:10px;
-}
-.lower{
-text-align: center;
-font-size:20px;
-}
-.ptnameheader{
-font-size:12px;
-}
-.ptname{
-font-size:20px;
-font-weight:bold;
-}
-
-.bptitle{
-font-size:20px;
-color:#ECA52E;
-}
-.bp{
-font-size:60px!important;
-color:#ECA52E;
-font-weight:bold;
-
-}
-.prtitle{
-font-size:20px;
-color:#61B53D;
-}
-.pr{
-font-size:60px;
-color:#61B53D;
-font-weight:bold;
-
-}
-.spO2title{
-font-size:20px;
-color:#47A2D0;
-}
-.spO2{
-font-size:60px;
-color:#47A2D0;
-font-weight:bold;
-
-}
-.temptitle{
-font-size:20px;
-color:white;
-
-}
-.temp{
-font-size:60px;
-color:white;
-font-weight:bold;
-
-}
-
-
 
 
 </style>
-
-
-
-<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="code.js"></script>
 </head>
-<body style="background-color:black;overflow: hidden" onload="startTime()" >
+<body onload="startTime()" >
+
 <script>
 function startTime() {
   const today = new Date();
@@ -168,179 +29,94 @@ function startTime() {
 function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
-}
 
-dweetio.listen_for("vitalsigns", function(dweet){
-dweetio.get_latest_dweet_for("vitalsigns", function(err, dweet){
-
-
-    var dweet = dweet[0]; // Dweet is always an array of 1
-    
-    console.log(dweet.content); // The content of the dweet
- 
-   var hr = dweet.content["hr"];
-}
 }
 
 </script>
 
 <table>
+   <tr>
+    <td width="85%" style="color:white;font-size:2em;background:black;" colspan="6"></td>
+    <td class="td" style="color:white;font-size:1.5em;background:black; text-align:right;"><span id='time'></span></td>
+  </tr>
   
-<tr class="grey" height="50px"> <!-- Time/UR -->
-   <td colspan="1" >
-  <span style="font-size:25px; padding:0px"> ⚕</span></td>
-<td colspan="3">123456</td>
-<td colspan="5">Registered Nurse</td>
-<td colspan="3">🕔1<span id='time'></span></td>
-<td colspan="4"></td>
-<td colspan="2"></td>
-<td colspan="2">🔌🔋 (97%)</td>
+   <tr>
+    <td width="85%" rowspan="2" class="waveform" colspan="6">
+<canvas  id="ecg" width ="1500"height="100px"></canvas></td>
+    <td class="td heads">ECG &nbsp &nbsp<span class="ecg" style="font-weight:normal;">/min</span></td>
+  </tr>
+  <tr>
+      <td class="td ecg" style="font-size:6em;" >73</td>
   </tr>
   
   
-    <tr class="fullblack" height="50px" VALIGN="top"> <!-- Pt Name Header -->
-       <td colspan="8">
-<span class="ptnameheader">PATIENT NAME</span></br>
-<span class="ptname">Patient, Name</span>
-       </td>
-<td colspan="2">Type</td>
-<td colspan="2">Adult</td>
-<td colspan="6">PATIENT ID</td>
-<td class="intbutton"colspan="2" VALIGN="middle">▶</td>
-
- 
- </tr>
-
-  
-  
-  
-    <tr height="125px"> <!-- BP PR -->
-   <td class="gradient left" colspan="10" >
-   
-<span class="bptitle">NIBP</span></br>
-<span class="bp">120/80</span></br>
-<span class="bptitle">SYS/DIA mmHg (MAP)</span></br>
-<span>Source: Manual</span></br>
- 
-   
+    
+  <tr>
+    <td rowspan="2"class="waveform" colspan="6">
+<canvas id="spo2" width ="1500"height="100px"></canvas></td>
+    <td class="td heads">spO2 &nbsp &nbsp<span class="spo2" style="font-weight:normal;">%</span></td>
+  </tr>
+  <tr>
+   <td class="td spo2" style="font-size:5em">98</td>
+  </tr>
   
    
-   </td>
-<td class="intbutton right" colspan="1" >
-
-<span class="temp"  >⛹︎</span></br>
-<span class="temptitle" >START</span></br>
-
-<td>
-
-</td>
-<td class="gradient left right" colspan="8">
-
-<span class="prtitle">PULSE RATE</span></br>
-<span class="pr">60</span></br>
-<span class="prtitle">♡/MIN</span></br>
-<span>Source: Manual</span></br>
-
-
-
-</td>
-
- 
- </tr>
-  
-  
-    <tr height="125px"> <!-- spO2/Temp -->
- <td class="gradient left"  colspan="9">
- 
- 
- <span class="spO2title">SpO2</span></br>
-<span class="spO2">99%</span></br>
-</br>
-<span>Source: Manual</span></br>
-
- 
- 
- 
- </td>
-<td class="gradient center" colspan="1">GRAPH</td>
-<td class="gradient right" colspan="1"></td>
-<td>
-
-</td>
-<td class="gradient left right" colspan="8">
-
-<span class="temptitle">TEMPERATURE</span></br>
-<span class="temp">37.0</span></br>
-<span class="temptitle">C° (98.6°F)</span></br>
-
-
-
-</td>
-
-   
+  <tr>
+    <td rowspan="2"class="waveform" colspan="6">
+<canvas id="art" width ="1500"height="100px"></canvas></td>
+    <td class="td heads">IABP &nbsp &nbsp<span class="art" style="font-weight:normal;">mmHg</span></td>
+  </tr>
+  <tr>
+   <td class="td art">120/70<br><span style="font-size:.8em;">(80)</span></td>
   </tr>
   
   
-    <tr height="60px">> <!-- QADDS/Save -->
-<td class="gradient left lower" colspan="2">
-
-<span >P</span></br>
-<span ><strong>0</strong></span></br>
-
-
-
-</td>
-<td class="gradient lower" colspan="2">
-
-<span >RR</span></br>
-<span ><strong>24</strong></span></br>
-
-
-
-</td>
-<td class="gradient lower" colspan="2">
-
-<span >AVPU</span></br>
-<span ><strong>A</strong></span></br>
-
-
-
-</td>
-<td class="gradient lower" colspan="2">
-
-<span >-</span></br>
-<span ><strong>-</strong></span></br>
-
-
-
-</td>
-<td class="gradient lower right" colspan="2">
-
-<span >EWS</span></br>
-<span ><strong>0</strong></span></br>
-
-
-
-</td>
-<td class="black" colspan="2"></td>
-<td class="gradient lower left right" colspan="4"><span style="font-weight:bold" >Clear<span></td>
-<td class="save" colspan="4">Save</td>
+  <tr>
+    <td rowspan="2"class="waveform" colspan="6">
+<canvas id="cvp" width ="1500"height="100px"></canvas></td>
+    <td class="td heads">CVP &nbsp &nbsp<span class="cvp" style="font-weight:normal;">mmHg</span></td>
+  </tr>
+  <tr>
+   <td class="td cvp">11</td>
   </tr>
   
-  
-    <tr height="50px">> <!-- Menu -->
-<td class="selected"colspan="4">Home</td>
-<td class="notselected" colspan="4">Patient</td>
-<td class="notselected"colspan="4">Review</td>
-<td class="notselected"colspan="4">Settings</td>
-<td class="null"colspan="4"></td>
 
-   
+  
+  
+    <tr>
+    <td rowspan="2"class="waveform" colspan="6">
+<canvas id="spo2" width ="1500"height="100px"></canvas></td>
+    <td class="td heads">etCO2 &nbsp &nbsp<span class="co2" style="font-weight:normal;">mmHg</span></td>
   </tr>
+  <tr>
+   <td class="td co2" >45</td>
+  </tr>
+
+
+
+  <tr>
+    <td rowspan="2"class="waveform"colspan="6" >
+<canvas id="resp" width ="1500"height="100px"></canvas></td>
+    <td class="td heads">Resp &nbsp &nbsp<span class="resp" style="font-weight:normal;">/min</span></td>
+  </tr>
+  <tr>
+   <td class="td resp" >25</td>
+  </tr>
+<tr class="menu" height="50">
+  <td width="10%"class="menu"style="font-weight:boldm;"><i class="fa fa-power-off" style="font-size:36px"></i></td>
+ 
+    <td width="15%"class="menu" style="font-size:1.2em;">START <br>NIBP</td>
+      <td width="15%"class="menu" style="font-size:1.2em;">CYCLE <br>NIBP</td>
+     <td width="15%"class="menu" style="font-size:1.2em;">5 <br>  MIN</td>
+  <td width="15%"class="menu" style="font-size:1.2em;">12 <br> LEAD</td>
+    <td width="15%"class="menu"style="font-size:2em;">☰</td>
+    <td width="15%"class="alarm">☖</td>
   
   
+</tr>
 </table>
 
 </body>
 </html>
+
 
