@@ -106,7 +106,26 @@ function checkTime(i) {
     <td width="15%"class="menu"style="font-size:2em;">☰</td>
     <td width="15%"class="alarm">☖</td>
   
-  
+  <script>
+    drawWave();
+
+            function drawWave() {
+               px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */ 
+                    ctx.clearRect( px,0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */ 
+                    ctx.beginPath();/* starts the line OR resets */ 
+                    ctx.moveTo( opx,  opy);/* moves point to XY */ 
+                    ctx.lineJoin= 'round';/* rounds the join */ 
+                    py=(data[++i>=data.length? i=0 : i++]/450+30); /* and */ 
+                    ctx.lineTo(px, py);/* and */ 
+                    ctx.stroke();/* and */ 
+                     opx = px;/* and */ 
+                    opy = py;/* and */ 
+                    if (opx > w) {px = opx = -speed;}/* and */ 
+
+
+                     requestAnimationFrame(drawWave);/* and */ 
+            }
+  </script>
 </tr>
 </table>
 
