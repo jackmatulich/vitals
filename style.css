@@ -6,7 +6,9 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
-
+MAP{
+  line-height:0.8em;
+}
 td, th {
   border: 1px solid black;
   text-align: center;
