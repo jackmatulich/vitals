@@ -220,11 +220,11 @@ var co2_canvas = document.getElementById("co2");
                     co2_ctx.beginPath();
 
                     /* moves point to XY */ /*SPECIFIC*/ 
-                    ecg_ctx.moveTo( opx,  opy_ctx);
-                    spo2_ctx.moveTo( opx,  opy_ctx);
-                    iabp_ctx.moveTo( opx,  opy_ctx);
-                    cvp_ctx.moveTo( opx,  opy_ctx);
-                    co2_ctx.moveTo( opx,  opy_ctx);
+                   ecg_ctx.moveTo( opx, ecg_opy );
+                    spo2_ctx.moveTo( opx, spo2_opy );
+                    iabp_ctx.moveTo( opx, iabp_opy );
+                    cvp_ctx.moveTo( opx, cvp_opy );
+                    co2_ctx.moveTo( opx, co2_opy );
 
                    /* rounds the join */ /*SPECIFIC*/ 
                     ecg_ctx.lineJoin= 'round';
