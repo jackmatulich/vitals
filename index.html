@@ -124,7 +124,7 @@ var Co2Data=[ "421.48,433.90,722.66,1043.59,1602.85,2277.06,2803.77,3466.47,4190
             var ecg_ctx = ecg.getContext("2d");
             var w = ecg.width,/*GENERIC*/ 
             ecg_h = ecg.height,
-            speed = 1,/*GENERIC*/ 
+            speed = 5,/*GENERIC*/ 
             scanBarWidth = 20,/*GENERIC*/ 
             i=0,/*GENERIC*/ 
             ecg_data = EcgData[0].split(','),
@@ -143,7 +143,7 @@ var Co2Data=[ "421.48,433.90,722.66,1043.59,1602.85,2277.06,2803.77,3466.47,4190
             spo2_h = spo2.height,
             spo2_i=0,
             spo2_data = Spo2Data[0].split(','),
-            spo2_color='#00ff00';
+            spo2_color='deeppink';
             var spo2_px = 0;
             var spo2_opx = 0;
             var spo2_py = spo2_h/2; /* should equal 50 if height 100px */ 
@@ -157,7 +157,7 @@ var Co2Data=[ "421.48,433.90,722.66,1043.59,1602.85,2277.06,2803.77,3466.47,4190
             iabp_h = iabp.height,
             iabp_i=0,
             iabp_data = IabpData[0].split(','),
-            iabp_color='#00ff00';
+            iabp_color='red';
             var iabp_px = 0;
             var iabp_opx = 0;
             var iabp_py = iabp_h/2; /* should equal 50 if height 100px */ 
@@ -171,7 +171,7 @@ var Co2Data=[ "421.48,433.90,722.66,1043.59,1602.85,2277.06,2803.77,3466.47,4190
             cvp_h = cvp.height,
             cvp_i=0,
             cvp_data = CvpData[0].split(','),
-            cvp_color='#00ff00';
+            cvp_color='cornflowerblue';
             var cvp_px = 0;
             var cvp_opx = 0;
             var cvp_py = cvp_h/2; /* should equal 50 if height 100px */ 
@@ -186,7 +186,7 @@ var co2_canvas = document.getElementById("co2");
             co2_h = co2.height,
             co2_i=0,
             co2_data = Co2Data[0].split(','),
-            co2_color='#00ff00';
+            co2_color='gold';
             var co2_px = 0;
             var co2_opx = 0;
             var co2_py = co2_h/2; /* should equal 50 if height 100px */ 
@@ -220,7 +220,7 @@ var co2_canvas = document.getElementById("co2");
                     co2_ctx.beginPath();
 
                     /* moves point to XY */ /*SPECIFIC*/ 
-                   ecg_ctx.moveTo( opx, ecg_opy );
+                    ecg_ctx.moveTo( opx, ecg_opy );
                     spo2_ctx.moveTo( opx, spo2_opy );
                     iabp_ctx.moveTo( opx, iabp_opy );
                     cvp_ctx.moveTo( opx, cvp_opy );
@@ -237,7 +237,7 @@ var co2_canvas = document.getElementById("co2");
                     ecg_py=(ecg_data[++i>=ecg_data.length? i=0 : i++]/450+30);
                     spo2_py=(spo2_data[++i>=spo2_data.length? i=0 : i++]/450+30);
                     iabp_py=(iabp_data[++i>=iabp_data.length? i=0 : i++]/450+30);
-                    cvp_py=(cvp_pydata[++i>=cvp_pydata.length? i=0 : i++]/450+30);
+                    cvp_py=(cvp_data[++i>=cvp_data.length? i=0 : i++]/450+30);
                     co2_py=(co2_data[++i>=co2_data.length? i=0 : i++]/450+30);
 
                    /* and */ 
