@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  
+  <script src="//dweet.io/client/dweet.io.min.js"></script>
 <style>
 background{
 background-color:black;
@@ -327,6 +329,53 @@ function checkTime(i) {
 
 
 </table>
+<script>
+ var hrRaw;
+  var hr;
+  
+  var sbp;
+  var dbp;
+  var map=(2*dbp+sbp)/3;
 
+  var temp;
+let characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+let result = ''
+let length = 4 // Customize the length here.
+for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
+console.log(result)
+  
+  
+
+
+  dweetio.listen_for("jacktester", function(dweet){
+   
+    dweetio.get_latest_dweet_for("jacktester", function(err, dweet){
+
+var dweet = dweet[0]; // Dweet is always an array of 1
+
+
+console.log("hello"); // The generated name
+ hrRaw=parseInt(dweet.content["hr"]);
+
+ 
+});
+
+
+
+console.log(hr);
+});
+ 
+setInterval(ecgRandom, 3000);
+
+function ecgRandom() {
+  var variability=(Math.floor(Math.random() * 7)-3);
+  console.log(variability);
+  hr=variability+hrRaw;
+  document.getElementById("HeartRate").innerHTML = hr;
+}
+
+
+
+</script>
 </body>
 </html>
