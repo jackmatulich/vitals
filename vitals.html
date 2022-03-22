@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+background{
+background-color:black;
+}
+table {
+  font-family: helvetica, sans-serif;
+
+  width: 100%;
+  color:white;
+    border-collapse: collapse;
+       border-radius:20px;
+    border:solid #202020 5px;
+
+}
+
+td, th {
+  border:solid black 0px;
+
+  text-align: left;
+  padding: 8px;
+  padding-left:10px;
+}
+
+.gradient {
+background: linear-gradient(180deg,grey,1%, black);
+
+}
+.left{
+border-top-left-radius:20px;
+border-bottom-left-radius:20px;
+
+}
+
+.right{
+border-top-right-radius:20px;
+border-bottom-right-radius:20px;
+
+}
+.center{
+
+}
+
+
+
+.intbutton {
+background: linear-gradient(180deg,grey,1%, black);
+font-size:25px;
+text-align: center;
+border-radius:10px;
+ box-shadow: 2px 2px 4px grey inset;
+
+
+}
+.fullblack {
+background: black;
+}
+.grey {
+background: #303030;
+}
+.selected{
+background: linear-gradient(0deg,grey,10%, white);
+color:#47A2D0;
+font-size:22px;
+text-align: center;
+font-weight:bold;
+border-radius:10px;
+}
+.notselected{
+background: linear-gradient(0deg,white,10%, grey);
+font-size:19px;
+text-align: center;
+font-weight:bold;
+border-radius:10px;
+box-shadow: 2px 1px 4px black inset;
+}
+.null{
+background: linear-gradient(180deg,#303030,1%, #202020);
+}
+.save{
+background: linear-gradient(150deg, #4D9CB0,70%, #265F81);
+font-size:20px;
+text-align: center;
+font-weight:bold;
+ box-shadow: 2px 2px 4px lightblue inset;
+    border-radius:10px;
+}
+.lower{
+text-align: center;
+font-size:20px;
+}
+.ptnameheader{
+font-size:12px;
+}
+.ptname{
+font-size:20px;
+font-weight:bold;
+}
+
+.bptitle{
+font-size:20px;
+color:#ECA52E;
+}
+.bp{
+font-size:60px!important;
+color:#ECA52E;
+font-weight:bold;
+
+}
+.prtitle{
+font-size:20px;
+color:#61B53D;
+}
+.pr{
+font-size:60px;
+color:#61B53D;
+font-weight:bold;
+
+}
+.spO2title{
+font-size:20px;
+color:#47A2D0;
+}
+.spO2{
+font-size:60px;
+color:#47A2D0;
+font-weight:bold;
+
+}
+.temptitle{
+font-size:20px;
+color:white;
+
+}
+.temp{
+font-size:60px;
+color:white;
+font-weight:bold;
+
+}
+
+
+
+
+</style>
+
+
+
+
+</head>
+<body style="background-color:black;" onload="startTime()">
+<script>
+function startTime() {
+  const today = new Date();
+  let h = today.getHours();
+  let m = today.getMinutes();
+  let s = today.getSeconds();
+
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('time').innerHTML =  h + ":" + m + ":" + s;
+  setTimeout(startTime, 1000);
+}
+
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+</script>
+
+<table>
+
+<tr class="grey" height="50px"> <!-- Time/UR -->
+   <td colspan="1" >
+  <span style="font-size:25px; padding:0px"> ⚕</span></td>
+<td colspan="3">123456</td>
+<td colspan="5">Registered Nurse</td>
+<td colspan="3">🕔<span id='time'></span></td>
+<td colspan="4"></td>
+<td colspan="2"></td>
+<td colspan="2">🔌🔋 (97%)</td>
+  </tr>
+
+
+    <tr class="fullblack" height="50px" VALIGN="top"> <!-- Pt Name Header -->
+       <td colspan="8">
+<span class="ptnameheader">PATIENT NAME</span></br>
+<span class="ptname">Patient, Name</span>
+       </td>
+<td colspan="2">Type</td>
+<td colspan="2">Adult</td>
+<td colspan="6">PATIENT ID</td>
+<td class="intbutton"colspan="2" VALIGN="middle">▶</td>
+
+
+ </tr>
+
+
+
+
+    <tr height="125px"> <!-- BP PR -->
+   <td class="gradient left" colspan="10" >
+
+<span class="bptitle">NIBP</span></br>
+<span class="bp">120/80</span></br>
+<span class="bptitle">SYS/DIA mmHg (MAP)</span></br>
+<span>Source: Manual</span></br>
+
+
+
+
+   </td>
+<td class="intbutton right" colspan="1" >
+
+<span class="temp"  >⛹︎</span></br>
+<span class="temptitle" >START</span></br>
+
+<td>
+
+</td>
+<td class="gradient left right" colspan="8">
+
+<span class="prtitle">PULSE RATE</span></br>
+<span class="pr">60</span></br>
+<span class="prtitle">♡/MIN</span></br>
+<span>Source: Manual</span></br>
+
+
+
+</td>
+
+
+ </tr>
+
+
+    <tr height="125px"> <!-- spO2/Temp -->
+ <td class="gradient left"  colspan="9">
+
+
+ <span class="spO2title">SpO2</span></br>
+<span class="spO2">99%</span></br>
+</br>
+<span>Source: Manual</span></br>
+
+
+
+
+ </td>
+<td class="gradient center" colspan="1">GRAPH</td>
+<td class="gradient right" colspan="1"></td>
+<td>
+
+</td>
+<td class="gradient left right" colspan="8">
+
+<span class="temptitle">TEMPERATURE</span></br>
+<span class="temp">37.0</span></br>
+<span class="temptitle">C° (98.6°F)</span></br>
+
+
+
+</td>
+
+
+  </tr>
+
+
+    <tr height="60px">> <!-- QADDS/Save -->
+<td class="gradient left lower" colspan="2">
+
+<span >P</span></br>
+<span ><strong>0</strong></span></br>
+
+
+
+</td>
+<td class="gradient lower" colspan="2">
+
+<span >RR</span></br>
+<span ><strong>24</strong></span></br>
+
+
+
+</td>
+<td class="gradient lower" colspan="2">
+
+<span >AVPU</span></br>
+<span ><strong>A</strong></span></br>
+
+
+
+</td>
+<td class="gradient lower" colspan="2">
+
+<span >-</span></br>
+<span ><strong>-</strong></span></br>
+
+
+
+</td>
+<td class="gradient lower right" colspan="2">
+
+<span >EWS</span></br>
+<span ><strong>0</strong></span></br>
+
+
+
+</td>
+<td class="black" colspan="2"></td>
+<td class="gradient lower left right" colspan="4"><span style="font-weight:bold" >Clear<span></td>
+<td class="save" colspan="4">Save</td>
+  </tr>
+
+
+    <tr height="50px">> <!-- Menu -->
+<td class="selected"colspan="4">Home</td>
+<td class="notselected" colspan="4">Patient</td>
+<td class="notselected"colspan="4">Review</td>
+<td class="notselected"colspan="4">Settings</td>
+<td class="null"colspan="4"></td>
+
+
+  </tr>
+
+
+</table>
+
+</body>
+</html>
