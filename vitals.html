@@ -338,7 +338,10 @@ function checkTime(i) {
   var map=(2*dbp+sbp)/3;
 
   var temp;
-  let randomString = Math.random().toString(36).substr(2, 5)
+let characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+let result = ''
+let length = 4 // Customize the length here.
+for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
 console.log(result)
   
   
