@@ -110,7 +110,7 @@ function checkTime(i) {
     <td width="15%"class="alarm">☖</td>
   
   <script>
-  
+   var speed = 5;
   dweetio.listen_for("jacktester", function(dweet){
   
   dweetio.get_latest_dweet_for("jacktester", function(err, dweet){
@@ -119,6 +119,7 @@ var dweet = dweet[0]; // Dweet is always an array of 1
 
 console.log(dweet.content["hr"]); // The content of the dweet
 console.log("hello"); // The generated name
+var speed =dweet.content["hr"];
 });
 
 });
@@ -138,7 +139,7 @@ var Co2Data=[ "421.48,433.90,722.66,1043.59,1602.85,2277.06,2803.77,3466.47,4190
             var ecg_ctx = ecg.getContext("2d");
             var w = ecg.width,/*GENERIC*/ 
             ecg_h = ecg.height;
-            var speed = 5;/*GENERIC*/ 
+           /*GENERIC*/ 
             scanBarWidth = 20,/*GENERIC*/ 
             i=0,/*GENERIC*/ 
             ecg_data = EcgData[0].split(','),
