@@ -110,7 +110,8 @@ function checkTime(i) {
     <td width="15%"class="alarm">☖</td>
   
   <script>
-
+  var speed = 5;
+  var hr= 50;
   dweetio.listen_for("jacktester", function(dweet){
   
   dweetio.get_latest_dweet_for("jacktester", function(err, dweet){
@@ -119,7 +120,8 @@ var dweet = dweet[0]; // Dweet is always an array of 1
 
 console.log(dweet.content["hr"]); // The content of the dweet
 console.log("hello"); // The generated name
-var speed=dweet.content["hr"];
+ hr = dweet.content["hr"];
+ consol.log(hr)
 });
 
 });
