@@ -76,7 +76,8 @@
     </tr>
     <tr>
       <td class="td art">
-        <span id="sbp"></span>/<span id="dbp"></span><br class="MAP"><span id="MAP" style="font-size:.8em;"></span></td>
+        <span id="sbp"></span>/<span id="dbp"></span>
+        <br class="MAP"><span id="MAP" style="font-size:.8em;"></span></td>
     </tr>
 
 
@@ -133,7 +134,7 @@
 
         var iabpDisplay = 1;
         var sbpRaw = 120;
-        var dbpRaw = 120;
+        var dbpRaw = 60;
         var sbp = 120;
         var dbp = 60;
         var map;
@@ -171,8 +172,8 @@
             spo2Raw = parseInt(dweet.content["spo2Raw"]);
 
             iabpDisplay = parseInt(dweet.content["iabpDisplay"]);
-            sbpRaw = parseInt(dweet.content["sbpRaw"]);
-            dbpRaw = parseInt(dweet.content["dbpRaw"]);
+            sbpRaw = parseInt(dweet.content["sbp"]);
+            dbpRaw = parseInt(dweet.content["dbp"]);
 
             cvpDisplay = parseInt(dweet.content["cvpDisplay"]);
             cvpRaw = parseInt(dweet.content["cvpRaw"]);
