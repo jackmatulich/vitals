@@ -44,7 +44,7 @@ function checkTime(i) {
     <td class="td" style="color:white;font-size:1.5em;background:black; text-align:right;"><span id='time'></span></td>
   </tr>
   
-   <tr>
+   <tr height="100px">
     <td width="85%" rowspan="2" class="waveform" colspan="6">
 <canvas  id="ecg" width ="1500"height="100px"></canvas></td>
     <td class="td heads">ECG &nbsp &nbsp<span class="ecg" style="font-weight:normal;">/min</span></td>
@@ -112,7 +112,16 @@ function checkTime(i) {
   <script>
   var speed = 5;
   var hrRaw=60;
-  var hr;
+  var hr=60;
+  var rhythm=nsr;
+  var ectopy=none;
+  var ectopyF=10;
+
+  var sbpRaw=120;
+  var dbpRaw=60;
+  var sbp=120;
+  var dbp=60;
+  var map=((2*sbp)+dbp)/3;
   
   
 
