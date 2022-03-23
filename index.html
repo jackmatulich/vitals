@@ -201,7 +201,7 @@
           hr = variability + hrRaw;
           document.getElementById("HeartRate").innerHTML = hr;
 
-          spo2digit = variability + spo2Raw;
+          spo2digit = Math.floor(spo2Raw-(variability/3));
           document.getElementById("Spo2").innerHTML = spo2digit;
 
           sbp = variability + sbpRaw;
