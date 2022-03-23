@@ -19,6 +19,7 @@ background: linear-gradient(0deg, rgba(52,52,52,1) 0%, rgba(40,40,40,1) 17%, rgb
 }
 .MAP{
   line-height:0.5em;
+}
 .waveform{
 background: linear-gradient(0deg, rgba(33,33,33,1) 0%, rgba(19,19,19,1) 17%, rgba(0,0,0,1) 100%);
 }
