@@ -21,7 +21,7 @@ var tooltipSlider = document.getElementById('BP');
 
 noUiSlider.create(tooltipSlider, {
     start: [60, 120],
-    tooltips: [false, wNumb({decimals: 1}), true],
+    tooltips: [wNumb({decimals: 0}), wNumb({decimals: 0})],
     range: {
         'min': 0,
         'max': 200
