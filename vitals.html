@@ -207,8 +207,8 @@ function checkTime(i) {
    <td class="gradient left" colspan="10" >
 
 <span class="bptitle">NIBP</span></br>
-<span class="bp">120/80</span></br>
-<span class="bptitle">SYS/DIA mmHg (MAP)</span></br>
+<span class="bp" id="BP">120/80</span></br>
+<span class="bptitle">SYS/DIA mmHg (</span><span id="MAP" class="bptitle"></span><span class="bptitle">)</span></br>
 <span>Source: Manual</span></br>
 
 
@@ -218,7 +218,8 @@ function checkTime(i) {
 <td class="intbutton right" colspan="1" >
 
 <span class="temp"  >⛹︎</span></br>
-<span class="temptitle" >START</span></br>
+<button type="button" onclick="cyclebp()"
+>CYCLE</button>
 
 <td>
 
@@ -226,7 +227,7 @@ function checkTime(i) {
 <td class="gradient left right" colspan="8">
 
 <span class="prtitle">PULSE RATE</span></br>
-<span class="pr">60</span></br>
+<span id="HEARTRATE" class="pr"></span></br>
 <span class="prtitle">♡/MIN</span></br>
 <span>Source: Manual</span></br>
 
@@ -243,7 +244,7 @@ function checkTime(i) {
 
 
  <span class="spO2title">SpO2</span></br>
-<span class="spO2">99%</span></br>
+<span id="SPO2" class="spO2"></span></br>
 </br>
 <span>Source: Manual</span></br>
 
@@ -259,7 +260,7 @@ function checkTime(i) {
 <td class="gradient left right" colspan="8">
 
 <span class="temptitle">TEMPERATURE</span></br>
-<span class="temp">37.0</span></br>
+<span id="TEMP" class="temp"></span></br>
 <span class="temptitle">C° (98.6°F)</span></br>
 
 
@@ -330,14 +331,27 @@ function checkTime(i) {
 
 </table>
 <script>
- var hrRaw;
-  var hr;
-  
-  var sbp;
-  var dbp;
-  var map=(2*dbp+sbp)/3;
+ 
+ var spo2Probe=0;
+ var hrRaw=80;
+ var hr=80;
 
-  var temp;
+ var spo2Raw=99;
+ var spo2=99;
+
+  var cuff=0;
+  var sbpRaw=120;
+  var sbp=120;
+  var dbpRaw=60;
+  var dbp=60;
+  var map=80;
+  var DisplayBP=[sbp, dbp].join('/');
+  
+  var tempprobe=0;
+  var temp=36.1;
+  var audio = new Audio('Automatic Blood Pressure Monitor Inflation Sound Effect.mp3');
+ 
+
 let characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 let result = ''
 let length = 4 // Customize the length here.
@@ -355,23 +369,81 @@ var dweet = dweet[0]; // Dweet is always an array of 1
 
 
 console.log("hello"); // The generated name
+
+spo2Probe=parseInt(dweet.content["spo2probe"]);
  hrRaw=parseInt(dweet.content["hr"]);
+ spo2Raw=parseInt(dweet.content["spo2"]);
+
+ cuff=parseInt(dweet.content["cuff"]);
+ sbpRaw=parseInt(dweet.content["sbp"]);
+ dbpRaw=parseInt(dweet.content["dbp"]);
+
+ tempProbe=parseInt(dweet.content["tempprobe"]);
+ temp=parseInt(dweet.content["temp"]);
 
  
 });
-
-
 
 console.log(hr);
 });
- 
-setInterval(ecgRandom, 3000);
 
-function ecgRandom() {
+
+
+function cyclebp(){
+  if (cuff > 0) {
+    audio.play();
+    setTimeout(function() {
+document.getElementById("BP").innerHTML = DisplayBP;
+document.getElementById("MAP").innerHTML = map;
+}, 3000);
+
+
+} else {
+  
+document.getElementById("BP").innerHTML = "No Cuff";
+document.getElementById("MAP").innerHTML = " ";
+}
+
+
+}
+ 
+setInterval(display, 500);
+
+function display() {
+  if (spo2Probe > 0) {
+
+  document.getElementById("HEARTRATE").innerHTML = hr;
+  document.getElementById("SPO2").innerHTML = spo2;
+
+} else {
+  document.getElementById("HEARTRATE").innerHTML = null;
+  document.getElementById("SPO2").innerHTML = null;
+}
+
+if (tempProbe > 0) {
+
+document.getElementById("TEMP").innerHTML = temp;
+
+} else {
+  document.getElementById("TEMP").innerHTML = null;
+}
+
+
+}
+
+setInterval(VitalsVariability, 3000);
+
+function VitalsVariability() {
   var variability=(Math.floor(Math.random() * 7)-3);
   console.log(variability);
+  
+  spo2=Math.floor(spo2Raw-(variability/3));
   hr=variability+hrRaw;
-  document.getElementById("HeartRate").innerHTML = hr;
+  sbp=variability+sbpRaw;
+  dbp=variability+dbpRaw;
+  map=(2(*dbp+sbp))/3;
+  
+
 }
 
 
