@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.1/nouislider.min.js" integrity="sha512-T5Bneq9hePRO8JR0S/0lQ7gdW+ceLThvC80UjwkMRz+8q+4DARVZ4dqKoyENC7FcYresjfJ6ubaOgIE35irf4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+  </head>
+<body>
+
+<h1>My First Heading</h1>
+  <span id="BP"></span>
+<p>My first paragraph.</p>
+
+</body>
+  
+  
+  
+  <script>
+
+var handlesSlider = document.getElementById('BP');
+
+noUiSlider.create(handlesSlider, {
+    start: [4000, 8000],
+    range: {
+        'min': [2000],
+        'max': [10000]
+    }
+});
+  </script>
+</html>
+
