@@ -19,10 +19,11 @@
 var handlesSlider = document.getElementById('BP');
 
 noUiSlider.create(handlesSlider, {
-    start: [4000, 8000],
+    start: [60, 120],
+    tooltips: [false, wNumb({decimals: 0}), true],
     range: {
-        'min': [2000],
-        'max': [10000]
+        'min': [20],
+        'max': [200]
     }
 });
   </script>
