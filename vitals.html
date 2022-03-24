@@ -393,6 +393,7 @@ function cyclebp(){
   if (cuff > 0) {
     audio.play();
     setTimeout(function() {
+      var variability=(Math.floor(Math.random() * 7)-3);
       sbp=variability+sbpRaw;
   dbp=variability+dbpRaw;
   map= ((2*dbp)+sbp)/3);
