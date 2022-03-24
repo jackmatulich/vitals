@@ -393,9 +393,13 @@ function cyclebp(){
   if (cuff > 0) {
     audio.play();
     setTimeout(function() {
+      sbp=variability+sbpRaw;
+  dbp=variability+dbpRaw;
+  map= Math.trunc(((2*dbp)+sbp)/3);
 document.getElementById("BP").innerHTML = DisplayBP;
+
 document.getElementById("MAP").innerHTML = map;
-}, 3000);
+}, 6000);
 
 
 } else {
@@ -439,9 +443,7 @@ function VitalsVariability() {
   
   spo2=Math.floor(spo2Raw-(variability/3));
   hr=variability+hrRaw;
-  sbp=variability+sbpRaw;
-  dbp=variability+dbpRaw;
-  map=(2*(dbp+sbp))/3;
+  
   
 
 };
