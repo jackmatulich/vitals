@@ -368,9 +368,9 @@ function uniquecode() {
 
 
 
-  dweetio.listen_for("jacktester", function(dweet){
+  dweetio.listen_for(code, function(dweet){
    
-    dweetio.get_latest_dweet_for("jacktester", function(err, dweet){
+    dweetio.get_latest_dweet_for(code, function(err, dweet){
 
 var dweet = dweet[0]; // Dweet is always an array of 1
 
