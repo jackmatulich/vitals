@@ -395,9 +395,8 @@ function cyclebp(){
     setTimeout(function() {
       sbp=variability+sbpRaw;
   dbp=variability+dbpRaw;
-  map= Math.trunc(((2*dbp)+sbp)/3);
+  map= ((2*dbp)+sbp)/3);
 document.getElementById("BP").innerHTML = DisplayBP;
-
 document.getElementById("MAP").innerHTML = map;
 }, 7000);
 
