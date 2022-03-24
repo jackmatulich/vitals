@@ -52,6 +52,9 @@ background: linear-gradient(229deg, rgba(180,180,180,1) 0%, rgba(138,138,138,1) 
 .cvp {
   color:cornflowerblue; 
 }
+.cvp {
+  color:white; 
+}
 .spo2 {
   color:deeppink; 
 
