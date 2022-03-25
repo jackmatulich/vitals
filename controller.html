@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Controller 1.0</title>
+    <script type="text/javascript" src="http://smoothiecharts.org/smoothie.js"></script>
+<script src="https://dweet.io/client/dweet.io.min.js"></script>
+<link href="nouislider.css" rel="stylesheet">
+<script src="nouislider.js"></script>
+
+  </head>
+  <body style="background-color:black;">
+    
+    <h1 style="color: white; font-size: xxx-large; font-family: fantasy; font-weight: 400; font-style: italic;font-stretch: wider;letter-spacing: 2pt;">Ultralite Sim Monitor</h1>
+
+    <table style="width: 100%">
+      <colgroup>
+         <col span="1" style="width: 75%;">
+         <col span="1" style="width: 15%;">
+         <col span="1" style="width: 10%;">
+      </colgroup>
+      <tbody>
+          <tr>
+              <td> 
+
+                <div class="radio-toolbar">
+                  <input type="radio" id="radioNSR" name="radioFruit" value="NSR" checked>
+                  <label for="radioNSR">Normal Sinus</label>
+              
+                  <input type="radio" id="radioVT" name="radioFruit" value="VT">
+                  <label for="radioVT">VT</label>
+              
+                  <input type="radio" id="radioVF" name="radioFruit" value="VF">
+                  <label for="radioVF">VF</label> 
+            
+                <input type="radio" id="radioSVT" name="radioFruit" value="SVT" >
+                <label for="radioSVT">SVT</label>
+            
+                <input type="radio" id="radioAF" name="radioFruit" value="AF">
+                <label for="radioAF">AF</label>
+            
+                <input type="radio" id="radioFlutter" name="radioFruit" value="Flutter">
+                <label for="radioFlutter">Flutter</label> 
+            </div>
+              </td>
+              
+          </tr>
+        <tr>
+          <td class="sectionheader" style="color:greenyellow;">HR</td>
+          <td> </td>
+          <td></td>
+      </tr>
+          <tr>
+              <td> <div class="tooltips green" id="hr" ></div>
+                <script>
+                var spo2 = document.getElementById('spo2');
+                
+                noUiSlider.create(hr, {
+                    start: [75],
+                    tooltips:true,
+                    connect: 'lower',
+                      range: {
+                      'min': [0],
+                      '50%': [100],
+                      '90%': [150],
+                      'max': [300],
+
+                      
+                    },
+                    format: {
+                    from: function(value) {
+                            return parseInt(value);
+                        },
+                    to: function(value) {
+                            return parseInt(value);
+                        }
+                    }
+                    
+                  
+                });
+                   </script></td>
+              <td>
+                <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+              </td>
+              <td>15%</td>
+          </tr>
+        <tr>
+          <td class="sectionheader" style="color: #c0392b;">BP</td>
+          <td> </td>
+          <td></td>
+      </tr>
+          <tr>
+              <td> <div class="tooltips red" id="slider"></div>
+                <script>
+                var slider = document.getElementById('slider');
+                
+                noUiSlider.create(slider, {
+                    start: [60, 80, 120],
+                    tooltips:true,
+                    connect: true,
+                      range: {
+                      'min': [0],
+                      '10%': [50],
+                      '95%': [150],
+                      'max': [250],
+
+                      
+                    },
+                    format: {
+                    from: function(value) {
+                            return parseInt(value);
+                        },
+                    to: function(value) {
+                            return parseInt(value);
+                        }
+                    }
+                    
+                  
+                });
+                   </script></td>
+              <td>
+                <label class="switch">
+                <input type="checkbox">
+                <span class="slider red round"></span>
+              </label>
+              </td>
+              <td>15%</td>
+          </tr>
+          <tr>
+            <td class="sectionheader" style="color:cyan;">spO2</td>
+            <td> </td>
+            <td></td>
+        </tr>
+            <tr>
+                <td> <div class="tooltips cyan" id="spo2" ></div>
+                  <script>
+                  var spo2 = document.getElementById('spo2');
+                  
+                  noUiSlider.create(spo2, {
+                      start: [95],
+                      tooltips:true,
+                      connect: 'lower',
+                        range: {
+                        'min': [0],
+                        '50%': [80],
+                        'max': [100],
+  
+                        
+                      },
+                      format: {
+                      from: function(value) {
+                              return parseInt(value);
+                          },
+                      to: function(value) {
+                              return parseInt(value);
+                          }
+                      }
+                      
+                    
+                  });
+                     </script></td>
+                <td>
+                  <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+                </td>
+                <td>15%</td>
+            </tr>
+      </tbody>
+  </table>
+   
+
+
+ 
+  </body>
+</html>
