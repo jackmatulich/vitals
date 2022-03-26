@@ -89,48 +89,7 @@
               </td>
               <td>15%</td>
           </tr>
-        <tr>
-          <td class="sectionheader" style="color: gold;">BP</td>
-          <td> </td>
-          <td></td>
-      </tr>
-          <tr>
-              <td> <div class="tooltips yellow" id="slider"></div>
-                <script>
-                var slider = document.getElementById('slider');
-                
-                noUiSlider.create(slider, {
-                    start: [60, 80, 120],
-                    tooltips:true,
-                    connect: true,
-                      range: {
-                      'min': [0],
-                      '10%': [50],
-                      '95%': [150],
-                      'max': [250],
-
-                      
-                    },
-                    format: {
-                    from: function(value) {
-                            return parseInt(value);
-                        },
-                    to: function(value) {
-                            return parseInt(value);
-                        }
-                    }
-                    
-                  
-                });
-                   </script></td>
-              <td>
-                <label class="switch">
-                <input type="checkbox">
-                <span class="slider yellow round"></span>
-              </label>
-              </td>
-              <td>15%</td>
-          </tr>
+        
           <tr>
             <td class="sectionheader" style="color:cyan;">spO2</td>
             <td> </td>
@@ -172,48 +131,56 @@
                 </td>
                 <td>15%</td>
             </tr>
-            <tr>
-              <td class="sectionheader" style="color: #c0392b;">BP</td>
-              <td> </td>
-              <td></td>
-          </tr>
+           
+
+
               <tr>
-                  <td> <div class="tooltips red" id="slider"></div>
-                    <script>
-                    var slider = document.getElementById('slider');
-                    
-                    noUiSlider.create(slider, {
-                        start: [60, 80, 120],
-                        tooltips:true,
-                        connect: true,
-                          range: {
-                          'min': [0],
-                          '10%': [50],
-                          '95%': [150],
-                          'max': [250],
-    
-                          
-                        },
-                        format: {
-                        from: function(value) {
-                                return parseInt(value);
-                            },
-                        to: function(value) {
-                                return parseInt(value);
-                            }
-                        }
-                        
+                <td class="sectionheader" style="color: gold;">BP</td>
+                <td> </td>
+                <td></td>
+            </tr>
+                <tr>
+                    <td> <div class="tooltips yellow" id="slider"></div>
+                      <script>
+                      var slider = document.getElementById('slider');
                       
-                    });
-                       </script></td>
-                  <td>
-                    <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider red round"></span>
-                  </label>
-                  </td>
-                  <td>15%</td>
-              </tr>
+                      noUiSlider.create(slider, {
+                          start: [60, 80, 120],
+                          tooltips:true,
+                          connect: true,
+                            range: {
+                            'min': [0],
+                            '10%': [50],
+                            '95%': [150],
+                            'max': [250],
+      
+                            
+                          },
+                          format: {
+                          from: function(value) {
+                                  return parseInt(value);
+                              },
+                          to: function(value) {
+                                  return parseInt(value);
+                              }
+                          }
+                          
+                        
+                      });
+                         </script></td>
+                    <td>
+                      <label class="switch">
+                      <input type="checkbox">
+                      <span class="slider yellow round"></span>
+                    </label>
+                    </td>
+                    <td>15%</td>
+                </tr>
+
+
+
+
+
             <tr>
               <td class="sectionheader" style="color:white;">Temp</td>
               <td> </td>
