@@ -172,6 +172,44 @@
                 </td>
                 <td>15%</td>
             </tr>
+
+
+            <tr>
+              <td> <div class="tooltips cyan" id="spo2" ></div>
+                <script>
+                var spo2 = document.getElementById('spo2');
+                
+                noUiSlider.create(spo2, {
+                    start: [95],
+                    tooltips:true,
+                    connect: 'lower',
+                      range: {
+                      'min': [0],
+                      '50%': [80],
+                      'max': [100],
+
+                      
+                    },
+                    format: {
+                    from: function(value) {
+                            return parseInt(value);
+                        },
+                    to: function(value) {
+                            return parseInt(value);
+                        }
+                    }
+                    
+                  
+                });
+                   </script></td>
+              <td>
+                <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+              </td>
+              <td>15%</td>
+          </tr>
       </tbody>
   </table>
    

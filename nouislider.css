@@ -331,7 +331,16 @@
   color:  rgb(48, 77, 4);
 
 }
+.white .noUi-tooltip {
+  background:white;
+  color: rgb(48, 77, 4);
 
+}
+.white .noUi-connect {
+  background:white;
+  color:  rgb(48, 77, 4);
+
+}
 
 /* Switch Buttons */
 /* The switch - the box around the slider */
