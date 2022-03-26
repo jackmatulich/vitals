@@ -311,6 +311,14 @@
   background: #c0392b;
   color: white;
 }
+.yellow .noUi-tooltip  {
+  background: gold;
+  color: white;
+}
+.yellow .noUi-connect  {
+  background: gold;
+  color: white;
+}
 .cyan .noUi-tooltip {
   background:cyan;
   color: rgb(2, 71, 71);
