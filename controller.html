@@ -175,18 +175,18 @@
 
 
             <tr>
-              <td> <div class="tooltips cyan" id="spo2" ></div>
+              <td> <div class="tooltips white" id="temp" ></div>
                 <script>
                 var spo2 = document.getElementById('spo2');
                 
                 noUiSlider.create(spo2, {
-                    start: [95],
+                    start: [36.5],
                     tooltips:true,
                     connect: 'lower',
                       range: {
-                      'min': [0],
-                      '50%': [80],
-                      'max': [100],
+                      'min': [34],
+                      '50%': [37],
+                      'max': [40],
 
                       
                     },
@@ -201,7 +201,8 @@
                     
                   
                 });
-                   </script></td>
+                   </script>
+                   </td>
               <td>
                 <label class="switch">
                 <input type="checkbox">
