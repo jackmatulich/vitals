@@ -221,7 +221,7 @@
       </tbody>
   </table>
 
-  <button id="btn" style="background-color: salmon">Button</button>
+  <button id="btn" style="background-color: grey">Button</button>
 
    <script>
 const btn = document.getElementById('btn');
@@ -229,16 +229,16 @@ const btn = document.getElementById('btn');
 btn.addEventListener('click', function onClick(event) {
   const backgroundColor = btn.style.backgroundColor;
 
-  if (backgroundColor === 'salmon') {
-    btn.style.backgroundColor = 'green';
+  if (backgroundColor === 'grey') {
+    btn.style.backgroundColor = 'gold';
 
     // 👇️ optionally change text color
-    // btn.style.color = 'white';
+    // btn.style.color = 'gold';
   } else {
-    btn.style.backgroundColor = 'salmon';
+    btn.style.backgroundColor = 'grey';
 
     // 👇️ optionally change text color
-    // btn.style.color = 'blue';
+    // btn.style.color = 'grey';
   }
 });
 
