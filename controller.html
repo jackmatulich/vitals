@@ -53,7 +53,7 @@
           <td></td>
       </tr>
           <tr>
-              <td> <div class="tooltips green" id="hr" ></div>
+              <td> <div class="tooltips" id="hr" style="background: greenyellow;color: white;"></div>
                 <script>
                 var spo2 = document.getElementById('spo2');
                 
@@ -96,7 +96,7 @@
             <td></td>
         </tr>
             <tr>
-                <td> <div class="tooltips cyan" id="spo2" ></div>
+                <td> <div class="tooltips" id="spo2" style="background: cyan;color: white;" ></div>
                   <script>
                   var spo2 = document.getElementById('spo2');
                   
@@ -135,11 +135,11 @@
                 <td></td>
             </tr>
                 <tr>
-                    <td> <div class="tooltips yellow" id="slider"></div>
+                    <td> <div class="tooltips" id="bp" style="background: gold;color: white;"></div>
                       <script>
-                      var slider = document.getElementById('slider');
+                      var bp = document.getElementById('bp');
                       
-                      noUiSlider.create(slider, {
+                      noUiSlider.create(bp, {
                           start: [60, 80, 120],
                           tooltips:true,
                           connect: true,
@@ -164,7 +164,7 @@
                       });
                          </script></td>
                     <td>
-                      <button id="btn" style="background-color: grey;font-weight:bold;font-size: large;width:100%;height:100%;border-radius:8px;">CUFF<br><span style="font-weight:bold;font-size: large;" id="cuffbuttontext"></span><br></button>
+                      <button id="cuffbtn" style="background-color: grey;font-weight:bold;font-size: large;width:100%;height:100%;border-radius:8px;">CUFF<br><span style="font-weight:bold;font-size: large;" id="cuffbuttontext"></span><br></button>
                     </td>
                     <td>15%</td>
                 </tr>
@@ -179,7 +179,7 @@
               <td></td>
           </tr>
             <tr>
-              <td> <div class="tooltips white" id="temp" ></div>
+              <td> <div class="tooltips" id="temp" style="background: white;color: white;"></div>
                 <script>
                 var temp = document.getElementById('temp');
                 
@@ -221,18 +221,27 @@
  
 
    <script>
-const btn = document.getElementById('btn');
+const cuffbtn = document.getElementById('cuffbtn');
+const hr = document.getElementById('hr');
+const bp = document.getElementById('bp');
 
-btn.addEventListener('click', function onClick(event) {
-  const backgroundColor = btn.style.backgroundColor;
+cuffbtn.addEventListener('click', function onClick(event) {
+  const backgroundColor = cuffbtn.style.backgroundColor;
+  const hrbackgroundColor = hr.style.backgroundColor;
+  const bpbackgroundColor = bp.style.backgroundColor;
 
   if (backgroundColor === 'grey') {
-    btn.style.backgroundColor = 'gold';
+    cuffbtn.style.backgroundColor = 'gold';
+    hr.style.backgroundColor= 'gold';
+    bp.style.backgroundColor= 'gold';
+
     document.getElementById(cuffbuttontext).innerHTML = "ON"
     // 👇️ optionally change text color
     // btn.style.color = 'gold';
   } else {
-    btn.style.backgroundColor = 'grey';
+    cuffbtn.style.backgroundColor = 'grey';
+    hr.style.backgroundColor= 'grey';
+    bp.style.backgroundColor= 'grey';
     document.getElementById(cuffbuttontext).innerHTML = "OFF"
     // 👇️ optionally change text color
     // btn.style.color = 'grey';
