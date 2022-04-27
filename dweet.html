@@ -15,7 +15,7 @@
 
 
 <script>
-var data;
+var data=60;
     dweetio.listen_for("jacktester", function (dweet) {
 
         dweetio.get_latest_dweet_for("jacktester", function (err, dweet) {
@@ -23,7 +23,6 @@ var data;
           var dweet = dweet[0]; // Dweet is always an array of 1
 
 
-          console.log("hello"); // The generated name
           data = parseInt(dweet.content["data"]);
           
 
