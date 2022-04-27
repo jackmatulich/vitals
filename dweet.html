@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+    <script src="//dweet.io/client/dweet.io.min.js"></script>
+    </head>
+
+<body>
+
+
+
+<h1>My First Heading</h1>
+<p>My first paragraph.</p>
+<p id="section">-</p>
+
+
+<script>
+var data;
+    dweetio.listen_for("jacktester", function (dweet) {
+
+        dweetio.get_latest_dweet_for("jacktester", function (err, dweet) {
+
+          var dweet = dweet[0]; // Dweet is always an array of 1
+
+
+          console.log("hello"); // The generated name
+          data = parseInt(dweet.content["data"]);
+          document.getElementById(section).innerHTML = data;
+
+
+        });
+    });
+
+        </script>
+
+</body>
+</html>
