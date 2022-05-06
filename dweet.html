@@ -24,7 +24,7 @@ var hr=60;
 function myFunction() {
 
     hr=hr+10;
-    dweetio.dweet_for("jacktester", {number:hr}, function(err, dweet){
+    dweetio.dweet_for("jacktester", {number:hr,hr:hr}, function(err, dweet){
 
 console.log(dweet.thing); // "my-thing"
 console.log(dweet.content); // The content of the dweet
