@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Controller 1.0</title>
+    <script type="text/javascript" src="http://smoothiecharts.org/smoothie.js"></script>
+<script src="https://dweet.io/client/dweet.io.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.1/nouislider.min.js" integrity="sha512-T5Bneq9hePRO8JR0S/0lQ7gdW+ceLThvC80UjwkMRz+8q+4DARVZ4dqKoyENC7FcYresjfJ6ubaOgIE35irf4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js" integrity="sha512-igVQ7hyQVijOUlfg3OmcTZLwYJIBXU63xL9RC12xBHNpmGJAktDnzl9Iw0J4yrSaQtDxTTVlwhY730vphoVqJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+<link href="nouislider.css" rel="stylesheet">
+<script src="nouislider.js"></script>
+<style>
+
+
+
+		button {
+			color: #ffffff;
+			background-color: #2d63c8;
+			font-size: 2.5em;
+			border: 0px solid #2d63c8;
+			border-radius: 0px 15px 0px 0px;
+			padding: 10px 5px;
+      margin-right: 0.5%;
+			cursor: pointer;
+      float:left;
+      width:19.5%;
+		}
+		button:hover {
+		}
+
+
+</style>
+
+  </head>
+  <body style="background-color:black;">
+    
+    
+    <h1 style="color: white; font-size: xxx-large; font-family: fantasy; font-weight: 400; font-style: italic;font-stretch: wider;letter-spacing: 2pt;">Ultralite Sim Monitor</h1>
+    <button type="button" name="stage1">Stage 1</button>
+    <button type="button" name="stage2">Stage 2</button>
+    <button type="button" name="stage3">Stage 3</button>
+    <button type="button" name="stage4">Stage 4</button>
+    <button type="button" name="stage5">Stage 5</button>
+
+
+
+
+
+
+
+<div class="tooltips" id="hr" style="background: greenyellow;color: white;"></div>
+              <script>
+              var spo2 = document.getElementById('spo2');
+              
+              noUiSlider.create(hr, {
+                  start: [75],
+                  tooltips:true,
+                  connect: 'lower',
+                    range: {
+                    'min': [0],
+                    '50%': [100],
+                    '90%': [150],
+                    'max': [300],
+
+                    
+                  },
+                  format: {
+                  from: function(value) {
+                          return parseInt(value);
+                      },
+                  to: function(value) {
+                          return parseInt(value);
+                      }
+                  }
+                  
+                
+              });
+                 </script>
+         
+ <div class="tooltips" id="spo2" style="background: cyan;color: white;" ></div>
+                <script>
+                var spo2 = document.getElementById('spo2');
+                
+                noUiSlider.create(spo2, {
+                    start: [95],
+                    tooltips:true,
+                    connect: 'lower',
+                      range: {
+                      'min': [0],
+                      '50%': [80],
+                      'max': [100],
+
+                      
+                    },
+                    format: {
+                    from: function(value) {
+                            return parseInt(value);
+                        },
+                    to: function(value) {
+                            return parseInt(value);
+                        }
+                    }
+                    
+                  
+                });
+                   </script>
+                   
+                   
+                   
+                   
+<div class="tooltips" id="bp" style="background: gold;color: white;"></div>
+                    <script>
+                    var bp = document.getElementById('bp');
+                    
+                    noUiSlider.create(bp, {
+                        start: [60, 80, 120],
+                        tooltips:true,
+                        connect: true,
+                          range: {
+                          'min': [0],
+                          '10%': [50],
+                          '95%': [150],
+                          'max': [250],
+    
+                          
+                        },
+                        format: {
+                        from: function(value) {
+                                return parseInt(value);
+                            },
+                        to: function(value) {
+                                return parseInt(value);
+                            }
+                        }
+                        
+                      
+                    });
+                       </script>
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+<div class="tooltips" id="temp" style="background: white;color: white;"></div>
+              <script>
+              var temp = document.getElementById('temp');
+              
+              noUiSlider.create(temp, {
+                  start: [36.5],
+                  tooltips:true,
+                  connect: 'lower',
+                    range: {
+                    'min': [34],
+                    '50%': [37],
+                    'max': [40],
+
+                    
+                  },
+                  format: {
+                  from: function(value) {
+                          return parseInt(value);
+                      },
+                  to: function(value) {
+                          return parseInt(value);
+                      }
+                  }
+                  
+                
+              });
+                 </script>
+                 </td>
+            <td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <table style="width: 100%">
+      <colgroup>
+         <col span="1" style="width: 75%;">
+         <col span="1" style="width: 15%;">
+         <col span="1" style="width: 10%;">
+      </colgroup>
+      <tbody>
+          <tr>
+              <td> 
+
+                <div class="radio-toolbar">
+                  <input type="radio" id="radioNSR" name="radioFruit" value="NSR" checked>
+                  <label for="radioNSR">Normal Sinus</label>
+              
+                  <input type="radio" id="radioVT" name="radioFruit" value="VT">
+                  <label for="radioVT">VT</label>
+              
+                  <input type="radio" id="radioVF" name="radioFruit" value="VF">
+                  <label for="radioVF">VF</label> 
+            
+                <input type="radio" id="radioSVT" name="radioFruit" value="SVT" >
+                <label for="radioSVT">SVT</label>
+            
+                <input type="radio" id="radioAF" name="radioFruit" value="AF">
+                <label for="radioAF">AF</label>
+            
+                <input type="radio" id="radioFlutter" name="radioFruit" value="Flutter">
+                <label for="radioFlutter">Flutter</label> 
+            </div>
+              </td>
+              
+          </tr>
+        <tr>
+          <td class="sectionheader" style="color:greenyellow;">HR</td>
+          <td> </td>
+          <td></td>
+      </tr>
+          <tr>
+              <td> <div class="tooltips" id="hr" style="background: greenyellow;color: white;"></div>
+                <script>
+                var spo2 = document.getElementById('spo2');
+                
+                noUiSlider.create(hr, {
+                    start: [75],
+                    tooltips:true,
+                    connect: 'lower',
+                      range: {
+                      'min': [0],
+                      '50%': [100],
+                      '90%': [150],
+                      'max': [300],
+
+                      
+                    },
+                    format: {
+                    from: function(value) {
+                            return parseInt(value);
+                        },
+                    to: function(value) {
+                            return parseInt(value);
+                        }
+                    }
+                    
+                  
+                });
+                   </script></td>
+              <td rowspan="3">
+                <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+              </td>
+              <td>15%</td>
+          </tr>
+        
+          <tr>
+            <td class="sectionheader" style="color:cyan;">spO2</td>
+            <td> </td>
+            <td></td>
+        </tr>
+            <tr>
+                <td> <div class="tooltips" id="spo2" style="background: cyan;color: white;" ></div>
+                  <script>
+                  var spo2 = document.getElementById('spo2');
+                  
+                  noUiSlider.create(spo2, {
+                      start: [95],
+                      tooltips:true,
+                      connect: 'lower',
+                        range: {
+                        'min': [0],
+                        '50%': [80],
+                        'max': [100],
+  
+                        
+                      },
+                      format: {
+                      from: function(value) {
+                              return parseInt(value);
+                          },
+                      to: function(value) {
+                              return parseInt(value);
+                          }
+                      }
+                      
+                    
+                  });
+                     </script></td>
+                
+                <td>15%</td>
+            </tr>
+           
+
+
+              <tr>
+                <td class="sectionheader" style="color: gold;">BP</td>
+                <td> </td>
+                <td></td>
+            </tr>
+                <tr>
+                    <td> <div class="tooltips" id="bp" style="background: gold;color: white;"></div>
+                      <script>
+                      var bp = document.getElementById('bp');
+                      
+                      noUiSlider.create(bp, {
+                          start: [60, 80, 120],
+                          tooltips:true,
+                          connect: true,
+                            range: {
+                            'min': [0],
+                            '10%': [50],
+                            '95%': [150],
+                            'max': [250],
+      
+                            
+                          },
+                          format: {
+                          from: function(value) {
+                                  return parseInt(value);
+                              },
+                          to: function(value) {
+                                  return parseInt(value);
+                              }
+                          }
+                          
+                        
+                      });
+                         </script></td>
+                    <td>
+                      <button id="cuffbtn" style="background-color: grey;font-weight:bold;font-size: large;width:100%;height:100%;border-radius:8px;">CUFF<br><span style="font-weight:bold;font-size: large;" id="cuffbuttontext"></span><br></button>
+                    </td>
+                    <td>15%</td>
+                </tr>
+
+
+
+
+
+            <tr>
+              <td class="sectionheader" style="color:white;">Temp</td>
+              <td> </td>
+              <td></td>
+          </tr>
+            <tr>
+              <td> <div class="tooltips" id="temp" style="background: white;color: white;"></div>
+                <script>
+                var temp = document.getElementById('temp');
+                
+                noUiSlider.create(temp, {
+                    start: [36.5],
+                    tooltips:true,
+                    connect: 'lower',
+                      range: {
+                      'min': [34],
+                      '50%': [37],
+                      'max': [40],
+
+                      
+                    },
+                    format: {
+                    from: function(value) {
+                            return parseInt(value);
+                        },
+                    to: function(value) {
+                            return parseInt(value);
+                        }
+                    }
+                    
+                  
+                });
+                   </script>
+                   </td>
+              <td>
+                <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+              </td>
+              <td>15%</td>
+          </tr>
+      </tbody>
+  </table>
+
+ 
+
+   <script>
+const cuffbtn = document.getElementById('cuffbtn');
+const hr = document.getElementById('hr');
+const bp = document.getElementById('bp');
+
+cuffbtn.addEventListener('click', function onClick(event) {
+  const backgroundColor = cuffbtn.style.backgroundColor;
+  const hrbackgroundColor = hr.style.backgroundColor;
+  const bpbackgroundColor = bp.style.backgroundColor;
+
+  if (backgroundColor === 'grey') {
+    cuffbtn.style.backgroundColor = 'gold';
+    hr.style.backgroundColor= 'gold';
+    bp.style.backgroundColor= 'gold';
+
+    document.getElementById(cuffbuttontext).innerHTML = "ON"
+    // 👇️ optionally change text color
+    // btn.style.color = 'gold';
+  } else {
+    cuffbtn.style.backgroundColor = 'grey';
+    hr.style.backgroundColor= 'grey';
+    bp.style.backgroundColor= 'grey';
+    document.getElementById(cuffbuttontext).innerHTML = "OFF"
+    // 👇️ optionally change text color
+    // btn.style.color = 'grey';
+  }
+});
+
+
+   </script>
+
+
+ 
+  </body>
+</html>
