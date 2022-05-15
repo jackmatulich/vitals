@@ -13,7 +13,7 @@
 
 
 
-		button {
+		btn {
 			color: #ffffff;
 			background-color: #2d63c8;
 			font-size: 2.5em;
@@ -25,25 +25,39 @@
       float:left;
       width:19.5%;
 		}
-		button:hover {
-		}
 
+    .active, .btn:hover {
+  background-color: #666;
+  color: white;
+}
+	
 
 </style>
 
   </head>
   <body style="overflow: hidden;background-color:black;">
     
-    <div >
+    <div id="stages">
     <h1 style="color: white; font-size: xxx-large; font-family: fantasy; font-weight: 400; font-style: italic;font-stretch: wider;letter-spacing: 2pt;">Ultralite Sim Monitor</h1>
-    <button type="button" name="stage1">Stage 1</button>
-    <button type="button" name="stage2">Stage 2</button>
-    <button type="button" name="stage3">Stage 3</button>
-    <button type="button" name="stage4">Stage 4</button>
-    <button type="button" name="stage5">Stage 5</button>
+    <button class="btn active" name="stage1">Stage 1</button>
+    <button class="btn" name="stage2">Stage 2</button>
+    <button class="btn"" name="stage3">Stage 3</button>
+    <button class="btn" name="stage4">Stage 4</button>
+    <button class="btn" name="stage5">Stage 5</button>
 
   </div>
-
+  <script>
+    // Add active class to the current button (highlight it)
+    var header = document.getElementById("stages");
+    var btns = header.getElementsByClassName("btn");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function() {
+      var current = document.getElementsByClassName("active");
+      current[0].className = current[0].className.replace(" active", "");
+      this.className += " active";
+      });
+    }
+    </script>
 
 
 
