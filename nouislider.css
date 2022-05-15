@@ -85,6 +85,7 @@
  */
 .noUi-horizontal {
   height: 40px;
+  margin-top:125px;
 }
 .noUi-horizontal .noUi-handle {
   width: 50px;
