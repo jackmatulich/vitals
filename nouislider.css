@@ -270,7 +270,7 @@
   width: 15px;
 }
 .noUi-tooltip {
-  display: block;
+  display: inline-block;
   position: absolute;
   border: 1px solid #D9D9D9;
   font-size:4em;
