@@ -62,18 +62,6 @@ font-weight:bold;
     <button class="button" name="stage5">STAGE<br><span style="font-size: 2em;">5</span></button>
 
   </div>
-  <script>
-    // Add active class to the current button (highlight it)
-    var header = document.getElementById("stages");
-    var btns = header.getElementsByClassName("btn");
-    for (var i = 0; i < btns.length; i++) {
-      btns[i].addEventListener("click", function() {
-      var current = document.getElementsByClassName("active");
-      current[0].className = current[0].className.replace(" active", "");
-      this.className += " active";
-      });
-    }
-    </script>
 
 
 
@@ -469,6 +457,19 @@ cuffbtn.addEventListener('click', function onClick(event) {
 
 
    </script>
+     <script>
+      // Add active class to the current button (highlight it)
+      var header = document.getElementById("stages");
+      var btns = header.getElementsByClassName("btn");
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function() {
+        var current = document.getElementsByClassName("active");
+        current[0].className = current[0].className.replace(" active", "");
+        this.className += " active";
+        });
+      }
+      </script>
+  
 
 
  
