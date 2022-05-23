@@ -18,7 +18,7 @@
 function myFunction() {
   var txt;
   if (confirm("Press a button!")) {
-    txt = "You pressed OK!";
+    document.getElementById('button').dispatchEvent(new MouseEvent("click"));
   } else {
     txt = "YOU NO CRICK THE RINK";
   }
