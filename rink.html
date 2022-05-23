@@ -10,6 +10,8 @@
 <p id="demo" style="font-size:500%;"></p>
 
 <script>
+  
+
     function clicker(){
 
 
@@ -19,7 +21,13 @@ function myFunction() {
   var txt;
   if (confirm("CRICK THE RINK!!!")) {
     txt = "YOU CRICK THE RINK";
-    document.getElementById('button').dispatchEvent(new MouseEvent("click"));
+    var delayInMilliseconds = 1000; 
+    setTimeout(function() {
+        document.getElementById('button').dispatchEvent(new MouseEvent("click"));
+}, delayInMilliseconds);
+
+
+    
   } else {
     txt = "YOU NO CRICK THE RINK";
   }
