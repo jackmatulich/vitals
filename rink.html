@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Prease Crick the Rink</h2>
+
+
+<button id=button onclick="myFunction()">You need crick me</button>
+
+<p id="demo"></p>
+
+<script>
+    function clicker(){
+
+
+        document.getElementById('button').dispatchEvent(new MouseEvent("click"));
+    }
+function myFunction() {
+  var txt;
+  if (confirm("Press a button!")) {
+    txt = "You pressed OK!";
+  } else {
+    txt = "YOU NO CRICK THE RINK";
+  }
+  document.getElementById("demo").innerHTML = txt;
+}
+</script>
+
+</body>
+</html>
