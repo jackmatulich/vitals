@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Controller 1.0</title>
+    <script type="text/javascript" src="http://smoothiecharts.org/smoothie.js"></script>
+<script src="https://dweet.io/client/dweet.io.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.1/nouislider.min.js" integrity="sha512-T5Bneq9hePRO8JR0S/0lQ7gdW+ceLThvC80UjwkMRz+8q+4DARVZ4dqKoyENC7FcYresjfJ6ubaOgIE35irf4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js" integrity="sha512-igVQ7hyQVijOUlfg3OmcTZLwYJIBXU63xL9RC12xBHNpmGJAktDnzl9Iw0J4yrSaQtDxTTVlwhY730vphoVqJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+<link href="nouislider.css" rel="stylesheet">
+<script src="nouislider.js"></script>
+<style>
+
+
+
+		button {
+			color: #ffffff;
+      background: linear-gradient(0deg, rgba(92,92,92,1) 0%, rgba(157,157,157,1) 35%, rgba(189,189,189,1) 100%);
+
+			font-size: 3em;
+			border: 0px solid #666;
+			border-radius: 0px 30px 0px 0px;
+			padding: 10px 5px;
+      margin-right: 0.5%;
+			cursor: pointer;
+      float:left;
+      width:19.5%;
+		}
+
+    .active, .button:hover {
+      background: linear-gradient(0deg, rgba(0,54,145,1) 0%, rgba(70,122,169,1) 35%, rgba(173,238,253,1) 100%);
+font-size:3em;
+font-weight:bold;
+  color: white;
+  text-shadow: 0 1px 0 #ccc,
+               0 2px 0 #c9c9c9,
+               0 3px 0 #bbb,
+               0 4px 0 #b9b9b9,
+               0 5px 0 #aaa,
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);
+
+}
+	
+
+</style>
+
+  </head>
+  <body style="overflow: hidden;background-color:black;">
+    
+    <div id="stages">
+    <h1 style="color: white; font-size: xxx-large; font-family: fantasy; font-weight: 400; font-style: italic;font-stretch: wider;letter-spacing: 2pt;">Ultralite Sim Monitor</h1>
+    <button class="button" name="stage1">STAGE<br><span style="font-size: 2em;">1</span></button>
+    <button class="button" name="stage2">STAGE<br><span style="font-size: 2em;">2</span></button>
+    <button class="button" name="stage3">STAGE<br><span style="font-size: 2em;">3</span></button>
+    <button class="button" name="stage4">STAGE<br><span style="font-size: 2em;">4</span></button>
+    <button class="button" name="stage5">STAGE<br><span style="font-size: 2em;">5</span></button>
+
+  </div>
+
+
+
+
+ 
+
+   <script>
+const cuffbtn = document.getElementById('cuffbtn');
+const hr = document.getElementById('hr');
+const bp = document.getElementById('bp');
+
+cuffbtn.addEventListener('click', function onClick(event) {
+  const backgroundColor = cuffbtn.style.backgroundColor;
+  const hrbackgroundColor = hr.style.backgroundColor;
+  const bpbackgroundColor = bp.style.backgroundColor;
+
+  if (backgroundColor === 'grey') {
+    cuffbtn.style.backgroundColor = 'gold';
+    hr.style.backgroundColor= 'gold';
+    bp.style.backgroundColor= 'gold';
+
+    document.getElementById(cuffbuttontext).innerHTML = "ON"
+    // 👇️ optionally change text color
+    // btn.style.color = 'gold';
+  } else {
+    cuffbtn.style.backgroundColor = 'grey';
+    hr.style.backgroundColor= 'grey';
+    bp.style.backgroundColor= 'grey';
+    document.getElementById(cuffbuttontext).innerHTML = "OFF"
+    // 👇️ optionally change text color
+    // btn.style.color = 'grey';
+  }
+});
+
+
+   </script>
+     <script>
+      // Add active class to the current button (highlight it)
+      var header = document.getElementById("stages");
+      var btns = header.getElementsByClassName("btn");
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function() {
+        var current = document.getElementsByClassName("active");
+        current[0].className = current[0].className.replace(" active", "");
+        this.className += " active";
+        });
+      }
+      </script>
+  
+
+
+ 
+  </body>
+</html>
