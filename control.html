@@ -63,12 +63,39 @@ font-weight:bold;
 
   </div>
 
-
+  <div class="tooltips yellow" id="nibp-slider" style=" display: inline-block;width:25%;background: white;color: white;margin-top:125px;"></div>
 
 
  
 
    <script>
+
+var nibpSlider = document.getElementById('nibp-slider');
+
+noUiSlider.create(nibpSlider, {
+    start: [60, 120],
+
+connect: [false, true, false],
+
+tooltips: [wNumb({decimals: 0}),
+        wNumb({decimals: 0})],
+    
+
+    orientation: 'vertical',
+    range: {
+        'min': 0,
+        'max': 300
+    }
+});
+
+
+
+
+
+
+
+
+
 const cuffbtn = document.getElementById('cuffbtn');
 const hr = document.getElementById('hr');
 const bp = document.getElementById('bp');
