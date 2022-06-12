@@ -74,14 +74,14 @@ var nibpSlider = document.getElementById('nibp-slider');
 
 noUiSlider.create(nibpSlider, {
     start: [60, 120],
-
+    orientation: 'vertical',
 connect: [false, true, false],
 
 tooltips: [wNumb({decimals: 0}),
-        wNumb({decimals: 0})],
+        wNumb({decimals: 0})]
     
 
-    orientation: 'vertical',
+   
     range: {
         'min': 0,
         'max': 300
