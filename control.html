@@ -63,28 +63,21 @@ font-weight:bold;
 
   </div>
 
-  <div class="tooltips yellow" id="nibp-slider"></div>
+  <div id="slider-vertical"></div>
 
 
  
 
    <script>
 
-var nibpSlider = document.getElementById('nibp-slider');
+var verticalSlider = document.getElementById('slider-vertical');
 
-noUiSlider.create(nibpSlider, {
-    start: [60, 120],
+noUiSlider.create(verticalSlider, {
+    start: 40,
     orientation: 'vertical',
-connect: [false, true, false],
-
-tooltips: [wNumb({decimals: 0}),
-        wNumb({decimals: 0})],
-    
-
-   
     range: {
         'min': 0,
-        'max': 300
+        'max': 100
     }
 });
 
