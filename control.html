@@ -137,11 +137,6 @@ nibpSlider.noUiSlider.on('update', function (values, handle) {
 
 
 
-
-
-
-
-
 var hrSlider = document.getElementById('hr-slider');
 
 noUiSlider.create(hrSlider, {
@@ -168,9 +163,6 @@ hrSlider.noUiSlider.on('update', function (values, handle) {
 
 
 
-
-
-
 var spo2Slider = document.getElementById('spo2-slider');
 
 noUiSlider.create(spo2Slider, {
@@ -188,6 +180,8 @@ connect: [true, false],
     },
 
 });
+
+
 var spo2Val = document.getElementById('spo2-val');
 
 spo2Slider.noUiSlider.on('update', function (values, handle) {
