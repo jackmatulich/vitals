@@ -63,6 +63,17 @@ font-weight:bold;
     <button class="button" name="stage5">STAGE<br><div style="font-size: 2em;">5</div></button>
 </div>
 
+<div style="flex-grow : 0.1;width:100% ;font-size: 1.5em;margin-top:100px;">
+    <div class="tooltip yellow" style="width: 25%;text-align: center;">120/60 (85) </div>
+    <div class="tooltip green" style="width: 25%;text-align: center;">85bpm</div>
+    <div class="tooltip blue" style="width: 25%;text-align: center;">98%</div>
+    <div class="tooltip white" style="width: 25%;text-align: center;">36.5°c</div>
+     </div>
+    
+    
+    
+
+
 
 
 <div id="sliders" style="flex-grow : 0.9;margin-top:100px;">
@@ -102,20 +113,7 @@ tooltips: [false,false],
 
 });
 
-var sbpVal = document.getElementById('sbp-val');
-var dbpVal = document.getElementById('dbp-val');
-var mapVal = document.getElementById('map-val');
 
-nibpSlider.noUiSlider.on('update', function (values, handle) {
-    if (handle) {
-        sbpVal.innerHTML = values[handle];
-    } else {
-        dbpVal.innerHTML = values[handle];
-    };
-    mapVal.innerHTML = ((sbpVal+(2*dbpVal))/3);
-
-
-});
 
 
 
@@ -144,12 +142,6 @@ connect: [true, false],
     },
 
 });
-var hrVal = document.getElementById('hr-val');
-
-hrSlider.noUiSlider.on('update', function (values, handle) {
-    directionField.innerHTML = values[handle];
-});
-
 
 
 var spo2Slider = document.getElementById('spo2-slider');
@@ -171,11 +163,6 @@ connect: [true, false],
 });
 
 
-var spo2Val = document.getElementById('spo2-val');
-
-spo2Slider.noUiSlider.on('update', function (values, handle) {
-    directionField.innerHTML = values[handle];
-});
 
 
 
@@ -200,6 +187,43 @@ connect: [true, false],
     },
 
 });
+
+
+var hrVal = document.getElementById('hr-val');
+
+hrSlider.noUiSlider.on('update', function (values, handle) {
+    directionField.innerHTML = values[handle];
+});
+
+
+var sbpVal = document.getElementById('sbp-val');
+var dbpVal = document.getElementById('dbp-val');
+var mapVal = document.getElementById('map-val');
+
+nibpSlider.noUiSlider.on('update', function (values, handle) {
+    if (handle) {
+        sbpVal.innerHTML = values[handle];
+    } else {
+        dbpVal.innerHTML = values[handle];
+    };
+    mapVal.innerHTML = ((sbpVal+(2*dbpVal))/3);
+
+
+});
+
+var spo2Val = document.getElementById('spo2-val');
+
+spo2Slider.noUiSlider.on('update', function (values, handle) {
+    directionField.innerHTML = values[handle];
+});
+
+
+
+
+
+
+
+
 
 var tempVal = document.getElementById('temp-val');
 
