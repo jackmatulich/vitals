@@ -94,13 +94,13 @@
   top: -5px;
 }
 .noUi-vertical {
-  width: 40px;
+  width: 18px;
 }
 .noUi-vertical .noUi-handle {
-  width: 70px;
-  height: 70px;
-  right: -35px;
-  top: -5px;
+  width: 28px;
+  height: 34px;
+  right: -6px;
+  bottom: -17px;
 }
 .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
   left: -17px;
