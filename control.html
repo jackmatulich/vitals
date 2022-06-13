@@ -65,8 +65,10 @@ font-weight:bold;
  
 <div id="sliders" style="flex-grow : 1;margin-top:100px;">
 
-  <div id="nibp-slider" class="tooltip yellow" style="float:left;height:1000px;margin:0 10% 0;"></div>.
+  <div id="nibp-slider" class="tooltip yellow" style="float:left;height:1000px;margin:0 10% 0;"></div>
+  <div id="hr-slider" class="tooltip green" style="float:left;height:1000px;margin:0 10% 0;"></div>
   <div id="spo2-slider" class="tooltip blue" style="float:left;height:1000px;margin:0 10% 0;"></div>.
+  <div id="temp-slider" class="tooltip white" style="float:left;height:1000px;margin:0 10% 0;"></div>.
 </div>
 
 </div>
@@ -98,6 +100,29 @@ tooltips: [false,false],
     },
 
 });
+
+
+var hrSlider = document.getElementById('hr-slider');
+
+noUiSlider.create(hrSlider, {
+    start: [85],
+    orientation: 'vertical',
+    direction: 'rtl',
+connect: [true, false],
+
+
+        range: {
+        'min': [0],
+        '20%': [20],
+        '40%': [60],
+        '90%': [150],
+        'max': [250]
+    },
+
+});
+
+
+
 var spo2Slider = document.getElementById('spo2-slider');
 
 noUiSlider.create(spo2Slider, {
@@ -116,6 +141,23 @@ connect: [true, false],
 
 });
 
+var tempSlider = document.getElementById('temp-slider');
+
+noUiSlider.create(tempSlider, {
+    start: [36.5],
+    orientation: 'vertical',
+    direction: 'rtl',
+connect: [true, false],
+
+
+        range: {
+        'min': [34],
+        '50%': [36.5],
+     
+        'max': [42]
+    },
+
+});
 
 
 
