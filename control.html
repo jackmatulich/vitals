@@ -65,8 +65,8 @@ font-weight:bold;
  
 <div id="sliders" style="flex-grow : 1;margin-top:50px;">
 
-  <div id="nibp-slider" class="tooltip yellow" style="float:left;height:1000px;margin:0 5% 0;"></div>.
-  <div id="spo2-slider" class="tooltip yellow" style="float:left;height:1000px;margin:0 5% 0;"></div>.
+  <div id="nibp-slider" class="tooltip yellow" style="float:left;height:1000px;margin:0 10% 0;"></div>.
+  <div id="spo2-slider" class="tooltip yellow" style="float:left;height:1000px;margin:0 10% 0;"></div>.
 </div>
 
 </div>
@@ -101,7 +101,7 @@ tooltips: [false,false],
 var spo2Slider = document.getElementById('spo2-slider');
 
 noUiSlider.create(spo2Slider, {
-    start: [60, 120],
+    start: [96],
     orientation: 'vertical',
     direction: 'rtl',
 connect: [false, true, false],
@@ -110,11 +110,11 @@ tooltips: [false,false],
     
 
         range: {
-        'min': [0],
+        'min': [20],
         '15%': [30],
-        '50%': [65],
-        '85%': [150],
-        'max': [250]
+        '50%': [80],
+     
+        'max': [100]
     },
 
 });
