@@ -189,7 +189,7 @@ connect: [true, false],
 var hrVal = document.getElementById('hr-val');
 
 hrSlider.noUiSlider.on('update', function (values, handle) {
-    directionField.innerHTML = values[handle];
+    hrVal.innerHTML = values[handle];
 });
 
 
