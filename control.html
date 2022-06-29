@@ -209,8 +209,8 @@ nibpSlider.noUiSlider.on('update', function (values, handle) {
         dbpVal.innerHTML = values[handle];
         dbpTemp=values[handle];
     };
-    sumTemp=(2*dbpTemp+sbpTemp);
-    mapTemp=(sumTemp/3);
+    
+    mapTemp=(2*dbpTemp+sbpTemp/3);
     mapVal.innerHTML = mapTemp;
 
 
