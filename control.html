@@ -197,8 +197,9 @@ hrSlider.noUiSlider.on('update', function (values, handle) {
 var sbpVal = document.getElementById('sbp-val'),
     dbpVal = document.getElementById('dbp-val'),
     mapVal = document.getElementById('map-val'),
-    sbpTemp=0,dbpTemp=0;
-let mapTemp;
+    sbpTemp,dbpTemp;
+    let sumTemp;
+    let mapTemp;
 
 nibpSlider.noUiSlider.on('update', function (values, handle) {
     if (handle) {
@@ -208,7 +209,8 @@ nibpSlider.noUiSlider.on('update', function (values, handle) {
         dbpVal.innerHTML = values[handle];
         dbpTemp=values[handle];
     };
-    mapTemp=(2*dbpTemp+sbpTemp/3);
+    sumTemp=(2*dbpTemp+sbpTemp);
+    mapTemp=sumTemp/3);
     mapVal.innerHTML = mapTemp;
 
 
