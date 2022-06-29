@@ -97,7 +97,7 @@ noUiSlider.create(nibpSlider, {
     orientation: 'vertical',
     direction: 'rtl',
 connect: [false, true, false],
-
+format: wNumb({decimals: 0}),
 tooltips: [false,false],
     
 
@@ -196,15 +196,19 @@ hrSlider.noUiSlider.on('update', function (values, handle) {
 
 var sbpVal = document.getElementById('sbp-val'),
     dbpVal = document.getElementById('dbp-val'),
-    mapVal = document.getElementById('map-val');
+    mapVal = document.getElementById('map-val'),
+    sbpTemp,dbpTemp;
 
 nibpSlider.noUiSlider.on('update', function (values, handle) {
     if (handle) {
         sbpVal.innerHTML = values[handle];
+        sbpTemp=values[handle];
     } else {
         dbpVal.innerHTML = values[handle];
+        dbpTemp=values[handle];
     };
-    mapVal.innerHTML = ((sbpVal+(2*dbpVal))/3);
+    
+    mapVal.innerHTML = ((sbpTemp+(2*dbpTemp))/3);
 
 
 });
