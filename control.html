@@ -67,7 +67,7 @@ font-weight:bold;
     <div style="color:gold;margin-left:0;margin-right:0;float:left;width: 25%;text-align: center;font-family: Arial, Helvetica, sans-serif;font-size:2.5em;font-weight: bold;"><span id="sbp-val"></span>/<span id="dbp-val"></span><br>(<span id="map-val"></span>) </div>
     <div style="color:greenyellow;margin-left:0;margin-right:0;float:left;width: 25%;text-align: center;font-family: Arial, Helvetica, sans-serif;font-size:2.5em;font-weight: bold;"><div id="hr-val"></div>bpm</div>
     <div style="color:cyan;margin-left:0;margin-right:0;float:left;width: 25%;text-align: center;font-family: Arial, Helvetica, sans-serif;font-size:2.5em;font-weight: bold;"><div id="spo2-val"></div>%</div>
-    <div style="color:white;margin-left:0;margin-right:0;float:left;width: 25%;text-align: center;font-family: Arial, Helvetica, sans-serif;font-size:2.5em;font-weight: bold;"><div id="tempVal"></div>°c</div>
+    <div style="color:white;margin-left:0;margin-right:0;float:left;width: 25%;text-align: center;font-family: Arial, Helvetica, sans-serif;font-size:2.5em;font-weight: bold;"><div id="temp-val"></div>°c</div>
      </div>
     
 
@@ -149,6 +149,7 @@ noUiSlider.create(spo2Slider, {
     orientation: 'vertical',
     direction: 'rtl',
 connect: [true, false],
+format: wNumb({decimals: 0}),
 
 
         range: {
@@ -175,6 +176,7 @@ noUiSlider.create(tempSlider, {
     orientation: 'vertical',
     direction: 'rtl',
 connect: [true, false],
+format: wNumb({decimals: 1}),
 
 
         range: {
@@ -219,7 +221,7 @@ nibpSlider.noUiSlider.on('update', function (values, handle) {
 var spo2Val = document.getElementById('spo2-val');
 
 spo2Slider.noUiSlider.on('update', function (values, handle) {
-    directionField.innerHTML = values[handle];
+  spo2Val.innerHTML = values[handle];
 });
 
 
@@ -233,7 +235,7 @@ spo2Slider.noUiSlider.on('update', function (values, handle) {
 var tempVal = document.getElementById('temp-val');
 
 tempSlider.noUiSlider.on('update', function (values, handle) {
-    directionField.innerHTML = values[handle];
+  tempVal.innerHTML = values[handle];
 });
 
 
