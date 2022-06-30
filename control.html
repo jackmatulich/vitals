@@ -211,7 +211,7 @@ nibpSlider.noUiSlider.on('update', function (values, handle) {
     };
     
     mapTemp=((2*dbpTemp+sbpTemp/1)/3);
-    mapVal.innerHTML = mapTemp;
+    mapVal.innerHTML = Math.trunc(mapTemp);
 
 
 });
