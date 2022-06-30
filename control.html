@@ -81,6 +81,8 @@ font-weight:bold;
   <div id="temp-slider" class="tooltip white" style="float:left;height:700px;margin:0 10% 0;"></div>.
 </div>
 
+
+<div id="transistion-slider" class="tooltip white" style="float:left;"></div>.
 </div>
 
 
@@ -239,8 +241,21 @@ tempSlider.noUiSlider.on('update', function (values, handle) {
 });
 
 
+var transitionSlider = document.getElementById('transition-slider');
 
+noUiSlider.create(transitionSlider, {
+    start: 0,
+    range: {
+        'min': 0,
+        'max': 100
+    }
+});
 
+var transitionVal = document.getElementById('transition-val');
+
+transitionSlider.noUiSlider.on('update', function (values, handle) {
+  transitionVal.innerHTML = values[handle];
+});
 
 const cuffbtn = document.getElementById('cuffbtn');
 const hr = document.getElementById('hr');
