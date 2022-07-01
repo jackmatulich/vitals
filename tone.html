@@ -13,21 +13,27 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
+
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        
+        <button onclick="tone()">Click me</button>
         <script>
 // one context per document
-var context = new (window.AudioContext || window.webkitAudioContext)();
-var osc = context.createOscillator(); // instantiate an oscillator
-osc.type = 'sine'; // this is the default - also square, sawtooth, triangle
-osc.frequency.value = 900; // Hz
-osc.connect(context.destination); // connect it to the destination
-osc.start(); // start the oscillator
-osc.stop(context.currentTime + 1); // stop 2 seconds after the current time
+
+var context = new AudioContext()
+var o = null
+function tone(){
+  o = context.createOscillator()
+  o.type = "sine"
+  o.frequency.value = 196;
+  o.connect(context.destination)
+  o.start()
+  o.stop(context.currentTime + 1); // stop 2 seconds after the current time
+}
+
 
 
         </script>
