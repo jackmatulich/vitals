@@ -32,6 +32,9 @@ function tone(){
   o.connect(context.destination)
   o.start()
   o.stop(context.currentTime + 1); // stop 2 seconds after the current time
+  o.frequency.value = 500;
+  o.start()
+  o.stop(context.currentTime + 1); // stop 2 seconds after the current time
 }
 
 
