@@ -22,6 +22,22 @@
         <button onclick="tone()">Click me</button>
         <script>
 // one context per document
+var context = new AudioContext(),
+    oscillator;
+
+function playOscillator(startTime, endTime) {
+    oscillator = context.createOscillator();
+    oscillator.frequency.value = 900;
+    oscillator.type = "sine";
+    oscillator.connect(context.destination);
+    oscillator.start(startTime);
+    oscillator.stop(endTime);
+}
+
+playOscillator(context.currentTime, context.currentTime + 0.5);
+playOscillator(context.currentTime + 1, context.currentTime + 1.5);
+
+
 
 var context = new AudioContext()
 var o = null
