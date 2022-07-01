@@ -28,7 +28,7 @@ var o = null
 function tone(){
   o = context.createOscillator()
   o.type = "sine"
-  o.frequency.value = 196;
+  o.frequency.value = 900;
   o.connect(context.destination)
   o.start()
   o.stop(context.currentTime + 1); // stop 2 seconds after the current time
