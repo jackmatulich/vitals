@@ -39,22 +39,6 @@ playOscillator(context.currentTime + 1, context.currentTime + 1.5);
 
 
 
-var context = new AudioContext()
-var o = null
-function tone(){
-  o = context.createOscillator()
-  o.type = "sine"
-  o.frequency.value = 900;
-  o.connect(context.destination)
-  o.start()
-  o.stop(context.currentTime + 1); // stop 2 seconds after the current time
-  o.frequency.value = 500;
-  o.start()
-  o.stop(context.currentTime + 1); // stop 2 seconds after the current time
-}
-
-
-
         </script>
     </body>
 </html>
