@@ -75,9 +75,14 @@ font-weight:bold;
 
 <div id="sliders" style="flex-grow : 0.9;margin-top:100px;">
 
+<!-- SLIDER VISUALS -->
+  <!-- NIBP SLIDER VISUAL -->
   <div id="nibp-slider" class="tooltip yellow" style="float:left;height:700px;margin:0 10% 0;"></div>
+   <!-- HR SLIDER VISUAL -->
   <div id="hr-slider" class="tooltip green" style="float:left;height:700px;margin:0 10% 0;"></div>
+   <!-- spo2 SLIDER VISUAL -->
   <div id="spo2-slider" class="tooltip blue" style="float:left;height:700px;margin:0 10% 0;"></div>.
+   <!-- TEMP SLIDER VISUAL -->
   <div id="temp-slider" class="tooltip white" style="float:left;height:700px;margin:0 10% 0;"></div>.
 </div>
 
@@ -85,7 +90,7 @@ font-weight:bold;
 
 </div>
 <div>
-
+ <!-- TIME SLIDER VISUAL -->
  <span  id="transition-slider" class="tooltip white" style="margin-left:7%;width:70%;float:left;"></span>
 
 </div>.
@@ -115,16 +120,6 @@ tooltips: [false,false],
     },
 
 });
-
-
-
-
-
-
-
-
-
-
 
 
 var hrSlider = document.getElementById('hr-slider');
@@ -170,11 +165,6 @@ format: wNumb({decimals: 0}),
 
 
 
-
-
-
-
-
 var tempSlider = document.getElementById('temp-slider');
 
 noUiSlider.create(tempSlider, {
@@ -195,6 +185,11 @@ format: wNumb({decimals: 1}),
 });
 
 
+// Values Temp Storage
+
+let sbpTemp,dbpTemp, sumTemp, mapTemp;
+ 
+
 var hrVal = document.getElementById('hr-val');
 
 hrSlider.noUiSlider.on('update', function (values, handle) {
@@ -205,9 +200,7 @@ hrSlider.noUiSlider.on('update', function (values, handle) {
 var sbpVal = document.getElementById('sbp-val'),
     dbpVal = document.getElementById('dbp-val'),
     mapVal = document.getElementById('map-val'),
-    sbpTemp,dbpTemp;
-    let sumTemp;
-    let mapTemp;
+   
 
 nibpSlider.noUiSlider.on('update', function (values, handle) {
     if (handle) {
