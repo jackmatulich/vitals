@@ -186,14 +186,18 @@ format: wNumb({decimals: 1}),
 
 
 // Values Temp Storage
-
+let hrTemp;
 let sbpTemp,dbpTemp, sumTemp, mapTemp;
+let spo2Temp;
+let tempTemp;
+let transitionTemp;
  
 
 var hrVal = document.getElementById('hr-val');
 
 hrSlider.noUiSlider.on('update', function (values, handle) {
     hrVal.innerHTML = values[handle];
+    hrTemp=values[handle];
 });
 
 
@@ -221,6 +225,7 @@ var spo2Val = document.getElementById('spo2-val');
 
 spo2Slider.noUiSlider.on('update', function (values, handle) {
   spo2Val.innerHTML = values[handle];
+  spo2Temp=values[handle];
 });
 
 
@@ -235,6 +240,7 @@ var tempVal = document.getElementById('temp-val');
 
 tempSlider.noUiSlider.on('update', function (values, handle) {
   tempVal.innerHTML = values[handle];
+  tempTemp=values[handle];
 });
 
 
@@ -252,6 +258,7 @@ var transitionVal = document.getElementById('transition-val');
 
 transitionSlider.noUiSlider.on('update', function (values, handle) {
   transitionVal.innerHTML = values[handle];
+  transitionTemp=values[handle];
 });
 
 const cuffbtn = document.getElementById('cuffbtn');
