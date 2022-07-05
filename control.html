@@ -121,7 +121,7 @@ font-weight:bold;
 <div>
  <!-- TIME SLIDER VISUAL -->
  <span  id="transition-slider" class="tooltip white" style="margin-left:10%;width:65%;float:left;"></span>
- <a href="#" class="sendButton">SEND
+ <a onclick="send()" class="sendButton">SEND
   <div id="transition-val"></div>
   <div style="font-size:.7em; opacity: 0.5;">MM:SS</div>
 
@@ -339,14 +339,13 @@ cuffbtn.addEventListener('click', function onClick(event) {
 function send(){
 
 
-dweetio.dweet_for("my-thing", {some:"data"}, function(err, dweet){
+dweetio.dweet_for(code, {some:"data"}, function(err, dweet){
 
     console.log(dweet.thing); // "my-thing"
     console.log(dweet.content); // The content of the dweet
     console.log(dweet.created); // The create date of the dweet
 
 });
-
 
 
 
