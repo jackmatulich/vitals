@@ -339,13 +339,15 @@ cuffbtn.addEventListener('click', function onClick(event) {
 function send(){
 
 
-dweetio.dweet_for(code, {some:"data"}, function(err, dweet){
+dweetio.dweet_for(code, {transition:transitionTemp,SBP:sbpTemp,DBP:dbpTemp,HR:hrTemp,SPO2:spo2Temp,temp:tempTemp}, function(err, dweet){
 
     console.log(dweet.thing); // "my-thing"
     console.log(dweet.content); // The content of the dweet
     console.log(dweet.created); // The create date of the dweet
 
 });
+
+
 
 
 
