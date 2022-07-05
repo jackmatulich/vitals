@@ -361,9 +361,9 @@ console.log(result)
 
   code.innerHTML = result;
 
-  dweetio.listen_for(code, function(dweet){
+  dweetio.listen_for("QU3S", function(dweet){
    
-    dweetio.get_latest_dweet_for(code, function(err, dweet){
+    dweetio.get_latest_dweet_for("QU3S", function(err, dweet){
 
 var dweet = dweet[0]; // Dweet is always an array of 1
 
