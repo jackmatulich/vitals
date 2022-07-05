@@ -360,7 +360,7 @@ let length = 4 // Customize the length here.
 for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
 console.log(result)
 ucode=result;
-console.log("ucode:"+ucode)
+console.log("ucode:"+ucode);
 code.innerHTML =result;
 
   dweetio.listen_for(ucode, function(dweet){
