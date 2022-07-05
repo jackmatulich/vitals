@@ -81,7 +81,7 @@ font-weight:bold;
 </style>
 
   </head>
-  <body style="overflow: hidden;background-color:black;">
+  <body style="overflow: hidden;background-color:black;"  onload="uniquecode()">
        
     <div  style="display: flex;flex-flow: column; height: 100%;">
 <div id="stages" style="width:100%;height: 200px;">
@@ -127,12 +127,22 @@ font-weight:bold;
 
  </a>
 </div>.
-
+<div id="code"></div>
 
 
 
 
    <script>
+
+let code;
+
+function uniquecode() {
+ 
+   code = prompt("Please enter unique code:", "AB12");
+
+  document.getElementById("code").innerHTML = code;
+}
+
 
 var nibpSlider = document.getElementById('nibp-slider');
 
@@ -326,7 +336,23 @@ cuffbtn.addEventListener('click', function onClick(event) {
   }
 });
 
+function send(){
 
+
+dweetio.dweet_for("my-thing", {some:"data"}, function(err, dweet){
+
+    console.log(dweet.thing); // "my-thing"
+    console.log(dweet.content); // The content of the dweet
+    console.log(dweet.created); // The create date of the dweet
+
+});
+
+
+
+
+
+
+}
    </script>
      <script>
       // Add active class to the current button (highlight it)
