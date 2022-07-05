@@ -331,7 +331,8 @@ function checkTime(i) {
 
 </table>
 <script>
- var ucode= document.getElementById('code');
+ var ucode= "code";
+ var code= document.getElementById('code');
  
  var spo2Probe=0;
  var hrRaw=80;
@@ -358,8 +359,8 @@ let result = ''
 let length = 4 // Customize the length here.
 for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
 console.log(result)
-
-  ucode.innerHTML = result;
+ucode=result;
+code.innerHTML = result;
 
   dweetio.listen_for(ucode, function(dweet){
    
