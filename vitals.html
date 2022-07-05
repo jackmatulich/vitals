@@ -357,16 +357,8 @@ let result = ''
 let length = 4 // Customize the length here.
 for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
 console.log(result)
-  
-
-function uniquecode() {
-  let text;
-   code = prompt("Please enter unique code:", "AB12");
-
-  document.getElementById("code").innerHTML = code;
-}
-
-
+  code=result
+code = document.getElementById('code');
 
   dweetio.listen_for(code, function(dweet){
    
