@@ -331,7 +331,7 @@ function checkTime(i) {
 
 </table>
 <script>
- var code;
+ var code= document.getElementById('code');
  var spo2Probe=0;
  var hrRaw=80;
  var hr=80;
@@ -358,7 +358,7 @@ let length = 4 // Customize the length here.
 for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
 console.log(result)
   code=result
-code = document.getElementById('code');
+
 
   dweetio.listen_for(code, function(dweet){
    
