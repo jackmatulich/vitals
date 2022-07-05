@@ -331,6 +331,11 @@ function checkTime(i) {
 
 </table>
 <script>
+
+let params = (new URL(document.location)).searchParams;
+let name = params.get("name");
+console.log(name);
+
  var ucode= "code";
  var code= document.getElementById('code');
  
