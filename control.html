@@ -224,6 +224,7 @@ let sbpTemp,dbpTemp, sumTemp, mapTemp;
 let spo2Temp;
 let tempTemp;
 let transitionTemp;
+
  
 
 var hrVal = document.getElementById('hr-val');
@@ -283,7 +284,7 @@ noUiSlider.create(transitionSlider, {
     start: 0,
     range: {
         'min': 0,
-        'max': 100
+        'max': 180
     }
 });
 
@@ -292,6 +293,10 @@ var transitionVal = document.getElementById('transition-val');
 transitionSlider.noUiSlider.on('update', function (values, handle) {
   transitionVal.innerHTML = values[handle];
   transitionTemp=values[handle];
+transitionVal.innerHTML = new Date(transitionTemp * 1000).toISOString().slice(14, 19);
+
+
+
 });
 
 const cuffbtn = document.getElementById('cuffbtn');
