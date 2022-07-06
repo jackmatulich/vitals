@@ -151,8 +151,8 @@ font-weight:bold;
 }
 
 #qrcode {
-  width:300px;
-  height:300px;
+  width:auto;
+  height:auto;
 
   margin:auto;
 }
@@ -196,7 +196,7 @@ function checkTime(i) {
 <!-- code by w3codegenerator.com -->
 <button type="button" class="btn btn-primary" style="border:#303030;background:#303030;text-align: center;margin:auto" data-toggle="modal" data-target="#myModal">Control Link</button>
 <div class="modal fade" id="myModal">
-   <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+   <div class="modal-dialog modal-xl modal-dialog-centered">
        <div class="modal-content">
            <div class="modal-header">
               <h4 class="modal-title" id="qrlink" style="color:black;text-align: center;margin:auto"></h4>
@@ -374,7 +374,9 @@ function checkTime(i) {
 // var urlcode = window.location.search;
 // urlcode = url.replace("?", '');
 // console.log(urlcode);
-
+$(window).on('load', function() {
+        $('#myModal').modal('show');
+    });
  var ucode= "code";
  var code= document.getElementById('code');
  
