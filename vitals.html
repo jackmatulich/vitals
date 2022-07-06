@@ -407,11 +407,11 @@ console.log(result)
 ucode=result;
 console.log("ucode:"+ucode);
 // code.innerHTML =result;
-const link="https:sim.ninja/control/?"+ucode;
+const link="sim.ninja/control/?"+ucode;
 var qrlink= document.getElementById('qrlink');
 qrlink.innerHTML =link;
 
-new QRCode(document.getElementById("qrcode"), link);
+new QRCode(document.getElementById("qrcode"),"https://"+link);
 
 
   dweetio.listen_for(ucode, function(dweet){
