@@ -404,9 +404,15 @@ code.innerHTML =result;
 var qrcode = new QRCode("qrcode");
 
 function makeCode () {    
-
+  var elText = document.getElementById("text");
   
-  qrcode.makeCode("https://sim.ninja/control?"+ucode);
+  if (!elText.value) {
+    alert("Input a text");
+    elText.focus();
+    return;
+  }
+  
+  qrcode.makeCode(elText.value);
 }
 
 makeCode();
