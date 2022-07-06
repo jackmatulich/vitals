@@ -306,32 +306,6 @@ transitionVal.innerHTML = new Date(transitionTemp * 1000).toISOString().slice(14
 
 });
 
-const cuffbtn = document.getElementById('cuffbtn');
-const hr = document.getElementById('hr');
-const bp = document.getElementById('bp');
-
-cuffbtn.addEventListener('click', function onClick(event) {
-  const backgroundColor = cuffbtn.style.backgroundColor;
-  const hrbackgroundColor = hr.style.backgroundColor;
-  const bpbackgroundColor = bp.style.backgroundColor;
-
-  if (backgroundColor === 'grey') {
-    cuffbtn.style.backgroundColor = 'gold';
-    hr.style.backgroundColor= 'gold';
-    bp.style.backgroundColor= 'gold';
-
-    document.getElementById(cuffbuttontext).innerHTML = "ON"
-    // 👇️ optionally change text color
-    // btn.style.color = 'gold';
-  } else {
-    cuffbtn.style.backgroundColor = 'grey';
-    hr.style.backgroundColor= 'grey';
-    bp.style.backgroundColor= 'grey';
-    document.getElementById(cuffbuttontext).innerHTML = "OFF"
-    // 👇️ optionally change text color
-    // btn.style.color = 'grey';
-  }
-});
 
 function send(){
 
