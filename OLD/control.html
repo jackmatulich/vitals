@@ -135,10 +135,16 @@ font-weight:bold;
    <script>
 
 let code;
+// 
+// var urlcode = window.location.search;
+// urlcode = url.replace("?", '');
+// console.log(urlcode);
+function uniquecode() {
+ 
+   code = prompt("Please enter unique code:", "AB12");
 
-var urlcode = window.location.search;
-urlcode = urlcode.replace("?", '');
-console.log(urlcode);
+  document.getElementById("code").innerHTML = code;
+}
 
 
 var nibpSlider = document.getElementById('nibp-slider');
