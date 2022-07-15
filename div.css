@@ -64,7 +64,7 @@ body {
 
 
 .numericstitle {
-  height: 20%;
+ 
   background: linear-gradient(90deg, rgba(52, 52, 52, 1) 0%, rgba(40, 40, 40, 1) 17%, rgba(0, 0, 0, 1) 100%);
   color: white;
   font-size: medium;
@@ -72,6 +72,7 @@ body {
   Padding: 5px 0px 5px 10px;
   font-weight: bold;
 }
+
 .number{
   height: 85%;
   border: 1px solid black;
