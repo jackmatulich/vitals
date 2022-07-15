@@ -78,37 +78,43 @@ body {
   border: 1px solid black;
   text-align: center;
   padding: 0px;
-  Font-size: 4em;
   font-weight: 550;
 }
 
 .ecg {
   color: #00ff00;
+  Font-size: xx-large;
 }
 
 .art {
   color: red;
+  Font-size: x-large;
 }
 
 .cvp {
   color: cornflowerblue;
+  Font-size: x-large;
 }
 
-.cvp {
+.white {
   color: white;
+  Font-size: x-large;
 }
 
 .spo2 {
   color: deeppink;
+  Font-size: x-large;
 
 }
 
 .co2 {
   color: gold;
+  Font-size: x-large;
 }
 
 .resp {
   color: mediumblue;
+  Font-size: x-large;
 }
 
 
