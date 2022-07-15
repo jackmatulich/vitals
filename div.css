@@ -76,15 +76,16 @@ body {
 
 .number{
   height: auto;
-  line-height: 80%;
+  line-height: 100%;
   text-align: center;
-  padding-top: auto !important;
+  padding-top: 1% !important;
   font-weight: 550;
 }
 
 .ecg {
   color: #00ff00;
   Font-size: 8em;
+  font-weight: 550;
 }
 
 .art {
