@@ -84,7 +84,7 @@ body {
 
 .ecg {
   color: #00ff00;
-  Font-size: 5em;
+  Font-size: 8em;
 }
 
 .art {
@@ -94,27 +94,27 @@ body {
 
 .cvp {
   color: cornflowerblue;
-  Font-size: 4em;
+  Font-size: 6em;
 }
 
 .white {
   color: white;
-  Font-size: 4em;
+  Font-size: 6em;
 }
 
 .spo2 {
   color: deeppink;
-  Font-size: 4em;
+Font-size: 6em;
 }
 
 .co2 {
   color: gold;
-  Font-size: 4em;
+  Font-size: 6em;
 }
 
 .resp {
   color: mediumblue;
-  Font-size: 4em;
+  Font-size: 6em;
 }
 
 
