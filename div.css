@@ -76,8 +76,9 @@ body {
 
 .number{
   height: auto;
-  border: 1px solid black;
+  line-height: 80%;
   text-align: center;
+  padding-top: 0% !important;
   padding: 0px;
   font-weight: 550;
 }
