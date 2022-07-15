@@ -54,6 +54,7 @@ body {
 
 .timer {
   width: 15%;
+  height:100%;
   float:left;
 }
 
@@ -77,7 +78,7 @@ body {
   height: auto;
   line-height: 80%;
   text-align: center;
-  padding-top: 2% !important;
+
   padding: 0px;
   font-weight: 550;
 }
