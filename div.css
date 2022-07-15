@@ -58,7 +58,7 @@ body {
 .numerics {
   width: 20%;
   height: 100%;
-  float: right;
+  float: left;
 }
 
 
@@ -72,6 +72,7 @@ body {
   font-weight: bold;
 }
 .number{
+  height: 85%;
   border: 1px solid black;
   text-align: center;
   padding: 0px;
