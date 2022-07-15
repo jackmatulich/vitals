@@ -70,7 +70,7 @@ body {
   background: linear-gradient(90deg, rgba(52, 52, 52, 1) 0%, rgba(40, 40, 40, 1) 17%, rgba(0, 0, 0, 1) 100%);
   color: white;
   text-align: left;
-  Padding: 1% 1% 1% 2%;
+  Padding: 4px 4px 4px 4px;
   font-weight: bold;
 }
 
