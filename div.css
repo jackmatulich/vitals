@@ -78,14 +78,13 @@ body {
   height: auto;
   line-height: 100%;
   text-align: center;
-  padding-top: 1% !important;
   font-weight: 550;
 }
 
 .ecg {
   color: #00ff00;
   Font-size: 8em;
-  font-weight: 550;
+  
 }
 
 .art {
@@ -95,6 +94,7 @@ body {
 .map {
   color: red;
   Font-size: .8em;
+  line-height: 60%;
 }
 
 .cvp {
