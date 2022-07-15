@@ -5,6 +5,7 @@ body {
   margin: 0px;
   background: black;
   font-family: arial, sans-serif;
+  font-size: medium;
 }
 
 * {
@@ -83,38 +84,37 @@ body {
 
 .ecg {
   color: #00ff00;
-  Font-size: xx-large;
+  Font-size: 5em;
 }
 
 .art {
   color: red;
-  Font-size: x-large;
+  Font-size: 4em;
 }
 
 .cvp {
   color: cornflowerblue;
-  Font-size: x-large;
+  Font-size: 4em;
 }
 
 .white {
   color: white;
-  Font-size: x-large;
+  Font-size: 4em;
 }
 
 .spo2 {
   color: deeppink;
-  Font-size: x-large;
-
+  Font-size: 4em;
 }
 
 .co2 {
   color: gold;
-  Font-size: x-large;
+  Font-size: 4em;
 }
 
 .resp {
   color: mediumblue;
-  Font-size: x-large;
+  Font-size: 4em;
 }
 
 
