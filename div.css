@@ -78,8 +78,7 @@ body {
   height: auto;
   line-height: 80%;
   text-align: center;
-
-  padding: 0px;
+  padding-top: auto !important;
   font-weight: 550;
 }
 
