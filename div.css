@@ -92,8 +92,8 @@ body {
   Font-size: 5em;
 }
 .map {
-  Font-size: .8em;
-  line-height: 70%;
+  Font-size: .8em!important;
+  line-height: 70%!important;
 }
 
 .cvp {
