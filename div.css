@@ -90,11 +90,10 @@ body {
 .art {
   color: red;
   Font-size: 5em;
-  line-height: 70%!important;
 }
 .map {
   Font-size: .8em!important;
-  
+  line-height: 70%;
 }
 
 .cvp {
@@ -105,6 +104,7 @@ body {
 .white {
   color: white;
   Font-size: 5em;
+  line-height: 100%!important;
   font-weight: 525;
 }
 
