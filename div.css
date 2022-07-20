@@ -168,6 +168,6 @@ Font-size: 6em;
 }
 
 canvas {  /* or some other selector */
-  width: 50%;
+  width: 100%;
   height: auto;
 }
