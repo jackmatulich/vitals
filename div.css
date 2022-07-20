@@ -166,3 +166,8 @@ Font-size: 6em;
   display: table;
   clear: both;
 }
+
+canvas {  /* or some other selector */
+  width: 100%;
+  height: auto;
+}
