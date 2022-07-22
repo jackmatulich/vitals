@@ -167,7 +167,7 @@ beatlength=ecgarr.length;
 console.log(beatlength);
 var liminal=(2500/rate)-beatlength;
 var baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 2));
-var displayrhythm = EcgData.concat(baseline);
+var displayrhythm = ecgarr.concat(baseline);
 
 
     var canvas = document.getElementById("ecg");
