@@ -166,7 +166,7 @@
 beatlength=ecgarr.length;
 console.log("ecgbeatwlength:");
 console.log(beatlength);
-var liminal=(2500/rate)-beatlength;
+var liminal=(2500/(rate/10))-beatlength;
 console.log("liminal:");
 console.log(liminal);
 var baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 2));
