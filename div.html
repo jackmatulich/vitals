@@ -22,7 +22,7 @@
   <div class="row double">
     <!-- Waveform -->
     <div class="waveform">
-      <canvas  id="ecg" width ="1000"height="80"></canvas>
+      <canvas  id="ecg" width ="2500"height="200"></canvas>
     </div>
     <!-- Numerics -->
     <div class="numerics">
@@ -183,7 +183,7 @@ drawWave();
             ctx.beginPath();/* starts the line OR resets */ 
             ctx.moveTo( opx,  opy);/* moves point to XY */ 
             ctx.lineJoin= 'round';/* rounds the join */ 
-            py=(data[++i>=data.length? i=0 : i++]); /* and */ 
+            py=(data[++i>=data.length? i=0 : i++]*2); /* and */ 
             ctx.lineTo(px, py);/* and */ 
             ctx.stroke();/* and */ 
              opx = px;/* and */ 
