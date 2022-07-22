@@ -162,6 +162,7 @@
 ];
 var currentrhythm=EcgData;
 var beatlength=currentrhythm.length;
+console.log=beatlength;
 var liminal=(2500/rate)-beatlength;
 var baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 2));
 var displayrhythm = currentrhythm.concat(baseline);
