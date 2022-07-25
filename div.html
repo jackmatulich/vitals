@@ -260,11 +260,9 @@ drawWave();
       
       
       beatlength=ecgarr.length+(Math.floor(Math.random() * 5));
-      console.log("ecgbeatwlength:");
-      console.log(beatlength);
+     
       liminal=(2500/(rate/10))-beatlength;
-      console.log("liminal:");
-      console.log(liminal);
+ 
       baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 5));
       displayrhythm = ecgarr.concat(baseline);
 
