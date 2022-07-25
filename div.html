@@ -169,7 +169,7 @@ console.log(beatlength);
 var liminal=(2500/(rate/10))-beatlength;
 console.log("liminal:");
 console.log(liminal);
-var baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 5));
+var baseline = Array.from({length: (beatlength+(Math.floor(Math.random() * 5)))}, () => Math.floor(Math.random() * 5));
 var displayrhythm = ecgarr.concat(baseline);
 
 
