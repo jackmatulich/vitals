@@ -257,6 +257,20 @@ var displayrhythm = ecgarr.concat(baseline);
 drawWave();
 
     function drawWave() {
+<<<<<<< HEAD
+      
+      
+      beatlength=ecgarr.length+(Math.floor(Math.random() * 5));
+      liminal=(2500/(rate/10))-beatlength;
+      console.log("rate:");
+      console.log(rate);
+      baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 5));
+      displayrhythm = ecgarr.concat(baseline);
+
+      data = displayrhythm;
+
+
+=======
       
       
       beatlength=ecgarr.length+(Math.floor(Math.random() * 5));
@@ -269,6 +283,7 @@ drawWave();
       data = displayrhythm;
 
 
+>>>>>>> 5ba4205fc9d00a5b036fab0dbefc2a979a9bc893
        px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */ 
             ctx.clearRect( px,0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */ 
             ctx.beginPath();/* starts the line OR resets */ 
