@@ -95,7 +95,7 @@
         ECG
       </div>
       <!-- Number -->
-      <div class="number ecg"> 80
+      <div id= "HR" class="number ecg"> 80
 
       </div>
     </div>
@@ -318,7 +318,7 @@ var dweet = dweet[0]; // Dweet is always an array of 1
 console.log("dweet logged"); // The generated name
 
 rate=parseInt(dweet.content["hr"]);
- 
+document.getElementById("HR").innerHTML = rate;
 
  
 });
