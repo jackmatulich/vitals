@@ -13,8 +13,8 @@
 <div>
     <h2>Rate</h2>
     <span id="Rate"></span>
-    <button onClick=“R+()”>+5</button> 
-    <button onClick=“R-()”>-5</button> 
+    <button onClick=“Rplus()”>+5</button> 
+    <button onClick=“Rminus()”>-5</button> 
 
 </div>
 
@@ -22,14 +22,14 @@
 <div>
     <h2>Atria Output</h2>
     <span id="Aoutput"></span>
-    <button onClick=“Ao+()”>+1</button> 
+    <button onClick=“Aoplus()”>+1</button> 
     <button onClick=“Ao-()”>-1</button> 
 
 </div>
 <div>
     <h2>Ventricular Output</h2>
     <span id="Voutput"></span>
-    <button onClick=“Vo+()”>+1</button> 
+    <button onClick=“Voplus()”>+1</button> 
     <button onClick=“Vo-()”>-1</button> 
 
 </div>
@@ -37,7 +37,7 @@
 <div>
     <h2>Atria Sensitivity</h2>
     <span id="Asense"></span>
-    <button onClick=“As+()”>+1</button> 
+    <button onClick=“Asplus()”>+1</button> 
     <button onClick=“As-()”>-1</button> 
 
 </div>
@@ -45,7 +45,7 @@
 <div>
     <h2>Ventricular Sensitivity</h2>
     <span id="Vsense"></span>
-    <button onClick=“Vs+()”>+1</button> 
+    <button onClick=“Vsplus()”>+1</button> 
     <button onClick=“Vs-()”>-1</button> 
 
 </div>
@@ -57,50 +57,50 @@ let As = 0;
 let Vo = 0; 
 let Vs = 0; 
 
-function R+() { 
+function Rplus() { 
      R+5; 
      document.getElementById("Rate").textContent = Rate; 
 
  } 
- function R-() { 
+ function Rminus() { 
      R-5; 
      document.getElementById("Rate").textContent = Rate; 
 
  } 
 
 
- function Ao+() { 
+ function Aoplus() { 
      Ao++; 
      document.getElementById("Aoutput").textContent = Ao; 
 
  } 
- function Ao-() { 
+ function Aominus() { 
      Ao--; 
      document.getElementById("Aoutput").textContent = Ao; 
  } 
 
- function As+() { 
+ function Asplus() { 
      As++; 
      document.getElementById("Asense").textContent = As; 
  } 
- function As-() { 
+ function Asminus() { 
      As--; 
      document.getElementById("Asense").textContent = As; 
  } 
- function Vo+() { 
+ function Voplus() { 
      Vo++; 
      document.getElementById("Voutput").textContent = Vo; 
  } 
- function Vo-() { 
+ function Vominus() { 
      Vo--; 
      document.getElementById("Voutput").textContent = Vo; 
  } 
 
- function Vs+() { 
+ function Vsplus() { 
      Vs++; 
      document.getElementById("Vsense").textContent = Vs; 
  } 
- function Vs-() { 
+ function Vsminus() { 
      Vs--; 
      document.getElementById("Vsense").textContent = Vs; 
  } 
