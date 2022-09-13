@@ -148,7 +148,7 @@ var canvas = document.getElementById("ecg");
     ctx.lineWidth = 3;
     ctx.setTransform(1,0,0,-1,0,h);
     var counter=0;
-
+    var p2 =0;
 
     
 drawWave();
@@ -165,9 +165,10 @@ drawWave();
             ctx.beginPath();/* starts the line OR resets */ 
             ctx.moveTo( opx,  opy);/* moves point to XY */ 
             ctx.lineJoin= 'round';/* rounds the join */ 
-           
+            p2=0;
             py=(data[++i>=data.length? i=0 : i++])/1+30; /* and */ 
-            p2=py;
+            if(counter>249){p2=100}else{p2=py}
+          
             
             ctx.lineTo(px, p2);/* and */ 
             ctx.stroke();/* and */ 
