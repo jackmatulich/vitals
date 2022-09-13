@@ -9,7 +9,7 @@
 
 <h1>My First JavaScript</h1>
 
-<canvas id="ecg" width="1500" height="100px"></canvas>
+<canvas id="ecg" width="2500" height="200"></canvas>
 
 <div>
     <h2>Rate    <span id="Rate"></span></h2>
@@ -113,70 +113,67 @@ function Rplus() {
 
  var speed = 1;
 
- var EcgData = ["1127,1213,1299,1389,1500,1625,1760,1896,2044,2208,2377,2567,2764,2958,3164,3371,3576,3788,4000,4198,4384,4557,4711,4844,4960,5029,5091,5118,5118,5096,5042,4957,4850,4723,4566,4399,4219,4024,3824,3617,3397,3170,2965,2767,2551,2337,2139,1958,1798,1656,1493,1334,1192,1048,880,685,467,224,-41,-330,-629,-915,-1137,-1265,-1279,-1135,-736,-66,938,2190,3648,5257,6956,8687,10325,11722,12785,13483,13811,13702,13185,12197,10793,9127,7288,5387,3509,1767,230,-988,-1878,-2455,-2767,-2836,-2711,-2415,-2035,-1626,-1212,-821,-458,-144,111,289,438,572,695,791,872,948,1023,1114,1205,1293,1379,1481,1599,1715,1856,2002,2141,2295,2457,2612,2779,2964,3142,3321,3512,3688,3880,4088,4291,4491,4698,4902,5118,5342,5537,5731,5925,6113,6279,6438,6581,6719,6875,7012,7135,7239,7342,7411,7457,7467,7445,7392,7324,7235,7125,6996,6865,6730,6578,6417,6240,6048,5844,5641,5433,5213,4985,4753,4524,4291,4062,3833,3606,3389,3185,2981,2770,2576,2397,2227,2055,1886,1712,1548,1417,1288,1160,1031,916,804,722,642,551,479,415,368,319,278,237,206,189,169,147,132,129,125"];
-
- var ecg_canvas = document.getElementById("ecg");
-        var ecg_ctx = ecg.getContext("2d");
-        var w = ecg.width,/*GENERIC*/
-          ecg_h = ecg.height;
-
-        /*GENERIC*/
-        scanBarWidth = 20,/*GENERIC*/
-          i = 0,/*GENERIC*/
-          ecg_data = EcgData[0].split(','),
-          ecg_color = '#00ff00';
-        var px = 0;/*GENERIC*/
-        var opx = 0;/*GENERIC*/
-        var ecg_py = ecg_h / 2;
-        var ecg_opy = ecg_py;
-        ecg_ctx.strokeStyle = ecg_color;
-        ecg_ctx.lineWidth = 3;
-        ecg_ctx.setTransform(1, 0, 0, -1, 0, ecg_h);
-        drawWave();
-
-function drawWave() {
-  setTimeout(function () {
-    px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */ /*GENERIC*/
+ var EcgData=["0,3,6,9,12,15,18,21,24,27,30,31,33,33,34,36,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96,97,98,99,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,75,76,77,78,76,75,60,50,40,30,25,15,10,5,0"];
 
 
-    ecg_ctx.clearRect(px, 0, scanBarWidth, ecg_h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */ /*SPECIFIC*/
+var ecgarr = EcgData[0].split(',');
 
 
-    /* starts the line OR resets */ /*SPECIFIC*/
-    ecg_ctx.beginPath();
+beatlength=ecgarr.length;
+console.log("ecgbeatwlength:");
+console.log(beatlength);
+var liminal=(2500/(40/10))-beatlength;
+console.log("liminal:");
+console.log(liminal);
+var baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 5));
+var displayrhythm = ecgarr.concat(baseline);
+
+var canvas = document.getElementById("ecg");
+    var ctx = ecg.getContext("2d");
+    var w = ecg.width,
+    h = ecg.height,
+    speed = 2,
+    scanBarWidth = 20,
+    i=0,
+    data = displayrhythm,
+    color='#00ff00';
+    var px = 0;
+    var opx = 0;
+    var py = h/2; /* should equal 50 if height 100px */ 
+    var opy = py; /* should equal 50 if height 100px */ 
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 5;
+    ctx.setTransform(1,0,0,-1,0,h);
+drawWave();
+
+    function drawWave() {
+      
+      
+      beatlength=ecgarr.length+(Math.floor(Math.random() * 5));
+      liminal=(2500/(rate/10))-beatlength;
+      console.log("rate:");
+      console.log(rate);
+      baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 5));
+      displayrhythm = ecgarr.concat(baseline);
+
+      data = displayrhythm;
 
 
-    /* moves point to XY */ /*SPECIFIC*/
-    ecg_ctx.moveTo(opx, ecg_opy);
- 
-
-    /* rounds the join */ /*SPECIFIC*/
-    ecg_ctx.lineJoin = 'round';
- 
-
-    /*SPECIFIC*/
-    ecg_py = (ecg_data[++i >= ecg_data.length ? i = 0 : i++] / 450 + 30);
-  
-
-    /* and */
-    ecg_ctx.lineTo(px, ecg_py);
-  
-
-    /* and */
-    ecg_ctx.stroke();
- 
-
-    opx = px;/* and */
+       px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */ 
+            ctx.clearRect( px,0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */ 
+            ctx.beginPath();/* starts the line OR resets */ 
+            ctx.moveTo( opx,  opy);/* moves point to XY */ 
+            ctx.lineJoin= 'round';/* rounds the join */ 
+            py=(data[++i>=data.length? i=0 : i++])/1+30; /* and */ 
+            ctx.lineTo(px, py);/* and */ 
+            ctx.stroke();/* and */ 
+             opx = px;/* and */ 
+            opy = py;/* and */ 
+            if (opx > w) {px = opx = -speed;}/* and */ 
 
 
-    /* and */
-    ecg_opy = ecg_py;
-
-    if (opx > w) { px = opx = -speed; }/* and */
-    requestAnimationFrame(drawWave);
-  }, 40)
-}
-
+             requestAnimationFrame(drawWave);/* and */ 
+    }
 </script>
 
 
