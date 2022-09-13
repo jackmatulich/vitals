@@ -148,22 +148,7 @@ var canvas = document.getElementById("ecg");
     ctx.setTransform(1,0,0,-1,0,h);
 
 
-    var pacerbeat=(1000);
-setInterval(sense,pacerbeat);
-    function sense() {
-        PACE=true;
-        console.log(PACE);
-       
     
-       setTimeout(function(){
-PACE=false;
-console.log(PACE);
-}, 200);
- clearTimeout();      
-        
-
-
-    };
 drawWave();
 
     function drawWave() {
@@ -175,17 +160,10 @@ drawWave();
             ctx.beginPath();/* starts the line OR resets */ 
             ctx.moveTo( opx,  opy);/* moves point to XY */ 
             ctx.lineJoin= 'round';/* rounds the join */ 
-            p2 = (data[++i>=data.length? i=0 : i++])/1+30;
-            if(PACE=true){
-                100;
-            } else {
- py = p2;
-}
-
+            py=(data[++i>=data.length? i=0 : i++])/1+30; /* and */ 
             ctx.lineTo(px, py);/* and */ 
             ctx.stroke();/* and */ 
              opx = px;/* and */ 
-           
             opy = py;/* and */ 
             if (opx > w) {px = opx = -speed;}/* and */ 
 
