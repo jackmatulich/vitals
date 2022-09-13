@@ -10,8 +10,8 @@
 <h1>My First JavaScript</h1>
 
 <div>
-    <h2>Rate</h2>
-    <span id="Rate"></span>
+    <h2>Rate    <span id="Rate"></span></h2>
+   
     <button onclick="Rplus()">+5</button>
     <button onclick="Rminus()">-5</button>
 
@@ -20,31 +20,31 @@
 
 
 <div>
-    <h2>Atria Output</h2>
-    <span id="Aoutput"></span>
+    <h2>Atria Output    <span id="Aoutput"></span></h2>
+    
     <button onclick="Aoplus()">+1</button>
     <button onclick="Aominus()">-1</button>
 
 </div>
 <div>
-    <h2>Ventricular Output</h2>
-    <span id="Voutput"></span>
+    <h2>Ventricular Output  <span id="Voutput"></span></h2>
+    
     <button onclick="Voplus()">+1</button>
     <button onclick="Vominus()">-1</button>
 
 </div>
 
 <div>
-    <h2>Atria Sensitivity</h2>
-    <span id="Asense"></span>
+    <h2>Atria Sensitivity   <span id="Asense"></span></h2>
+    
     <button onclick="Asplus()">+1</button>
     <button onclick="Asminus()">-1</button>
 
 </div>
 
 <div>
-    <h2>Ventricular Sensitivity</h2>
-    <span id="Vsense"></span>
+    <h2>Ventricular Sensitivity <span id="Vsense"></span></h2>
+    
     <button onclick="Vsplus()">+1</button>
     <button onclick="Vsminus()">-1</button>
 </div>
@@ -55,6 +55,11 @@ let Ao = 0;
 let As = 0; 
 let Vo = 0; 
 let Vs = 0; 
+document.getElementById("Rate").textContent = Rate; 
+document.getElementById("Aoutput").textContent = Ao; 
+document.getElementById("Asense").textContent = As; 
+document.getElementById("Voutput").textContent = Vo; 
+document.getElementById("Vsense").textContent = Vs; 
 
 function Rplus() { 
      Rate=Rate+5; 
