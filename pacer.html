@@ -162,7 +162,7 @@ drawWave();
             ctx.moveTo( opx,  opy);/* moves point to XY */ 
             ctx.lineJoin= 'round';/* rounds the join */ 
             if(counter>counterval){counter=0;}else{counter++;};
-          
+            console.log(i);
             console.log(counter);
             py=(data[++i>=data.length? i=0 : i++])/1+30; /* and */ 
             
