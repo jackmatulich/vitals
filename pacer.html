@@ -149,7 +149,7 @@ var canvas = document.getElementById("ecg");
 
 
     var pacerbeat=(2500/(Rate/10));
-setInterval(sense,pacerbeat)
+setInterval(sense,pacerbeat);
     function sense() {
         PACE=true;
         console.log(PACE);
@@ -163,7 +163,7 @@ console.log(PACE);
         
 
 
-    }
+    };
 drawWave();
 
     function drawWave() {
