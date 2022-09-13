@@ -58,6 +58,7 @@ let Ao = 0;
 let As = 0; 
 let Vo = 0; 
 let Vs = 0; 
+let PACE=false;
 document.getElementById("Rate").textContent = Rate; 
 document.getElementById("Aoutput").textContent = Ao; 
 document.getElementById("Asense").textContent = As; 
@@ -145,6 +146,18 @@ var canvas = document.getElementById("ecg");
     ctx.strokeStyle = color;
     ctx.lineWidth = 3;
     ctx.setTransform(1,0,0,-1,0,h);
+
+
+    var pacerbeat=(2500/(Rate/10));
+setInterval(sense,pacerbeat)
+    function sense() {
+        PACE=true;
+        sleep(30);
+        PACE=false;
+        
+
+
+    }
 drawWave();
 
     function drawWave() {
@@ -163,7 +176,13 @@ drawWave();
             ctx.beginPath();/* starts the line OR resets */ 
             ctx.moveTo( opx,  opy);/* moves point to XY */ 
             ctx.lineJoin= 'round';/* rounds the join */ 
-            py=(data[++i>=data.length? i=0 : i++])/1+30; /* and */ 
+            if(PACE=true){
+                py=(((data[++i>=data.length? i=0 : i++])/1+30)+50;
+
+            }     else {
+ py = (data[++i>=data.length? i=0 : i++])/1+30;
+}
+            py=if(PACE=true); /* and */ 
             ctx.lineTo(px, py);/* and */ 
             ctx.stroke();/* and */ 
              opx = px;/* and */ 
