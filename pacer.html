@@ -153,7 +153,11 @@ setInterval(sense,pacerbeat)
     function sense() {
         PACE=true;
         sleep(100);
-        PACE=false;
+    
+       setTimeout(function(){
+PACE=false;
+}, 100);
+       
         
 
 
