@@ -154,7 +154,8 @@ var canvas = document.getElementById("ecg");
 drawWave();
 
     function drawWave() {
-      
+        counter=if((counter+1)>=counterval){0} else{counter+1};
+            console.log(counter);
     
 
        px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */ 
@@ -162,8 +163,7 @@ drawWave();
             ctx.beginPath();/* starts the line OR resets */ 
             ctx.moveTo( opx,  opy);/* moves point to XY */ 
             ctx.lineJoin= 'round';/* rounds the join */ 
-       if(++counter>=counterval){counter=0;} else{counter++;}
-            console.log(counter);
+       
             py=(data[++i>=data.length? i=0 : i++])/1+30; /* and */ 
             
             if(counter=counterval){p2=100}else{p2=py};
