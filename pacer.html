@@ -167,7 +167,7 @@ drawWave();
             ctx.lineJoin= 'round';/* rounds the join */ 
             p2=0;
             py=(data[++i>=data.length? i=0 : i++])/1+30; /* and */ 
-            if(counter>(Rate-1)){p2=py+(Vo*10)}else{p2=py}
+            if(counter>(Rate-1)){p2=py+((Vo*10)-py)}else{p2=py}
           
             
             ctx.lineTo(px, p2);/* and */ 
