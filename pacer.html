@@ -154,7 +154,8 @@ var canvas = document.getElementById("ecg");
 drawWave();
 
     function drawWave() {
-        counter=if((counter+1)>=counterval){0} else{counter+1};
+        counter=counter++;
+        
             console.log(counter);
     
 
