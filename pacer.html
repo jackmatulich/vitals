@@ -53,6 +53,7 @@
 
 <script>
 let Rate = 70; 
+let rate=40;
 let Ao = 0; 
 let As = 0; 
 let Vo = 0; 
@@ -122,7 +123,7 @@ var ecgarr = EcgData[0].split(',');
 beatlength=ecgarr.length;
 console.log("ecgbeatwlength:");
 console.log(beatlength);
-var liminal=(2500/(40/10))-beatlength;
+var liminal=(2500/(rate/10))-beatlength;
 console.log("liminal:");
 console.log(liminal);
 var baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 5));
