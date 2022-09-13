@@ -53,7 +53,7 @@
 
 <script>
 let Rate = 70; 
-let rate=40;
+let rate=30;
 let Ao = 0; 
 let As = 0; 
 let Vo = 0; 
@@ -152,8 +152,6 @@ drawWave();
       
       beatlength=ecgarr.length+(Math.floor(Math.random() * 5));
       liminal=(2500/(rate/10))-beatlength;
-      console.log("rate:");
-      console.log(rate);
       baseline = Array.from({length: beatlength}, () => Math.floor(Math.random() * 5));
       displayrhythm = ecgarr.concat(baseline);
 
