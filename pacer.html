@@ -137,7 +137,7 @@ var canvas = document.getElementById("ecg");
     speed = 2,
     scanBarWidth = 20,
     i=0,
-    counter=0,
+   
     data = displayrhythm,
     color='#00ff00';
     var px = 0;
@@ -147,7 +147,7 @@ var canvas = document.getElementById("ecg");
     ctx.strokeStyle = color;
     ctx.lineWidth = 3;
     ctx.setTransform(1,0,0,-1,0,h);
-   
+    var counter=0;
     var counterval=1000;
 
     
@@ -168,7 +168,7 @@ drawWave();
             
             if(counter=counterval){p2=100}else{p2=py};
             
-            ctx.lineTo(px, p2);/* and */ 
+            ctx.lineTo(px, py);/* and */ 
             ctx.stroke();/* and */ 
              opx = px;/* and */ 
             opy = py;/* and */ 
