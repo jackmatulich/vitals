@@ -152,10 +152,12 @@ var canvas = document.getElementById("ecg");
 setInterval(sense,pacerbeat)
     function sense() {
         PACE=true;
+        console.log(PACE);
        
     
        setTimeout(function(){
 PACE=false;
+console.log(PACE);
 }, 100);
        
         
