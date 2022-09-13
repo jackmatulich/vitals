@@ -175,6 +175,7 @@ drawWave();
             ctx.beginPath();/* starts the line OR resets */ 
     
             ctx.lineJoin= 'round';/* rounds the join */ 
+            p2 = (data[++i>=data.length? i=0 : i++])/1+30;
             if(PACE=true){
                 py=(data[++i>=data.length? i=0 : i++])/1+100;
             } else {
@@ -184,7 +185,8 @@ ctx.moveTo( opx,  opy);/* moves point to XY */
             ctx.lineTo(px, py);/* and */ 
             ctx.stroke();/* and */ 
              opx = px;/* and */ 
-            opy = py;/* and */ 
+           
+            opy = p2;/* and */ 
             if (opx > w) {px = opx = -speed;}/* and */ 
 
 
