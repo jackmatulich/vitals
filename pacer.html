@@ -155,7 +155,7 @@ drawWave();
 
     function drawWave() {
         counter=counter+1;
-        if(counter>150){counter=0}
+        if(counter>Rate){counter=0}
 
             console.log(counter);
     
@@ -167,7 +167,7 @@ drawWave();
             ctx.lineJoin= 'round';/* rounds the join */ 
             p2=0;
             py=(data[++i>=data.length? i=0 : i++])/1+30; /* and */ 
-            if(counter>249){p2=149}else{p2=py}
+            if(counter>249){p2=Rate}else{p2=py}
           
             
             ctx.lineTo(px, p2);/* and */ 
