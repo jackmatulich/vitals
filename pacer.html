@@ -172,6 +172,11 @@ drawWave();
             
             ctx.lineTo(px, py);/* and */ 
             ctx.stroke();/* and */ 
+            if(counter=250){
+            px=px+1;
+            ctx.lineTo(px, 100);/* and */ 
+            ctx.stroke();    
+            }
              opx = px;/* and */ 
             opy = py;/* and */ 
             if (opx > w) {px = opx = -speed;}/* and */ 
