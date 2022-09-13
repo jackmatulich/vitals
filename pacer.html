@@ -148,7 +148,7 @@ var canvas = document.getElementById("ecg");
     ctx.setTransform(1,0,0,-1,0,h);
 
 
-    var pacerbeat=(2500/(Rate/100));
+    var pacerbeat=(300);
 setInterval(sense,pacerbeat);
     function sense() {
         PACE=true;
