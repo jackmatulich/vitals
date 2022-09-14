@@ -11,21 +11,85 @@
 
 <h1>My First Heading</h1>
 <p>My first paragraph.</p>
-<p id="Rand">-</p>
+<p id="FHRDisplay">-</p>
+<div>
+    <h2>Variability    <span id="Variability"></span></h2>
+   
+    <button onclick="Rplus()">+5</button>
+    <button onclick="Rminus()">-5</button>
 
+
+</div>
+
+
+<div>
+    <h2>Courseness    <span id="Courseness"></span></h2>
+    
+    <button onclick="Aoplus()">+1</button>
+    <button onclick="Aominus()">-1</button>
+
+</div>
 
 
 <script>
-
+document.getElementById("Variability").textContent = FHRV; 
+document.getElementById("Courseness").textContent = 10; 
 
 let number;
+let FHR=150; /*0-200 (60-200)*/
+let FHRV=5; /*0-50 (5-25)*/
+let FHRVRAM=0;
+let FHRGoal=0;
+let FHRVCoarse=10;
+let FHRVCoarseCount=0;
+let FHRVPM=true;
+let FHRVCalc=0;
+let Contractions=5; /*0-20 (5-10)*/
+let AccFreq=5; /*0-20*/
+let AccRate=5; /*0-40*/
+let AccDur=5; /*0-60(>15)*/
+let AccReg=5; /*0-10*/
+let DecType=5; /*????*/
+let DecRate=5; /*0-60*/
+let DecDur=5; /*0-120*/
+let DecShoulder=5; /*0-10*/
+
+
+function Vplus() { 
+     FHRV=FHRV+1; 
+     document.getElementById("Variability").textContent =FHRV; 
+
+ } 
+
+ function Vminus() { 
+     FHRV=FHRV-1; 
+     document.getElementById("Variability").textContent =FHRV; 
+
+ } 
+
+ function Cplus() { 
+    FHRVCoarse=FHRVCoarse+1; 
+     document.getElementById("Courseness").textContent =FHRVCoarse; 
+
+ } 
+
+ function Cminus() { 
+    FHRVCoarse=FHRVCoarse-1; 
+     document.getElementById("Courseness").textContent =FHRVCoarse; 
+
+ } 
+
+
+
+
 
 
 function randomnumber(){
 
-    number=(((Math.floor(Math.random() * 40)-20)/100)+1);
-    document.getElementById("Rand").innerHTML = number;
-    console.log(number);
+FHRGoal=(FHRVCoarseCount>= FHRVCoarse? (FHR+(FHRV* (((Math.floor(Math.random() * 40)-20)/100)+1))) : FHRGoal);
+FHRVCoarseCount=(FHRVCoarseCount>= FHRVCoarse? 0 : FHRVCoarseCount+1);
+FHRVCalc=FHR+(((FHRGoal-FHR)/FHRVCoarse)*FHRVCoarseCount);
+document.getElementById("FHRDisplay").textContent =FHRVCalc; 
 }
 
 setInterval(randomnumber,200);
