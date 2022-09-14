@@ -105,7 +105,7 @@ var canvas = document.getElementById("ctg");
 
 function randomnumber(){
 
-FHRGoal=(FHRVCoarseCount>= FHRVCoarse? (FHR+(FHRV* (((Math.floor(Math.random() * 40)-20)/100)+1))) : FHRGoal);
+FHRGoal=(FHRVCoarseCount>= FHRVCoarse? (FHR+(FHRV* (((Math.floor(Math.random() * 60)-30)/100)+1))) : FHRGoal);
 FHRVCoarseCount=(FHRVCoarseCount>= FHRVCoarse? 0 : FHRVCoarseCount+1);
 FHRVCalc=FHR+(((FHRGoal-FHR)/FHRVCoarse)*FHRVCoarseCount);
 document.getElementById("FHRDisplay").textContent =FHRVCalc; 
