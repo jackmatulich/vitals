@@ -118,7 +118,9 @@ px += speed;  /* adds the value to the right to the variable on the left px(0)+s
  ctx.beginPath();/* starts the line OR resets */ 
  ctx.moveTo( opx,  opy);/* moves point to XY */ 
  ctx.lineJoin= 'round';/* rounds the join */ 
+ i=(++i>=1140? i=0 : i++);
  py=FHRVCalc;
+ py=/* and */ 
  ctx.lineTo(px, py);/* and */ 
  ctx.stroke();/* and */ 
  opx = px;/* and */ 
