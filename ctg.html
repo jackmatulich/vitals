@@ -32,8 +32,7 @@
 
 
 <script>
-document.getElementById("Variability").textContent = FHRV; 
-document.getElementById("Courseness").textContent = 10; 
+
 
 let number;
 let FHR=150; /*0-200 (60-200)*/
@@ -54,6 +53,8 @@ let DecRate=5; /*0-60*/
 let DecDur=5; /*0-120*/
 let DecShoulder=5; /*0-10*/
 
+document.getElementById("Variability").textContent = FHRV; 
+document.getElementById("Courseness").textContent = FHRVCoarse; 
 
 function Vplus() { 
      FHRV=FHRV+1; 
