@@ -19,14 +19,16 @@
 
 
 let number;
-setInterval(randomnumber,200);
 
 
 function randomnumber(){
 
     number=Math.floor(Math.random());
     document.getElementById("Rand").innerHTML = number;
+    console.log(number);
 }
+
+setInterval(randomnumber,200);
 
 </script>
 
