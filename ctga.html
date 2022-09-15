@@ -11,7 +11,7 @@
 
 <h1>My First Heading</h1>
 <p>My first paragraph.</p>
-<canvas id="canvas" width="500" height="500"></canvas>
+<canvas id="canvas" width="100" height="100"></canvas>
 <canvas id="ctg" width="1440" height="600"></canvas>
 <p id="FHRDisplay">-</p>
 
@@ -140,7 +140,7 @@ px += speed;  /* adds the value to the right to the variable on the left px(0)+s
 
 
 }
-function draw() {
+function go() {
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
 
@@ -152,7 +152,7 @@ function draw() {
     context.restore();
     
     step += 4;
-    window.requestAnimationFrame(draw);
+    window.requestAnimationFrame(go);
 }
 setInterval(randomnumber,200);
 
