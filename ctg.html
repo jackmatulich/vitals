@@ -115,7 +115,7 @@ function randomnumber(){
 LTVGoal=(LTVCount>= LTVRAM? (FHRVCoarse+(FHRVCoarse* (((Math.floor(Math.random() * 40)-20)/100)+1))) :LTVGoal);
 LTVRAM=(LTVCount>= LTVRAM? (1440/LTVGoal) :LTVRAM);
 LTVCount=(LTVCount>= LTVRAM? 0 : LTVCount+1);
-LTV=(LTVRAM/LTVGoal)*(FHRV*2);
+LTV=(LTVCount/LTVGoal)*(FHRV*2);
 document.getElementById("LTV").textContent =LTV; 
 
 
