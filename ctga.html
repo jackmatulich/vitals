@@ -115,7 +115,7 @@ function randomnumber(){
 
 FHRGoal=(FHRVCoarseCount>= FHRVCoarse? (FHR+(FHRV* (((Math.floor(Math.random() * 60)-30)/100)+1))) : FHRGoal);
 FHRVCoarseCount=(FHRVCoarseCount>= FHRVCoarse? 0 : FHRVCoarseCount+1);
-FHRVCalc=FHR+(((FHRGoal-FHR)/FHRVCoarse)*FHRVCoarseCount)+(Math.sin(i*(Math.floor(Math.random())))*(FHR*.15));
+FHRVCalc=FHR+(((FHRGoal-FHR)/FHRVCoarse)*FHRVCoarseCount)+(Math.sin(i*4)*(FHR*.15));
 document.getElementById("FHRDisplay").textContent =FHRVCalc; 
 
 data = FHRVCalc;
