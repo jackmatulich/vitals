@@ -6,6 +6,10 @@ body {
   font-family: arial, sans-serif;
   font-size: 1vw;
 }
+.waveform {
+  float: left;
+  width: 90%;
+}
 
 
 #dial {
