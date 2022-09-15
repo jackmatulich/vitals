@@ -113,13 +113,9 @@ var canvas = document.getElementById("ctg");
 
 function randomnumber(){
 
-
-
-
-
 FHRGoal=(FHRVCoarseCount>= FHRVCoarse? (FHR+(FHRV* (((Math.floor(Math.random() * 60)-30)/100)+1))) : FHRGoal);
 FHRVCoarseCount=(FHRVCoarseCount>= FHRVCoarse? 0 : FHRVCoarseCount+1);
-FHRVCalc=FHR+(((FHRGoal-FHR)/FHRVCoarse)*FHRVCoarseCount);
+FHRVCalc=FHR+(((FHRGoal-FHR)/FHRVCoarse)*FHRVCoarseCount)+(Math.sin(i)*(FHR*.15));
 document.getElementById("FHRDisplay").textContent =FHRVCalc; 
 
 data = FHRVCalc;
@@ -140,20 +136,7 @@ px += speed;  /* adds the value to the right to the variable on the left px(0)+s
 
 
 }
-function go() {
-    var canvas = document.getElementById("canvas");
-    var context = canvas.getContext("2d");
 
-    context.clearRect(0, 0, 500, 500);
-    showAxes(context);
-    context.save();            
-    
-    plotSine(context, step, 50);
-    context.restore();
-    
-    step += 4;
-    window.requestAnimationFrame(go);
-}
 setInterval(randomnumber,200);
 
 
