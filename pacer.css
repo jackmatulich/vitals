@@ -1,6 +1,6 @@
 body {
   height: 100%;
-  width: 90%;
+  width: 100%;
   margin: 0px;
  
   font-family: arial, sans-serif;
@@ -8,7 +8,7 @@ body {
 }
 .waveform {
   float: left;
-  width: 95%;
+  width: 100%;
 }
 
 
