@@ -113,19 +113,13 @@ var canvas = document.getElementById("ctg");
 
 function randomnumber(){
 
-WanderGoal=(wandercount>=WanderGoal? (((Math.floor(Math.random() * 60)-30)/100)+1):WanderGoal);
 
 
-LTVGoal=(LTVCount>= LTVRAM? :LTVGoal);
-LTVRAM=(LTVCount>= LTVRAM? (1440/LTVGoal) :LTVRAM);
-LTVCount=(LTVCount>= LTVRAM? 0 : LTVCount+1);
-LTV=(LTVCount/LTVGoal)*(FHRV*2);
-document.getElementById("LTV").textContent =LTV; 
 
 
 FHRGoal=(FHRVCoarseCount>= FHRVCoarse? (FHR+(FHRV* (((Math.floor(Math.random() * 60)-30)/100)+1))) : FHRGoal);
 FHRVCoarseCount=(FHRVCoarseCount>= FHRVCoarse? 0 : FHRVCoarseCount+1);
-FHRVCalc=FHR+(((FHRGoal-FHR)/FHRVCoarse)*FHRVCoarseCount)+LTV;
+FHRVCalc=FHR+(((FHRGoal-FHR)/FHRVCoarse)*FHRVCoarseCount);
 document.getElementById("FHRDisplay").textContent =FHRVCalc; 
 
 data = FHRVCalc;
