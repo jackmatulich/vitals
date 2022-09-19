@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+
+    </head>
+
+<body>
+
+
+
+<h1>My First Heading</h1>
+<p>My first paragraph.</p>
+
+<canvas id="ctg" width="1440" height="600"></canvas>
+<p id="FHRDisplay">-</p>
+
+<p id="LTV">-</p>
+
+
+<div>
+    <h2>Short    <span id="Variability"></span></h2>
+   
+    <button onclick="Vplus()">+5</button>
+    <button onclick="Vminus()">-5</button>
+
+
+</div>
+
+
+<div>
+    <h2>Medium    <span id="Courseness"></span></h2>
+    
+    <button onclick="Cplus()">+1</button>
+    <button onclick="Cminus()">-1</button>
+
+</div>
+
+<div>
+    <h2>Long    <span id="Long"></span></h2>
+    
+    <button onclick="Lplus()">+1</button>
+    <button onclick="Lminus()">-1</button>
+
+</div>
+
+
+
+<script>
+
+
+
+let short=1; /*0-200 (60-200)*/
+let medium=1; /*0-50 (5-25)*/
+let long=1;
+
+
+let shortRAM=0; /*0-200 (60-200)*/
+let mediumRAM=0; /*0-50 (5-25)*/
+let longRAM=0;
+
+
+function Vplus() { 
+     short=short+1; 
+     document.getElementById("Variability").textContent =short; 
+
+ } 
+
+ function Vminus() { 
+     short=short-1; 
+     document.getElementById("Variability").textContent =short; 
+
+ } 
+
+ function Cplus() { 
+    FHRVCoarse=FHRVCoarse+1; 
+     document.getElementById("Courseness").textContent =medium; 
+
+ } 
+
+ function Cminus() { 
+    medium=medium-1; 
+     document.getElementById("Courseness").textContent =medium; 
+
+ } 
+
+
+ function Lplus() { 
+    Long=Long+1; 
+     document.getElementById("Long").textContent =Long; 
+
+ } 
+
+ function Lminus() { 
+    Long=Long-1; 
+     document.getElementById("Long").textContent =Long; 
+
+ } 
+
+
+
+var canvas = document.getElementById("ctg");
+    var ctx = ctg.getContext("2d");
+    var w = ctg.width,
+    h = ctg.height,
+    speed = 2,
+    scanBarWidth = 20,
+    i=0,
+
+    color='#00ff00';
+    var px = 0;
+    var opx = 0;
+    var py = h/2; /* should equal 50 if height 100px */ 
+    var opy = py; /* should equal 50 if height 100px */ 
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.setTransform(1,0,0,-1,0,h);
+
+
+function randomnumber(){
+
+
+data = 150*((Math.sin(i/short)+Math.sin(i/medium)+Math.sin(i/long))/3);
+
+
+px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */ 
+ ctx.clearRect( px,0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */ 
+ ctx.beginPath();/* starts the line OR resets */ 
+ ctx.moveTo( opx,  opy);/* moves point to XY */ 
+ ctx.lineJoin= 'round';/* rounds the join */ 
+ i=(++i>=1140? i=0 : i+1);
+ py=FHRVCalc;
+ ctx.lineTo(px, py);/* and */ 
+ ctx.stroke();/* and */ 
+ opx = px;/* and */ 
+  opy = py;/* and */ 
+ if (opx > w) {px = opx = -speed;}/* and */ 
+
+
+}
+
+setInterval(randomnumber,200);
+
+
+      
+         
+
+
+           
+    
+
+
+
+
+
+</script>
+
+</body>
+</html>
