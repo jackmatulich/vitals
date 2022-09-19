@@ -19,7 +19,7 @@
 
 
 <div>
-    <h2>Short    <span id="Variability"></span></h2>
+    <h2>Short    <span id="Short"></span></h2>
    
     <button onclick="Vplus()">+5</button>
     <button onclick="Vminus()">-5</button>
@@ -29,7 +29,7 @@
 
 
 <div>
-    <h2>Medium    <span id="Courseness"></span></h2>
+    <h2>Medium    <span id="Medium"></span></h2>
     
     <button onclick="Cplus()">+1</button>
     <button onclick="Cminus()">-1</button>
@@ -62,38 +62,38 @@ let longRAM=0;
 
 function Vplus() { 
      short=short+1; 
-     document.getElementById("Variability").textContent =short; 
+     document.getElementById("Short").textContent =short; 
 
  } 
 
  function Vminus() { 
      short=short-1; 
-     document.getElementById("Variability").textContent =short; 
+     document.getElementById("Short").textContent =short; 
 
  } 
 
  function Cplus() { 
-    FHRVCoarse=FHRVCoarse+1; 
-     document.getElementById("Courseness").textContent =medium; 
+    medium=medium+1; 
+     document.getElementById("Medium").textContent =medium; 
 
  } 
 
  function Cminus() { 
     medium=medium-1; 
-     document.getElementById("Courseness").textContent =medium; 
+     document.getElementById("Medium").textContent =medium; 
 
  } 
 
 
  function Lplus() { 
     Long=Long+1; 
-     document.getElementById("Long").textContent =Long; 
+     document.getElementById("Long").textContent =long; 
 
  } 
 
  function Lminus() { 
     Long=Long-1; 
-     document.getElementById("Long").textContent =Long; 
+     document.getElementById("Long").textContent =long; 
 
  } 
 
@@ -129,7 +129,7 @@ px += speed;  /* adds the value to the right to the variable on the left px(0)+s
  ctx.moveTo( opx,  opy);/* moves point to XY */ 
  ctx.lineJoin= 'round';/* rounds the join */ 
  i=(++i>=1140? i=0 : i+1);
- py=FHRVCalc;
+ py=data;
  ctx.lineTo(px, py);/* and */ 
  ctx.stroke();/* and */ 
  opx = px;/* and */ 
