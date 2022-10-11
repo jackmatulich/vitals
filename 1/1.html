@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+<p>Peer Input:</p>
+
+<form action="/action_page.php">
+    <label for="ID">First name:</label><br>
+    <input type="text" id="fname" name="fname" value="John"><br>
+
+    <input type="submit" value="Submit">
+  </form> 
+  
+
+
+
+<p><br></p>
+<p id="Number"></p>
+
+
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <script type="text/javascript"> 
+
+var peer;
+
+    var conn = peer.connect('dest-peer-id');
+
+
+    conn.on('open', function() {
+	// Receive messages
+	conn.on('data', function(data) {
+	  console.log('Received', data);
+      document.getElementById("Number").textContent = data; 
+	});
+
+	// Send messages
+	conn.send('Hello!');
+  });
+    </script>
+
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Enter names in the fields, then click "Submit" to submit the form:</p>
+
+<form id="frm1" action="/action_page.php">
+  First name: <input type="text" name="fname"><br>
+  Last name: <input type="text" name="lname"><br><br>
+  <input type="button" onclick="myFunction()" value="Submit">
+</form>
+
+<script>
+function myFunction() {
+  document.getElementById("frm1").submit();
+}
+</script>
+
+</body>
+</html>
