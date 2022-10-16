@@ -7,19 +7,19 @@
         <link rel="stylesheet" href="sr.css">
     </head>
     <body>
-        <table class="display">
-            <tr>
-                <td class="title">Status:</td>
-                <td class="title">Messages:</td>
+        <table class="display">  <!-- STRUCTURED IN A TABLE    -->
+            <tr>  <!--   Top row  -->
+                <td class="title">Status:</td>  <!--  Status Title  -->
+                <td class="title">Messages:</td>  <!--  Messages Title   -->
             </tr>
             <tr>
                 <td>
-                    <div id="receiver-id" style="font-weight: bold;" title="Copy this ID to the input on send.html.">ID:</div>
+                    <div id="receiver-id" style="font-weight: bold;" title="Copy this ID to the input on send.html.">ID:</div>  <!--  Where ID gets placed   -->
                 </td>
                 <td>
-                    <input type="text" id="sendMessageBox" placeholder="Enter a message..." autofocus="true" />
-                    <button type="button" id="sendButton">Send</button>
-                    <button type="button" id="clearMsgsButton">Clear Msgs (Local)</button>
+                    <input type="text" id="sendMessageBox" placeholder="Enter a message..." autofocus="true" />  <!--  message entry box   -->
+                    <button type="button" id="sendButton">Send</button>  <!--  Send button   -->
+                    <button type="button" id="clearMsgsButton">Clear Msgs (Local)</button>  <!--   Clear button  -->
                 </td>
             </tr>
             <tr>
@@ -27,6 +27,8 @@
                 <td><div class="message" id="message"></div></td>
             </tr>
             <tr>
+
+            <!--     -->
                 <td class="display-box standby" id="standby"><h2>Standby</h2></td>
                 <td class="display-box hidden" id="go"><h2>Go</h2></td>
             </tr>
