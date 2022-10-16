@@ -234,7 +234,7 @@
                     if (conn && conn.open) {
                         var msg = sendMessageBox.value;
                         sendMessageBox.value = "";
-                        conn.send(msg);
+                        conn.send({"hr":84,"bp":"124/70","rr":31});
                         console.log("Sent: " + msg);
                         addMessage("<span class=\"selfMsg\">Self: </span> " + msg);
                     } else {
