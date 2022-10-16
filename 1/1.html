@@ -142,6 +142,9 @@
                 }
 
 
+
+
+
                 function addMessage(msg) {
                     var now = new Date();
                     var h = now.getHours();
@@ -179,7 +182,13 @@
                     if (conn && conn.open) {
                         var msg = sendMessageBox.value;
                         sendMessageBox.value = "";
-                        conn.send(msg);
+                        conn.send({
+	strings: 'hi!',
+	numbers: 150,
+	arrays: [1,2,3],
+	evenBinary: new Blob([1,2,3]),
+	andMore: {bool: true}
+  });
                         console.log("Sent: " + msg)
                         addMessage("<span class=\"selfMsg\">Self: </span>" + msg);
                     } else {
