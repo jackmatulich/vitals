@@ -26,9 +26,11 @@
                 <td><div id="status" class="status"></div></td>
                 <td><div class="message" id="message"></div></td>
             </tr>
-           
+            
         </table>
-
+        <div id="HR"></div>
+        <div id="BP"></div>
+        <div id="RR"></div>
         <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
         <script type="text/javascript">
             (function () {
@@ -44,7 +46,12 @@
                 var sendMessageBox = document.getElementById("sendMessageBox");
                 var sendButton = document.getElementById("sendButton");
                 var clearMsgsButton = document.getElementById("clearMsgsButton");
-
+                var HRv=document.getElementById("HR");
+                var BPv=document.getElementById("BP");
+                var RRv=document.getElementById("RR");
+                var HR=75;
+                var BP=120/80;
+                var RR=20;
                 /**
                  * Create the Peer object for our end of the connection.
                  *
@@ -113,27 +120,16 @@
                     conn.on('data', function (data) {
                         console.log("Data recieved");
                         var cueString = "<span class=\"cueMsg\">Cue: </span>";
-                        switch (data) {
-                            case 'Go':
-                                
-                                addMessage(cueString + data);
-                                break;
-                            case 'Fade':
-                               
-                                addMessage(cueString + data);
-                                break;
-                            case 'Off':
-                                
-                                addMessage(cueString + data);
-                                break;
-                            case 'Reset':
-                               
-                                addMessage(cueString + data);
-                                break;
-                            default:
-                                addMessage("<span class=\"peerMsg\">Peer: </span>" + data);
-                                break;
-                        };
+                        HR=parseInt(data["hr"]);
+                        BP=parseInt(data["bp"]);
+                        RR=parseInt(data["rr"]);
+
+                        HRv.innerHTML=HR;
+                        BPv.innerHTML=BP;
+                        RRv.innerHTML=RR;
+
+
+                        
                     });
                     conn.on('close', function () {
                         status.innerHTML = "Connection reset<br>Awaiting connection...";
