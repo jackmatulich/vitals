@@ -9,8 +9,8 @@ body {
 header {
     background: linear-gradient(180deg, rgba(29,29,38,1) 0%, rgba(96,95,108,1) 42%, rgba(68,68,75,1) 93%, rgba(115,115,120,1) 97%, rgba(255,255,255,1) 99%);
     padding: 30px;
-    text-align: center;
-    font-size: 35px;
+    text-align: right;
+    font-size: 15px;
     color: white;
   }
 
