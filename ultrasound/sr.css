@@ -1,0 +1,122 @@
+body {
+    font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+    background-color:#15151b;
+	min-width: 450px;
+}
+
+header {
+    background: linear-gradient(180deg, rgba(29,29,38,1) 0%, rgba(96,95,108,1) 42%, rgba(68,68,75,1) 93%, rgba(115,115,120,1) 97%, rgba(255,255,255,1) 99%);
+    padding: 30px;
+    text-align: center;
+    font-size: 35px;
+    color: white;
+  }
+
+  footer {
+    background: linear-gradient(0deg, rgba(29,29,38,1) 0%, rgba(96,95,108,1) 42%, rgba(68,68,75,1) 93%, rgba(115,115,120,1) 94%, rgba(255,255,255,1) 97%);
+    padding: 10px;
+    text-align: center;
+    color: white;
+  }
+
+h1 {
+    font-size: 1.75em;
+}
+
+h2 {
+    text-align: center;
+    font-size: 4em; 
+}
+
+td {
+    width: 50%;
+}
+
+input {
+	margin-bottom: 5px;
+}
+
+a:visited{ 
+	color: blue; 
+}
+
+.display {
+    width: 100%;
+    min-height: 400px;
+    padding-bottom: 20px;
+}
+
+.control {
+    width: 100%;
+    padding-bottom: 20px;
+}
+
+.control-button {
+    width: 100%;
+    min-height: 50px;
+}
+
+.display-box {
+    border: 2px solid black;
+}
+
+.title {
+    vertical-align: top;
+}
+
+.standby {
+    background-color: red;
+}
+
+.go {
+    background-color: green;
+}
+
+.fade {
+    background-color: yellow;
+}
+
+.off {
+    background-color: gray;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.no-display {
+    display: none;
+}
+
+.status {
+    height: 125px;
+    vertical-align: text-top;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 2px solid black;
+    
+}
+
+.message {
+    height: 125px;
+    max-height: 125px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid black;
+    overflow: auto;
+}
+
+.msg-time {
+    color: blue;
+}
+
+.cueMsg {
+    color: orange;
+}
+
+.selfMsg {
+    color: green;
+}
+
+.peerMsg {
+    color: red;
+}
