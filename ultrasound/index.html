@@ -8,7 +8,10 @@
     </head>
     <body>
         
-        <header style="height: 20%;"></header>
+        <header style="height: 20%;">
+            <span id='date-time'></span>
+        
+        </header>
         <h1>Peer-to-Peer Cue System --- Sender</h1>
 
         <table class="control">
@@ -55,6 +58,9 @@
 
         <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
         <script type="text/javascript">
+var dt = new Date();
+document.getElementById('date-time').innerHTML=dt;
+
             (function () {
 
                 var lastPeerId = null;
