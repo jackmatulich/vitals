@@ -43,10 +43,7 @@
 
   
         <script type="text/javascript">
-    $(window).on('load', function() {
-               $('#myModal').modal('show');
-                });
-
+   
             
 
 
@@ -106,7 +103,9 @@
                     const link="sim.ninja/ultrasound/control/?"+peer;
                 console.log=link;
                 new QRCode(document.getElementById("qrcode"),"https://"+link);
-
+                function() {
+               $('#myModal').modal('show');
+                };
 
                 
                     });
