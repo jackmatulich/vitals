@@ -232,30 +232,7 @@
                     addMessage("Msgs cleared");
                 };
 
-                // Listen for enter in message box
-                sendMessageBox.addEventListener('keypress', function (e) {
-                    var event = e || window.event;
-                    var char = event.which || event.keyCode;
-                    if (char == '13')
-                        sendButton.click();
-                });
-                // Send message
-                sendButton.addEventListener('click', function () {
-                    if (conn && conn.open) {
-                        var msg = sendMessageBox.value;
-                        sendMessageBox.value = "";
-                        conn.send({"hr":84,"bp":"124/70","rr":31});
-                        console.log("Sent: " + msg);
-                        addMessage("<span class=\"selfMsg\">Self: </span> " + msg);
-                    } else {
-                        console.log('Connection is closed');
-                    }
-                });
-
-                // Clear messages box
-                clearMsgsButton.addEventListener('click', clearMessages);
-                // Start peer connection on click
-                connectButton.addEventListener('click', join);
+           
 
                 // Since all our callbacks are setup, start the process of obtaining an ID
                 initialize();
