@@ -21,6 +21,17 @@ header {
     color: white;
   }
 
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 80%;
+    width: auto;
+
+
+  }
+
+
 h1 {
     font-size: 1.75em;
 }
