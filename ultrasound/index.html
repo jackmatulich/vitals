@@ -44,6 +44,10 @@
         <script type="text/javascript">
 
 
+                $(window).on('load', function() {
+               $('#myModal').modal('show');
+                });
+
 
 
             // Fetch date
@@ -65,6 +69,15 @@
                 var cueString = "<span class=\"cueMsg\">Cue: </span>";
                 var imageshown= "https://prod-images-static.radiopaedia.org/images/54084665/IMAGE_001-001_big_gallery.jpeg";
                 document.getElementById('img').src = imageshown;
+
+
+
+              
+    
+
+
+
+
 
                 /**
                  * Create the Peer object for our end of the connection.
@@ -89,6 +102,11 @@
 
                         console.log('ID: ' + peer.id);
                     });
+
+                    const link="sim.ninja/ultrasound/control/?"+peer;
+                console.log=link;
+new QRCode(document.getElementById("qrcode"),"https://"+link);
+
                     peer.on('connection', function (c) {
                         // Disallow incoming connections
                         c.on('open', function() {
@@ -237,15 +255,6 @@
                 // Since all our callbacks are setup, start the process of obtaining an ID
                 initialize();
 
-                $(window).on('load', function() {
-               $('#myModal').modal('show');
-                });
-
-
-                const link="sim.ninja/ultrasound/control/?"+peer;
-                console.log=link;
-new QRCode(document.getElementById("qrcode"),"https://"+link);
-    
 
             })();
 
