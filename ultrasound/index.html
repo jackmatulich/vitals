@@ -118,7 +118,8 @@
                     });
                     // Handle incoming data (messages only since this is the signal sender)
                     conn.on('data', function (data) {
-                        imageshown=(++i>=1140? i=0 : i+1);
+                        imageshown=data;
+                        document.getElementById('img').src = imageshown;
                     });
                     conn.on('close', function () {
                         status.innerHTML = "Connection closed";
