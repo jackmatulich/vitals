@@ -44,10 +44,7 @@
         <script type="text/javascript">
 
 
-                $(window).on('load', function() {
-               $('#myModal').modal('show');
-                });
-
+            
 
 
             // Fetch date
@@ -102,6 +99,9 @@
 
                         console.log('ID: ' + peer.id);
                     });
+                    $(window).on('load', function() {
+               $('#myModal').modal('show');
+                });
 
                     const link="sim.ninja/ultrasound/control/?"+peer;
                 console.log=link;
