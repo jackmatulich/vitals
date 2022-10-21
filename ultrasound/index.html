@@ -42,7 +42,9 @@
 
         <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
         <script type="text/javascript">
-
+    $(window).on('load', function() {
+               $('#myModal').modal('show');
+                });
 
             
 
@@ -98,14 +100,17 @@
                         }
 
                         console.log('ID: ' + peer.id);
-                    });
-                    $(window).on('load', function() {
-               $('#myModal').modal('show');
-                });
 
+                        
                     const link="sim.ninja/ultrasound/control/?"+peer;
                 console.log=link;
-new QRCode(document.getElementById("qrcode"),"https://"+link);
+                new QRCode(document.getElementById("qrcode"),"https://"+link);
+
+
+                
+                    });
+                
+
 
                     peer.on('connection', function (c) {
                         // Disallow incoming connections
