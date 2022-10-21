@@ -102,9 +102,10 @@
                         
                     const link="sim.ninja/ultrasound/control/?"+peer;
                 console.log=link;
+                document.getElementById("#myModal").modal('show');
                 new QRCode(document.getElementById("qrcode"),"https://"+link);
-                function() {
-               $('#myModal').modal('show');
+              
+         
                 };
 
                 
