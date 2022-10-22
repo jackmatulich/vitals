@@ -90,7 +90,7 @@ document.getElementById('img').src = imageshown;
         console.log('ID: ' + peer.id);
         recvId.innerHTML = "ID: " + peer.id;
         status.innerHTML = "Awaiting connection...";
-        const link="sim.ninja/ultrasound/control/?"+peer;
+        const link="sim.ninja/ultrasound/control/?"+peer.id;
         console.log=link;
         new QRCode(document.getElementById("qrcode"),"https://"+link);
 
