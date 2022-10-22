@@ -107,10 +107,10 @@ document.getElementById('img').src = imageshown;
                 setTimeout(function() { c.close(); }, 500);
             });
             return;
-        };
+        }
 
         conn = c;
-        console.log("Connected to: " + conn.peer);
+      
         status.innerHTML = "Connected";
         ready();
     });
