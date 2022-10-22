@@ -140,7 +140,7 @@ document.getElementById('img').src = imageshown;
  */
 function ready() {
     conn.on('data', function (data) {
-        console.log("Data recieved");
+       
         /** This is where image posting should occur */
         imageshown= data;
         document.getElementById('img').src = imageshown;
