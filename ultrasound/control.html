@@ -3,66 +3,74 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width">
- <script src="//cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous"> <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-
-        <title>Peer-to-Peer Cue System --- Reciever</title>
-        <link rel="stylesheet" href="style.css">
+        <title>Peer-to-Peer Cue System --- Sender</title>
+        <link rel="stylesheet" href="sr.css">
     </head>
     <body>
-        <table class="display">  <!-- STRUCTURED IN A TABLE    -->
-            <tr>  <!--   Top row  -->
-                <td class="title">Status:</td>  <!--  Status Title  -->
-                <td class="title">Messages:</td>  <!--  Messages Title   -->
+        <h1>USS Sender</h1>
+
+        <table class="control">
+            <tr>
+                <td class="title">Status:</td>
+          
             </tr>
             <tr>
                 <td>
-                    <div id="receiver-id" style="font-weight: bold;" title="Copy this ID to the input on send.html.">ID:</div>  <!--  Where ID gets placed   -->
+                    <span style="font-weight: bold">ID: </span>
+                    <input type="text" id="receiver-id" title="Input the ID from receive.html">
+                    
                 </td>
-                <td>
-                    <input type="text" id="sendMessageBox" placeholder="Enter a message..." autofocus="true" />  <!--  message entry box   -->
-                    <button type="button" id="sendButton">Send</button>  <!--  Send button   -->
-                    <button type="button" id="clearMsgsButton">Clear Msgs (Local)</button>  <!--   Clear button  -->
-                </td>
+           
             </tr>
             <tr>
                 <td><div id="status" class="status"></div></td>
-                <td><div class="message" id="message"></div></td>
+              
             </tr>
-            
+            <tr>
+                <td>
+                    <button type="button" class="control-button" id="AButton">Reset</button>
+                </td>
+                <td>
+                    <button type="button" class="control-button" id="BButton">Go</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="control-button" id="CButton">Fade</button>
+                </td>
+                <td>
+                    <button type="button" class="control-button" id="DButton">Off</button>
+                </td>
+            </tr>
         </table>
-        <div id="HR"></div>
-        <div id="BP"></div>
-        <div id="RR"></div>
+
         <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
         <script type="text/javascript">
             (function () {
 
                 var lastPeerId = null;
-                var peer = null; // Own peer object
-                var peerId = null;
+                var peer = null; // own peer object
                 var conn = null;
-                var recvId = document.getElementById("receiver-id");
+                var recvIdInput = document.getElementById("receiver-id");
                 var status = document.getElementById("status");
                 var message = document.getElementById("message");
-          
+                var goButton = document.getElementById("goButton");
+                var resetButton = document.getElementById("resetButton");
+                var fadeButton = document.getElementById("fadeButton");
+                var offButton = document.getElementById("offButton");
                 var sendMessageBox = document.getElementById("sendMessageBox");
                 var sendButton = document.getElementById("sendButton");
                 var clearMsgsButton = document.getElementById("clearMsgsButton");
-                var HRv=document.getElementById("HR");
-                var BPv=document.getElementById("BP");
-                var RRv=document.getElementById("RR");
-                var HR=75;
-                var BP=120/80;
-                var RR=20;
+                var connectButton = document.getElementById("connect-button");
+                var cueString = "<span class=\"cueMsg\">Cue: </span>";
+
                 /**
                  * Create the Peer object for our end of the connection.
                  *
                  * Sets up callbacks that handle any events related to our
                  * peer object.
                  */
-                 function initialize() {
+                function initialize() {
                     // Create own peer object with connection to shared PeerJS server
                     peer = new Peer(null, {
                         debug: 2
@@ -78,23 +86,13 @@
                         }
 
                         console.log('ID: ' + peer.id);
-                        recvId.innerHTML = "ID: " + peer.id;
-                        status.innerHTML = "Awaiting connection...";
                     });
                     peer.on('connection', function (c) {
-                        // Allow only a single connection
-                        if (conn && conn.open) {
-                            c.on('open', function() {
-                                c.send("Already connected to another client");
-                                setTimeout(function() { c.close(); }, 500);
-                            });
-                            return;
-                        }
-
-                        conn = c;
-                        console.log("Connected to: " + conn.peer);
-                        status.innerHTML = "Connected";
-                        ready();
+                        // Disallow incoming connections
+                        c.on('open', function() {
+                            c.send("Sender does not accept incoming connections");
+                            setTimeout(function() { c.close(); }, 500);
+                        });
                     });
                     peer.on('disconnected', function () {
                         status.innerHTML = "Connection lost. Please reconnect";
@@ -114,91 +112,99 @@
                         console.log(err);
                         alert('' + err);
                     });
+
+                    join();
                 };
 
                 /**
-                 * Triggered once a connection has been achieved.
-                 * Defines callbacks to handle incoming data and connection events.
+                 * Create the connection between the two Peers.
+                 *
+                 * Sets up callbacks that handle any events related to the
+                 * connection and data received on it.
                  */
-                function ready() {
+                function join() {
+                    // Close old connection
+                    if (conn) {
+                        conn.close();
+                    }
+                    var code = window.location.search;
+                    code = code.replace("?", '');
+                    console.log(code);
+                    // Create connection to destination peer specified in the input field
+                    conn = peer.connect(code, {
+                        reliable: true
+                    });
+
+                    conn.on('open', function () {
+                        status.innerHTML = "Connected to: " + conn.peer;
+                        console.log("Connected to: " + conn.peer);
+
+                        // Check URL params for comamnds that should be sent immediately
+                        var command = getUrlParam("command");
+                        if (command)
+                            conn.send(command);
+                    });
+                    // Handle incoming data (messages only since this is the signal sender)
                     conn.on('data', function (data) {
-                        console.log("Data recieved");
-                        var cueString = "<span class=\"cueMsg\">Cue: </span>";
-                        HR=parseInt(data["hr"]);
-                        BP=parseInt(data["bp"]);
-                        RR=parseInt(data["rr"]);
-
-                        HRv.innerHTML=HR;
-                        BPv.innerHTML=BP;
-                        RRv.innerHTML=RR;
-
-
                         
                     });
                     conn.on('close', function () {
-                        status.innerHTML = "Connection reset<br>Awaiting connection...";
-                        conn = null;
+                        status.innerHTML = "Connection closed";
                     });
-                }
+                };
 
+                /**
+                 * Get first "GET style" parameter from href.
+                 * This enables delivering an initial command upon page load.
+                 *
+                 * Would have been easier to use location.hash.
+                 */
+                function getUrlParam(name) {
+                    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+                    var regexS = "[\\?&]" + name + "=([^&#]*)";
+                    var regex = new RegExp(regexS);
+                    var results = regex.exec(window.location.href);
+                    if (results == null)
+                        return null;
+                    else
+                        return results[1];
+                };
 
-
-
-
-                function addMessage(msg) {
-                    var now = new Date();
-                    var h = now.getHours();
-                    var m = addZero(now.getMinutes());
-                    var s = addZero(now.getSeconds());
-
-                    if (h > 12)
-                        h -= 12;
-                    else if (h === 0)
-                        h = 12;
-
-                    function addZero(t) {
-                        if (t < 10)
-                            t = "0" + t;
-                        return t;
-                    };
-
-                    message.innerHTML = "<br><span class=\"msg-time\">" + h + ":" + m + ":" + s + "</span>  -  " + msg + message.innerHTML;
-                }
-
-                function clearMessages() {
-                    message.innerHTML = "";
-                    addMessage("Msgs cleared");
-                }
-
-                // Listen for enter in message box
-                sendMessageBox.addEventListener('keypress', function (e) {
-                    var event = e || window.event;
-                    var char = event.which || event.keyCode;
-                    if (char == '13')
-                        sendButton.click();
-                });
+                /**
+                 * Send a signal via the peer connection and add it to the log.
+                 * This will only occur if the connection is still alive.
+                 */
+            
                 // Send message
-                sendButton.addEventListener('click', function () {
+                function signal(sigName) {
                     if (conn && conn.open) {
-                        var msg = sendMessageBox.value;
-                        sendMessageBox.value = "";
-                        conn.send({
-	strings: 'hi!',
-	numbers: 150,
-	arrays: [1,2,3],
-	evenBinary: new Blob([1,2,3]),
-	andMore: {bool: true}
-  });
-                        console.log("Sent: " + msg)
-                        addMessage("<span class=\"selfMsg\">Self: </span>" + msg);
+                        conn.send(sigName);
+                        console.log(sigName + " signal sent");
+                        addMessage(sigName);
                     } else {
                         console.log('Connection is closed');
                     }
+                }
+
+                AButton.addEventListener('click', function () {
+                    signal("https://images.squarespace-cdn.com/content/v1/58118909e3df282037abfad7/1604783558853-Y7XW7YXMDZ3Y90MCSMRZ/bowra%2Bpos%2BRUQ%2Bfast.gif?format=750w");
+                });
+                BButton.addEventListener('click', function () {
+                    signal("https://geekymedics.com/wp-content/uploads/2019/01/bowraposfasttransbladder.gif");
+                });
+                CButton.addEventListener('click', function () {
+                    signal("https://images.squarespace-cdn.com/content/v1/5c69e7d7b91449698da66e65/c0b5bd08-96f8-48ee-850f-15d22b0f693a/repeatHRS.ezgif.gif");
+                });
+                DButton.addEventListener('click', function () {
+                    signal("https://pocus101.b-cdn.net/wp-content/uploads/2020/11/Pericardial-Effusion-eFAST-FAST-scan-ultrasound.gif");
                 });
 
                 // Clear messages box
                 clearMsgsButton.addEventListener('click', clearMessages);
+                // Start peer connection on click
+                connectButton.addEventListener('click', join);
 
+                // Since all our callbacks are setup, start the process of obtaining an ID
                 initialize();
             })();
         </script>
