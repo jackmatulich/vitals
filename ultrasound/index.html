@@ -61,6 +61,9 @@ var peerId = null;
 var conn = null;
 var recvId = document.getElementById("receiver-id");
 var status = document.getElementById("status");
+var imageshown= "https://prod-images-static.radiopaedia.org/images/54084665/IMAGE_001-001_big_gallery.jpeg";
+document.getElementById('img').src = imageshown;
+
 
 
 /**
@@ -87,6 +90,13 @@ var status = document.getElementById("status");
         console.log('ID: ' + peer.id);
         recvId.innerHTML = "ID: " + peer.id;
         status.innerHTML = "Awaiting connection...";
+        const link="sim.ninja/ultrasound/control/?"+peer;
+        console.log=link;
+        new QRCode(document.getElementById("qrcode"),"https://"+link);
+
+
+
+
     });
     peer.on('connection', function (c) {
         // Allow only a single connection
