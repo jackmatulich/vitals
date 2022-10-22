@@ -34,7 +34,7 @@
         <header style="height: 20%;">
             <button type="button" class="btn btn-primary" style="border:#303030;background:#303030;text-align: center;margin:auto" data-toggle="modal" data-target="#myModal">Control Link</button>
 
-            <span id='status'></span> <span id='receiver-id'></span>     <span id='date-time'></span>
+            <span id='status'></span> <span id='receiver-id'></span>     <span id='date-time'></span> 
         
         </header>
         <img id='img'  class="image">
@@ -93,6 +93,7 @@ document.getElementById('img').src = imageshown;
         const link="sim.ninja/ultrasound/control/?"+peer.id;
         console.log=link;
         new QRCode(document.getElementById("qrcode"),"https://"+link);
+        document.getElementById('qrlink').innerHTML="https://"+link;
 
 
 
