@@ -84,7 +84,7 @@
                  * Sets up callbacks that handle any events related to our
                  * peer object.
                  */
-                function initialize() {
+                 function initialize() {
                     // Create own peer object with connection to shared PeerJS server
                     peer = new Peer(null, {
                         debug: 2
@@ -100,20 +100,23 @@
                         }
 
                         console.log('ID: ' + peer.id);
-
-                        
-            
-         
+                        recvId.innerHTML = "ID: " + peer.id;
+                        status.innerHTML = "Awaiting connection...";
                     });
-                
-
-
                     peer.on('connection', function (c) {
-                        // Disallow incoming connections
-                        c.on('open', function() {
-                            c.send("Sender does not accept incoming connections");
-                            setTimeout(function() { c.close(); }, 500);
-                        });
+                        // Allow only a single connection
+                        if (conn && conn.open) {
+                            c.on('open', function() {
+                                c.send("Already connected to another client");
+                                setTimeout(function() { c.close(); }, 500);
+                            });
+                            return;
+                        }
+
+                        conn = c;
+                        console.log("Connected to: " + conn.peer);
+                        status.innerHTML = "Connected";
+                        ready();
                     });
                     peer.on('disconnected', function () {
                         status.innerHTML = "Connection lost. Please reconnect";
@@ -134,6 +137,7 @@
                         alert('' + err);
                     });
                 };
+
 
                 /**
                  * Create the connection between the two Peers.
