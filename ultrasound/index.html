@@ -141,6 +141,11 @@ function ready() {
     conn.on('data', function (data) {
         console.log("Data recieved");
         /** This is where image posting should occur */
+        imageshown= data;
+        document.getElementById('img').src = imageshown;
+
+
+
     });
     conn.on('close', function () {
         status.innerHTML = "Connection reset<br>Awaiting connection...";
