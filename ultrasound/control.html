@@ -11,14 +11,14 @@
 
         <script>
             $(document).ready(function () {
-                var $status1 = $("#status1"), text;
+                var $status = $("#status"), text;
                 $("#button-1").clickAndHold({
                     onHold: function (e, n) {
                         text = ' Bam' + n;
-                        $status1.append(text);
+                        $status.append(text);
                     },
                     onRelease: function () {
-                        $status1.text('Reloaded!');
+                        $status.text('Reloaded!');
                     }
                 });
             });
@@ -29,7 +29,7 @@
         <h1>USS Sender</h1>
         <div>
             <button id="button-1">Fire!</button>
-            <div id="status1">Reloaded!</div>
+            <div id="status">Reloaded!</div>
         </div>
     
         <table class="control">
