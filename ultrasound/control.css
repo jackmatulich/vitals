@@ -56,6 +56,13 @@ margin-bottom: auto;
 	padding:13px 32px;
 	text-decoration:none;
 	-webkit-touch-callout: none;
+	-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 .button:hover {
 	background:linear-gradient(to bottom, #45556c 5%, #160e1e 100%);
