@@ -55,6 +55,7 @@ $(document).ready(function () {
                     },
                     onRelease: function () {
                         $status.text('Reloaded!');
+                        reset();
                     }
                 });
             });
@@ -215,6 +216,16 @@ $(document).ready(function () {
                     if (conn && conn.open) {
                         conn.send(sigName);
                         console.log(sigName + " signal sent");
+                     
+                    } else {
+                        console.log('Connection is closed');
+                    }
+                }
+
+                function reset() {
+                    if (conn && conn.open) {
+                        conn.send("https://prod-images-static.radiopaedia.org/images/54084665/IMAGE_001-001_big_gallery.jpeg");
+                        console.log("Reset signal sent");
                      
                     } else {
                         console.log('Connection is closed');
