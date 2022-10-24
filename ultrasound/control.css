@@ -1,6 +1,13 @@
+html{
+    background-image: url(/ultrasound/ussbackground.png);
+    background:linear-gradient(to bottom, #160e1e 5%, #45556c 100%);
+    background-image: url(/ultrasound/ussbackground.png);
+}
 
+.lung{
 
-
+}
+.
 
 
 .button {
