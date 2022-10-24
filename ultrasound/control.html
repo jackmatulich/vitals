@@ -49,7 +49,7 @@
         <script>
 
             (function () {
-
+                var element = document.getElementById("status");
                 var lastPeerId = null;
                 var peer = null; // own peer object
                 var conn = null;
@@ -113,10 +113,12 @@
                         c.on('open', function() {
                             c.send("Sender does not accept incoming connections");
                             setTimeout(function() { c.close(); }, 500);
+
                         });
                     });
                     peer.on('disconnected', function () {
-                        status.innerHTML = "Connection lost. Please reconnect";
+                        element.style.color = "#FF0000";
+                        status.innerHTML = "Connection lost.";
                         console.log('Connection lost. Please reconnect');
 
                         // Workaround for peer.reconnect deleting previous id
@@ -158,7 +160,8 @@
                     });
 
                     conn.on('open', function () {
-                        status.innerHTML = "Connected to: " + conn.peer;
+                        element.style.color = "#adFF2F";
+                        status.innerHTML = "Connected";
                         console.log("Connected to: " + conn.peer);
 
                         // Check URL params for comamnds that should be sent immediately
@@ -171,6 +174,7 @@
                         
                     });
                     conn.on('close', function () {
+                        element.style.color = "#FF0000";
                         status.innerHTML = "Connection closed";
                     });
                 };
