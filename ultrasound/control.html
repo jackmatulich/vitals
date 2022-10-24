@@ -135,7 +135,11 @@
                         console.log(err);
                         alert('' + err);
                     });
-                    const delayJoin = setTimeout(join, 2000);
+                    var delayInMilliseconds = 1000; //1 second
+
+                setTimeout(function() {
+  join();
+                    }, delayInMilliseconds);
              
                 };
 
