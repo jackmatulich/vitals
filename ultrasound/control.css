@@ -9,6 +9,7 @@ html{
     background-repeat: no-repeat; /* Do not repeat the image */
     background-size: contain; /* Resize the background image to cover the entire container */
 	height:100VH;
+	margin: auto;
 }
 .lung{
 
