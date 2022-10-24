@@ -85,39 +85,7 @@
                  * Sets up callbacks that handle any events related to our
                  * peer object.
                  */
-                 function join() {
-                    // Close old connection
-                    console.log("Joining...");
-                    if (conn) {
-                        conn.close();
-                    }
-                    var code = window.location.search;
-                    code = code.replace("?", '');
-                    console.log(code);
-                    // Create connection to destination peer specified in the input field
-                    conn = peer.connect(code, {
-                        reliable: true
-                    });
-
-                    conn.on('open', function () {
-                        element.style.color = "#adFF2F";
-                        status.innerHTML = "Connected";
-                        console.log("Connected to: " + conn.peer);
-
-                        // Check URL params for comamnds that should be sent immediately
-                        var command = getUrlParam("command");
-                        if (command)
-                            conn.send(command);
-                    });
-                    // Handle incoming data (messages only since this is the signal sender)
-                    conn.on('data', function (data) {
-                        
-                    });
-                    conn.on('close', function () {
-                        element.style.color = "#FF0000";
-                        status.innerHTML = "Connection closed";
-                    });
-                };
+                 
 
                 function initialize() {
                     // Create own peer object with connection to shared PeerJS server
@@ -173,7 +141,39 @@
                  * Sets up callbacks that handle any events related to the
                  * connection and data received on it.
                  */
-                
+                 function join() {
+                    // Close old connection
+                    console.log("Joining...");
+                    if (conn) {
+                        conn.close();
+                    }
+                    var code = window.location.search;
+                    code = code.replace("?", '');
+                    console.log(code);
+                    // Create connection to destination peer specified in the input field
+                    conn = peer.connect(code, {
+                        reliable: true
+                    });
+
+                    conn.on('open', function () {
+                        element.style.color = "#adFF2F";
+                        status.innerHTML = "Connected";
+                        console.log("Connected to: " + conn.peer);
+
+                        // Check URL params for comamnds that should be sent immediately
+                        var command = getUrlParam("command");
+                        if (command)
+                            conn.send(command);
+                    });
+                    // Handle incoming data (messages only since this is the signal sender)
+                    conn.on('data', function (data) {
+                        
+                    });
+                    conn.on('close', function () {
+                        element.style.color = "#FF0000";
+                        status.innerHTML = "Connection closed";
+                    });
+                };
 
                 /**
                  * Get first "GET style" parameter from href.
