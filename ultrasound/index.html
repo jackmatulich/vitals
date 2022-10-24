@@ -142,8 +142,12 @@ function ready() {
     conn.on('data', function (data) {
        
         /** This is where image posting should occur */
-        imageshown= data;
+       if(imageshown!=data){
+        imageshown=data;
         document.getElementById('img').src = imageshown;
+
+       } 
+       
 
 
 
