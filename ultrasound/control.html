@@ -89,9 +89,7 @@
 
                 function initialize() {
                     // Create own peer object with connection to shared PeerJS server
-                        peer = new Peer(null, {
-                        debug: 2
-                    });
+                        peer = new Peer(null, { debug: 2});
 
                     peer.on('open', function (id) {
                         // Workaround for peer.reconnect deleting previous id
@@ -103,6 +101,7 @@
                         }
 
                         console.log('ID: ' + peer.id);
+                        join(); 
                     });
                     peer.on('connection', function (c) {
                         // Disallow incoming connections
@@ -221,7 +220,7 @@
 
                 // Since all our callbacks are setup, start the process of obtaining an ID
                 initialize();
-                join();
+                
       
                 $(document).ready(function () {
                           $("#LLung").clickAndHold({
