@@ -102,7 +102,7 @@ margin-bottom: auto;
 	text-shadow:0px 1px 4px #028296;
 }
 .CB{
-	box-shadow: -5px -5px 14px -4px linear-gradient(to left,#028296  5%, #af7083 100%);
+	box-shadow: 0px -5px 14px -4px #af7083;
 	text-shadow:0px 1px 4px #028296;
 	
 }
