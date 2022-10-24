@@ -10,18 +10,6 @@
         <script src="/jquery.click-hold.js"></script>
 
 <script>
-$(document).ready(function () {
-                var $status = $("#status"), text;
-                $("#LLung").clickAndHold({
-                    onHold: function (e, n) {
-                        text = ' Bam' + n;
-                        $status.append(text);
-                    },
-                    onRelease: function () {
-                        $status.text('Reloaded!');
-                    }
-                });
-            });
 
 
 
@@ -62,6 +50,18 @@ $(document).ready(function () {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js" integrity="sha512-y23HV23IWVEWlGpIez8Kvr87ZT16V9gICf5dfqu5rjxs7ip66pcIf87/uFbxn9tStGCgohZeIktIAHg9fjubsw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script type="text/javascript">
 
+$(document).ready(function () {
+                var $status = $("#status"), text;
+                $("#LLung").clickAndHold({
+                    onHold: function (e, n) {
+                        text = ' Bam' + n;
+                        $status.append(text);
+                    },
+                    onRelease: function () {
+                        $status.text('Reloaded!');
+                    }
+                });
+            });
 
 
 
