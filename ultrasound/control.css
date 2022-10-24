@@ -1,9 +1,14 @@
 html{
-    background-image: url(/ultrasound/ussbackground.png);
+   
     background:linear-gradient(to bottom, #160e1e 5%, #45556c 100%);
-    background-image: url(/ultrasound/ussbackground.png);
+   
 }
-
+.main{
+    background-image: url(/ultrasound/ussbackground.png);
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
 .lung{
 
 }
