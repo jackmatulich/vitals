@@ -47,17 +47,15 @@
         <script type="text/javascript">
 
 
-
-               $(document).ready(function () {
+$(document).ready(function () {
                 var $status = $("#status"), text;
                 $("#LLung").clickAndHold({
                     onHold: function (e, n) {
-                        
+                        text = ' Bam' + n;
                         $status.append(text);
                     },
                     onRelease: function () {
                         $status.text('Reloaded!');
-                        signal("blank");
                     }
                 });
             });
