@@ -11,7 +11,7 @@
 
 
     </head>
-    <body>
+    <body onload="joiner">
   <div class="main">    
 
     <div  id="status" class="connection" style="height: 10VH;">Awaiting connection...   
@@ -137,11 +137,6 @@
                     });
                     var delayInMilliseconds = 1000; //1 second
 
-                setTimeout(function() {
-  join();
-                    }, delayInMilliseconds);
-             
-                };
 
                 /**
                  * Create the connection between the two Peers.
@@ -308,6 +303,9 @@
 
                       
             })();
+            function joiner() {
+  alert("<div class="center"><a href="#" id= "heart" class="button CM">Xiphoid</a></div>");
+}
 
                   </script>
     </body>
