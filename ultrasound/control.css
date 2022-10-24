@@ -11,9 +11,27 @@ html{
 	height:100VH;
 	margin: auto;
 }
-.lung{
+.section{
+	height:20VH;
+	max-width: 500px;
+}
+.left{
+float: left;
+margin-top: auto;
+margin-bottom: auto;
 
 }
+.center{
+margin: auto;
+}
+.right{
+	float: right;
+	margin-top: auto;
+	margin-bottom: auto;
+	
+	}
+
+
 
 
 
