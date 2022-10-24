@@ -65,16 +65,19 @@
                 var clearMsgsButton = document.getElementById("clearMsgsButton");
                 var connectButton = document.getElementById("connect-button");
                 var cueString = "<span class=\"cueMsg\">Cue: </span>";
-                var heart="";
-                var LL="";
-                var RL="";
-                var RUQ="";
-                var LUQ="";
-                var pelvis="";
+                var blank="https://prod-images-static.radiopaedia.org/images/54084665/IMAGE_001-001_big_gallery.jpeg";
+                var H="https://pocus101.b-cdn.net/wp-content/uploads/2020/11/Pericardial-Effusion-eFAST-FAST-scan-ultrasound.gif";
+                var LL="https://sjrhem.ca/wp-content/uploads/2019/02/ezgif.com-video-to-gif-1.gif";
+                var RL="https://sonosif.com/wp-content/uploads/2020/09/Lung-Ultrasound-LUS.gif";
+                var R="https://pocus101.b-cdn.net/wp-content/uploads/2020/11/RUQ-Positive-eFAST-Fast-Ultrasound-Scan-Morisons-Pouch-and-Liver-Tip-Caudal.gif";
+                var L="https://geekymedics.com/wp-content/uploads/2019/01/bowraposfastLUQ.gif";
+                var P="https://images.squarespace-cdn.com/content/v1/58118909e3df282037abfad7/1507764828853-QISFYNVGK8L7X95TCDA1/bowra+neg+fast+trans+bladder.gif?format=2500w";
                 var LLung = document.getElementById("LLung");
                 var RLung = document.getElementById("RLung");
                 var heart = document.getElementById("heart");
                 var LUQ = document.getElementById("LUQ");
+                var RUQ = document.getElementById("RUQ");
+                var pelvis = document.getElementById("pelvis");
 
                 /**
                  * Create the Peer object for our end of the connection.
@@ -208,26 +211,12 @@
                 function reset() {
                     if (conn && conn.open) {
                         conn.send("https://prod-images-static.radiopaedia.org/images/54084665/IMAGE_001-001_big_gallery.jpeg");
-                        console.log("Reset signal sent");
-                     
+                        console.log("Probe removed. Reset signal sent");
+                        
                     } else {
                         console.log('Connection is closed');
                     }
                 }
-
-                LLung.addEventListener('click', function () {
-                    signal("https://images.squarespace-cdn.com/content/v1/58118909e3df282037abfad7/1604783558853-Y7XW7YXMDZ3Y90MCSMRZ/bowra%2Bpos%2BRUQ%2Bfast.gif?format=750w");
-                });
-                RLung.addEventListener('click', function () {
-                    signal("https://geekymedics.com/wp-content/uploads/2019/01/bowraposfasttransbladder.gif");
-                });
-                heart.addEventListener('click', function () {
-                    signal("https://images.squarespace-cdn.com/content/v1/5c69e7d7b91449698da66e65/c0b5bd08-96f8-48ee-850f-15d22b0f693a/repeatHRS.ezgif.gif");
-                });
-                LUQ.addEventListener('click', function () {
-                    join();
-                });
-
              
 
                 // Since all our callbacks are setup, start the process of obtaining an ID
@@ -235,19 +224,78 @@
               
       
                 $(document).ready(function () {
-                          var $status = $("#status"), text;
                           $("#LLung").clickAndHold({
                               onHold: function (e, n) {
-                                  text = ' Bam' + n;
-                                  $status.append(text);
-                                  console.log(text);
+                                  if (conn && conn.open) {
+                                    conn.send(LL);
+                                     console.log("Left Lung signal active");
+                                        } else {
+                                        console.log('Connection is closed');
+                                            }
                               },
-                              onRelease: function () {
-                                  $status.text('Reloaded!');
-                                  console.log('text');
-                                  reset();
-                              }
+                              onRelease: function () {reset();}
                           });
+
+                          $("#RLung").clickAndHold({
+                              onHold: function (e, n) {
+                                  if (conn && conn.open) {
+                                    conn.send(RL);
+                                     console.log("Right Lung signal active");
+                                        } else {
+                                        console.log('Connection is closed');
+                                            }
+                              },
+                              onRelease: function () {reset();}
+                          });
+
+                          $("#heart").clickAndHold({
+                              onHold: function (e, n) {
+                                  if (conn && conn.open) {
+                                    conn.send(H);
+                                     console.log("Heart signal active");
+                                        } else {
+                                        console.log('Connection is closed');
+                                            }
+                              },
+                              onRelease: function () {reset();}
+                          });
+
+                          $("#LUQ").clickAndHold({
+                              onHold: function (e, n) {
+                                  if (conn && conn.open) {
+                                    conn.send(L);
+                                     console.log("L)UQ signal active");
+                                        } else {
+                                        console.log('Connection is closed');
+                                            }
+                              },
+                              onRelease: function () {reset();}
+                          });
+
+                          $("#RUQ").clickAndHold({
+                              onHold: function (e, n) {
+                                  if (conn && conn.open) {
+                                    conn.send(R);
+                                     console.log("R)UQ signal active");
+                                        } else {
+                                        console.log('Connection is closed');
+                                            }
+                              },
+                              onRelease: function () {reset();}
+                          });
+
+                          $("#pelvis").clickAndHold({
+                              onHold: function (e, n) {
+                                  if (conn && conn.open) {
+                                    conn.send(p);
+                                     console.log("Pelvis signal active");
+                                        } else {
+                                        console.log('Connection is closed');
+                                            }
+                              },
+                              onRelease: function () {reset();}
+                          });
+
                       });
             })();
 
