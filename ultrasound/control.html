@@ -44,29 +44,11 @@
 
     </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js" integrity="sha512-y23HV23IWVEWlGpIez8Kvr87ZT16V9gICf5dfqu5rjxs7ip66pcIf87/uFbxn9tStGCgohZeIktIAHg9fjubsw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        
         <script>
 
-$(document).ready(function () {
-                var $status = $("#status"), text;
-                $("#LLung").clickAndHold({
-                    onHold: function (e, n) {
-                        text = ' Bam' + n;
-                        $status.append(text);
-                    },
-                    onRelease: function () {
-                        $status.text('Reloaded!');
-                        reset();
-                    }
-                });
-            });
+        </script>
 
-
-
-
-
-
-
+        <script>
 
             (function () {
 
@@ -91,6 +73,23 @@ $(document).ready(function () {
                 var RUQ=;
                 var LUQ=;
                 var pelvis=;
+
+
+                $(document).ready(function () {
+                var $status = $("#status"), text;
+                $("#LLung").clickAndHold({
+                    onHold: function (e, n) {
+                        text = ' Bam' + n;
+                        $status.append(text);
+                        console.log(text);
+                    },
+                    onRelease: function () {
+                        $status.text('Reloaded!');
+                        console.log('Reset');
+                        reset();
+                    }
+                });
+            });
 
 
                 /**
