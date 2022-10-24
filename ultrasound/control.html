@@ -87,9 +87,10 @@
                 var RUQ="";
                 var LUQ="";
                 var pelvis="";
-
-
-                
+                var LLung = document.getElementById("LLung");
+                var RLung = document.getElementById("RLung");
+                var Heart = document.getElementById("heart");
+                var LUQ = document.getElementById("LUQ");
 
                 /**
                  * Create the Peer object for our end of the connection.
@@ -230,16 +231,16 @@
                     }
                 }
 
-                AButton.addEventListener('click', function () {
+                LLung.addEventListener('click', function () {
                     signal("https://images.squarespace-cdn.com/content/v1/58118909e3df282037abfad7/1604783558853-Y7XW7YXMDZ3Y90MCSMRZ/bowra%2Bpos%2BRUQ%2Bfast.gif?format=750w");
                 });
-                BButton.addEventListener('click', function () {
+                Rlung.addEventListener('click', function () {
                     signal("https://geekymedics.com/wp-content/uploads/2019/01/bowraposfasttransbladder.gif");
                 });
-                CButton.addEventListener('click', function () {
+                heart.addEventListener('click', function () {
                     signal("https://images.squarespace-cdn.com/content/v1/5c69e7d7b91449698da66e65/c0b5bd08-96f8-48ee-850f-15d22b0f693a/repeatHRS.ezgif.gif");
                 });
-                DButton.addEventListener('click', function () {
+                LUQ.addEventListener('click', function () {
                     join();
                 });
 
