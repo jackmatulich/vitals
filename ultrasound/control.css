@@ -64,7 +64,7 @@ margin-bottom: auto;
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
-.button:hover {
+.button:selected {
 	background:linear-gradient(to bottom, #45556c 5%, #160e1e 100%);
 	background-color:#45556c;
 }
