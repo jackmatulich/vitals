@@ -50,9 +50,19 @@
 
 
         </script>
-        <script >
+        <script type="text/javascript">
 
-$(document).ready(function () {
+
+
+
+
+
+
+
+
+
+            (function () {
+                $(document).ready(function () {
                 var $status = $("#status"), text;
                 $("#LLung").clickAndHold({
                     onHold: function (e, n) {
@@ -64,16 +74,6 @@ $(document).ready(function () {
                     }
                 });
             });
-
-
-
-
-
-
-
-
-
-            (function () {
 
                 var lastPeerId = null;
                 var peer = null; // own peer object
