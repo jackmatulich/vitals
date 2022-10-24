@@ -1,7 +1,8 @@
 html{
    
     background:linear-gradient(to bottom, #160e1e 5%, #45556c 100%);
-   
+	margin-left: auto;
+	margin-right: auto;
 }
 .main{
     background-image: url(/ultrasound/ussbackground.png);
@@ -9,8 +10,7 @@ html{
     background-repeat: no-repeat; /* Do not repeat the image */
     background-size: contain; /* Resize the background image to cover the entire container */
 	height:100VH;
-	margin-left: auto;
-	margin-right: auto;
+
 }
 .section{
 	height:20VH;
