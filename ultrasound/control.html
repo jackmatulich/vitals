@@ -9,7 +9,23 @@
         <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
         <script src="/jquery.click-hold.js"></script>
 
+<script>
+$(document).ready(function () {
+                var $status = $("#status"), text;
+                $("#LLung").clickAndHold({
+                    onHold: function (e, n) {
+                        text = ' Bam' + n;
+                        $status.append(text);
+                    },
+                    onRelease: function () {
+                        $status.text('Reloaded!');
+                    }
+                });
+            });
 
+
+
+</script>
     </head>
     <body>
   <div class="main">    
@@ -47,18 +63,6 @@
         <script type="text/javascript">
 
 
-$(document).ready(function () {
-                var $status = $("#status"), text;
-                $("#LLung").clickAndHold({
-                    onHold: function (e, n) {
-                        text = ' Bam' + n;
-                        $status.append(text);
-                    },
-                    onRelease: function () {
-                        $status.text('Reloaded!');
-                    }
-                });
-            });
 
 
 
