@@ -14,7 +14,7 @@
     <body>
   <div class="main">    
 
-    <div style="height: 10VH;">
+    <div  id="status" style="height: 10VH;">
       
                     </div>
 
@@ -51,7 +51,7 @@
 
                $(document).ready(function () {
                 var $status = $("#status"), text;
-                $("#button-1").clickAndHold({
+                $("#LLung").clickAndHold({
                     onHold: function (e, n) {
                         
                         $status.append(text);
