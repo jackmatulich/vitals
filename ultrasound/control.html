@@ -121,13 +121,7 @@
 
                 function initialize() {
                     // Create own peer object with connection to shared PeerJS server
-                  
-
-
-
-
-
-                    peer = new Peer(null, {
+                        peer = new Peer(null, {
                         debug: 2
                     });
 
@@ -169,7 +163,7 @@
                         console.log(err);
                         alert('' + err);
                     });
-                    join();
+                    
              
                 };
 
@@ -227,7 +221,7 @@
 
                 // Since all our callbacks are setup, start the process of obtaining an ID
                 initialize();
-              
+                join();
       
                 $(document).ready(function () {
                           $("#LLung").clickAndHold({
