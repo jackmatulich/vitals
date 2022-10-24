@@ -55,6 +55,7 @@ margin-bottom: auto;
 	font-weight:bold;
 	padding:13px 32px;
 	text-decoration:none;
+	-webkit-touch-callout: none;
 }
 .button:hover {
 	background:linear-gradient(to bottom, #45556c 5%, #160e1e 100%);
