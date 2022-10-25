@@ -1,14 +1,14 @@
 
 html {
 
-    background-color:#15151b;
+    background:#15151b;
 
 }
 
 
 body {
     font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
-    background-color:#15151b;
+    background:#15151b;
 	min-width: 450px;
   
 }
@@ -34,7 +34,7 @@ header {
     margin-right: auto;
     height: 80vh;
     width: auto;
-    background-color:#15151b;
+    background:#15151b;
 
   }
 
