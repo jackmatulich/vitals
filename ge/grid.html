@@ -13,18 +13,18 @@
 
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight      
+canvas.width =2970
+canvas.height = 2100     
 function drawBoard()
 {   
   // canvas dims
-  const bw = window.innerWidth
-  const bh = window.innerHeight
+  const bw = 2970
+  const bh = 2100
   const lw = 1              // box border
-  const boxRow = 10         // how many boxes
+  const boxRow = 297         // how many boxes
   const box = bw / boxRow   // box size
   ctx.lineWidth = lw
-  ctx.strokeStyle = 'rgb(2,7,159)'
+  ctx.strokeStyle = 'red'
   for (let x=0;x<bw;x+=box)
   {
     for (let y=0;y<bh;y+=box)
