@@ -33,13 +33,7 @@ function drawBoard()
     }
   }
 }
-let rTimeout = null
-window.addEventListener('resize', (e) => 
-{
-  clearTimeout(rTimeout)
-  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-  rTimeout = setTimeout(function(){drawBoard()}, 33)
-})
+
 drawBoard()
 
     </script>
