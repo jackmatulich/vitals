@@ -30,6 +30,7 @@ function drawBoard()
   const bbox =bw/25
   ctx.lineWidth = lw
  
+  ctx.strokeStyle = 'red'
 
   ctx.lineWidth = 3
   for (let l=0;l<bw;l+=bbox)
@@ -45,7 +46,6 @@ function drawBoard()
 
 
 
-  ctx.strokeStyle = 'red'
   for (let x=0;x<bw;x+=box)
   {
     for (let y=0;y<bh;y+=box)
