@@ -7,10 +7,12 @@
     <title>Document</title>
 </head>
 <body>
-    <div style="width: 90vw;height: 46.66666vw;border: 2px; border-color: black; ">
+  <div style="width: 90vw;height: 63.63vw;border: 2px; border-color: black;padding-top:37.37vw ;"></div>
+    <div style="width: 100%;height: 46.66666vw;border: 2px; border-color: black; ">
     <canvas id="canvas" style="width: 60%;"></canvas>
 
 
+</div>
 </div>
     <script>
 
@@ -39,7 +41,7 @@ function drawBoard()
   for (let x=0;x<bw;x+=box)
   {
     for (let y=0;y<bh;y+=box)
-    {
+   {
       ctx.strokeRect(x,y,box,box)
     }
   }
