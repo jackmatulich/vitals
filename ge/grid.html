@@ -32,16 +32,6 @@ function drawBoard()
  
   ctx.strokeStyle = 'red'
 
-  ctx.lineWidth = 3
-  for (let l=0;l<bw;l+=bbox)
-  {
-    for (let w=0;w<bh;w+=bbox)
-    {
-       
-        ctx.strokeRect(l,w,bbox,bbox)
-    }
-  }
-
 
 
 
@@ -53,6 +43,19 @@ function drawBoard()
       ctx.strokeRect(x,y,box,box)
     }
   }
+
+
+  ctx.lineWidth = 3
+  for (let l=0;l<bw;l+=bbox)
+  {
+    for (let w=0;w<bh;w+=bbox)
+    {
+       
+        ctx.strokeRect(l,w,bbox,bbox)
+    }
+  }
+
+
 
 }
 
