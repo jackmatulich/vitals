@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script type="javascipt">
+
+
+const canvas = document.getElementById('canvas')
+const ctx = canvas.getContext('2d')
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight      
+function drawBoard()
+{   
+  // canvas dims
+  const bw = window.innerWidth
+  const bh = window.innerHeight
+  const lw = 1              // box border
+  const boxRow = 10         // how many boxes
+  const box = bw / boxRow   // box size
+  ctx.lineWidth = lw
+  ctx.strokeStyle = 'rgb(2,7,159)'
+  for (let x=0;x<bw;x+=box)
+  {
+    for (let y=0;y<bh;y+=box)
+    {
+      ctx.strokeRect(x,y,box,box)
+    }
+  }
+}
+let rTimeout = null
+window.addEventListener('resize', (e) => 
+{
+  clearTimeout(rTimeout)
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+  rTimeout = setTimeout(function(){drawBoard()}, 33)
+})
+drawBoard()
+
+    </script>
+</body>
+</html>
