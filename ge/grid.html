@@ -37,11 +37,13 @@ function drawBoard()
       ctx.strokeRect(x,y,box,box)
     }
   }
+
+  ctx.lineWidth = 2
   for (let l=0;l<bw;l+=bbox)
   {
     for (let w=0;wy<bh;w+=bbox)
     {
-        ctx.lineWidth = 2
+       
         ctx.strokeRect(l,w,bbox,bbox)
     }
   }
