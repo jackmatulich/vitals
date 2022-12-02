@@ -14,8 +14,8 @@
 body{
 	/* Settings */
     height: 100%;
-	--torn-shadow-offset-x:-2px;
-	--torn-shadow-offset-y:2px;
+	--torn-shadow-offset-x:-5px;
+	--torn-shadow-offset-y:5px;
 	--torn-shadow-background-color:rgba(0,0,0);
 	--torn-background-color:white;
 	--torn-left-width:2px;
