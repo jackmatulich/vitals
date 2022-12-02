@@ -65,6 +65,7 @@ body{
 	bottom:0px;
 	-webkit-clip-path:var(--torn-left-clip-path);
 	clip-path:var(--torn-left-clip-path);
+    box-shadow: 5px 10px 8px 10px #888888;
 }
 .torn_container>div:first-child, .torn_left>div:first-child:before, .torn_right>div:first-child:after{
 	background-color:var(--torn-shadow-background-color);
@@ -78,6 +79,7 @@ body{
 	bottom:0px;
 	-webkit-clip-path:var(--torn-right-clip-path);
 	clip-path:var(--torn-right-clip-path);
+    box-shadow: 5px 10px 8px 10px #888888;
 }
 .torn_right>div:nth-child(2):after{
 	left:calc(100% - 0.5px);
