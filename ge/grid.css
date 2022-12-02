@@ -29,6 +29,8 @@ body{
 	clear:both;
 	margin-bottom:1.2em;
 	position:relative;
+    width: 127.28vh;
+    height: 90%;
 }
 .torn_container>div:first-child{
 	margin-left:var(--torn-shadow-offset-x);
