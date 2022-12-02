@@ -18,7 +18,7 @@ body{
 	--torn-shadow-offset-y:5px;
 	--torn-shadow-background-color:white;
 
-	--torn-background-background-url: http://api.thumbr.it/whitenoise-361x370.png?;
+	--torn-background-background-image : url(http://api.thumbr.it/whitenoise-361x370.png?);
 
 	--torn-left-width:2px;
 	--torn-right-width:2px;
