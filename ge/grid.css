@@ -16,7 +16,7 @@ body{
     height: 100%;
 	--torn-shadow-offset-x:-5px;
 	--torn-shadow-offset-y:5px;
-	--torn-shadow-background-color:rgba(0,0,0);
+	--torn-shadow-background-color:white;
 
 	--torn-background-color:white;
 
