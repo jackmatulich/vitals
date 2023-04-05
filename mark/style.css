@@ -15,7 +15,7 @@ width: 100%;
 
 
 }
-h1{
+body{
 
 position: fixed;
 top: -10px;
@@ -26,7 +26,7 @@ box-shadow: 0 0 400px 300px rgba(0,0,0,1) inset;
   
 
 }
-title{
+h1{
 font-size: xx-large;
 font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 font-weight: bold;
