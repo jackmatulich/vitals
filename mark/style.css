@@ -2,6 +2,7 @@
 body{
 height: 100%;
 width: 100%;
+background-image: radial-gradient(circle, red, yellow, green);
     background:
     linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
     linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
