@@ -2,7 +2,10 @@
 body{
 height: 100%;
 width: 100%;
-background-image: radial-gradient(circle, red, yellow, green);
+background-image:
+	 radial-gradient(ellipse closest-side,
+	 rgba(0,0,0,0.1), rgba(0,0,0,0.6)),
+	 rgba(0,0,0,0.1);
     background:
     linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
     linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
