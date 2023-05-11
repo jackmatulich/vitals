@@ -1,5 +1,5 @@
 let ecg;
-var rows=5;
+var rows=4;
 
 window.onload=function(){
 console.log('loading.');
