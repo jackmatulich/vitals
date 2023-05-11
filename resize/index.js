@@ -24,3 +24,10 @@ document.body.style.padding="0px";
 document.body.style.margin="0px";
     
     }
+
+    function rows(){
+         rows = document.getElementById("mySubmit").value;
+        document.getElementById("rowval").innerHTML = rows;
+        resizeCanvas();
+            
+            }
