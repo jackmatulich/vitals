@@ -25,7 +25,7 @@ document.body.style.margin="0px";
     
     }
 
-    function rows(){
+    function rowchange(){
          rows = document.getElementById("mySubmit").value;
         document.getElementById("rowval").innerHTML = rows;
         resizeCanvas();
