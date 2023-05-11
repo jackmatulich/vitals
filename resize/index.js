@@ -1,22 +1,7 @@
 let ecg;
 var rows=4;
+ecg=document.getElementById("ecg");
 
-var canvas = document.getElementById("ecg");
-var ctx = ecg.getContext("2d");
-var w = ecg.width,
-h = ecg.height,
-speed = 1,
-scanBarWidth = 20,
-i=0,
-
-color='#00ff00';
-var px = 0;
-var opx = 0;
-var py = h/2; /* should equal 50 if height 100px */ 
-var opy = py; /* should equal 50 if height 100px */ 
-ctx.strokeStyle = color;
-ctx.lineWidth = 3;
-ctx.setTransform(1,0,0,-1,0,h);
 
 
 
@@ -55,6 +40,25 @@ document.body.style.margin="0px";
             
             }
 
+
+
+
+            var ctx = ecg.getContext("2d");
+            var w = ecg.width,
+            h = ecg.height,
+            speed = 1,
+            scanBarWidth = 20,
+            i=0,
+            
+            color='#00ff00';
+            var px = 0;
+            var opx = 0;
+            var py = h/2; /* should equal 50 if height 100px */ 
+            var opy = py; /* should equal 50 if height 100px */ 
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.setTransform(1,0,0,-1,0,h);
+            
 
         drawWave();
         
