@@ -16,7 +16,7 @@ window.onresize=function(){
 
 function resizeCanvas(){
 ecg.width= window.innerWidth *.8;
-ecg.height= (window.innerHeight*.95)/rows;
+ecg.height= (window.innerHeight*.9)/rows;
 
 }
 function prepareDocument(){
