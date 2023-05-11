@@ -42,7 +42,7 @@ document.body.style.margin="0px";
 
 
 
-
+            var canvas = document.getElementById("ecg");
             var ctx = ecg.getContext("2d");
             var w = ecg.width,
             h = ecg.height,
