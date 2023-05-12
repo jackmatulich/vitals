@@ -1,6 +1,6 @@
 let ecgwaveform;
 var rows=4;
-
+ecgwaveform=document.getElementById("ecgwaveform");
 
 
 
@@ -9,7 +9,7 @@ var rows=4;
 
 window.onload=function(){
 console.log('loading.');
-ecgwaveform=document.getElementById("ecgwaveform");
+
 ecgwaveform.style.backgroundColor="#282a36";
 prepareDocument();
 resizeCanvas();
@@ -41,8 +41,7 @@ document.body.style.margin="0px";
 
 
 
-            var canvas = document.getElementById("ecg");
-            var ctx = ecg.getContext("2d");
+            var ctx = ecgwaveform.getContext("2d");
             var w = ecg.width,
             h = ecg.height,
             speed = 1,
