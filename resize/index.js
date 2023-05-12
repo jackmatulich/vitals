@@ -1,6 +1,5 @@
-let ecg;
+let ecgwaveform;
 var rows=4;
-ecg=document.getElementById("ecg");
 
 
 
@@ -10,8 +9,8 @@ ecg=document.getElementById("ecg");
 
 window.onload=function(){
 console.log('loading.');
-ecg=document.getElementById("ecg");
-ecg.style.backgroundColor="#282a36";
+ecgwaveform=document.getElementById("ecgwaveform");
+ecgwaveform.style.backgroundColor="#282a36";
 prepareDocument();
 resizeCanvas();
 
@@ -23,8 +22,8 @@ window.onresize=function(){
 }
 
 function resizeCanvas(){
-ecg.width= window.innerWidth *.8;
-ecg.height= (window.innerHeight*.9)/rows;
+ecgwaveform.width= window.innerWidth *.8;
+ecgwaveform.height= (window.innerHeight*.9)/rows;
 
 }
 function prepareDocument(){
