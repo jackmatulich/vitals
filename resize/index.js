@@ -1,6 +1,6 @@
 let ecgwaveform;
 var rows=4;
-ecgwaveform=document.getElementById("ecgwaveform");
+ecgwaveform=document.getElementById("ecg_canvas");
 
 
 
@@ -42,8 +42,8 @@ document.body.style.margin="0px";
 
 
             var ctx = ecgwaveform.getContext("2d");
-            var w = ecg.width,
-            h = ecg.height,
+            var w = ecg_canvas.width,
+            h = ecg_canvas.height,
             speed = 1,
             scanBarWidth = 20,
             i=0,
@@ -56,6 +56,7 @@ document.body.style.margin="0px";
             ctx.strokeStyle = color;
             ctx.lineWidth = 3;
             ctx.setTransform(1,0,0,-1,0,h);
+            var data=[-20,-20,-20,-20,-20,-20,-20,-20,20,20,20,20,20,20]
             
 
         drawWave();
