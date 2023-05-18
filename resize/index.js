@@ -1,6 +1,6 @@
 
 var rows=4;
-var ecgwaveform=document.getElementById("ecg_canvas");
+
 
 
 
