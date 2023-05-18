@@ -10,7 +10,7 @@ var rows=4;
 window.onload=function(){
 console.log('loading.');
 
-ecgwaveform.style.backgroundColor="#282a36";
+ecg.style.backgroundColor="#282a36";
 prepareDocument();
 resizeCanvas();
 
@@ -22,8 +22,8 @@ window.onresize=function(){
 }
 
 function resizeCanvas(){
-ecgwaveform.width= window.innerWidth *.8;
-ecgwaveform.height= (window.innerHeight*.9)/rows;
+ecg.width= window.innerWidth *.8;
+ecg.height= (window.innerHeight*.9)/rows;
 
 }
 function prepareDocument(){
@@ -40,9 +40,9 @@ document.body.style.margin="0px";
             }
 
 
-            var ecgwaveform=document.getElementById("ecg_canvas");
+            var ecgwaveform=document.getElementById("ecg");
 
-            var ctx = ecg_canvas.getContext("2d");
+            var ctx = ecg.getContext("2d");
             var w = ecg_canvas.width,
             h = ecg_canvas.height,
             speed = 1,
