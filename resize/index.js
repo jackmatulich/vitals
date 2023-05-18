@@ -1,6 +1,6 @@
-let ecgwaveform;
+
 var rows=4;
-ecgwaveform=document.getElementById("ecg_canvas");
+var ecgwaveform=document.getElementById("ecg_canvas");
 
 
 
@@ -41,7 +41,7 @@ document.body.style.margin="0px";
 
 
 
-            var ctx = ecgwaveform.getContext("2d");
+            var ctx = ecg_canvas.getContext("2d");
             var w = ecg_canvas.width,
             h = ecg_canvas.height,
             speed = 1,
