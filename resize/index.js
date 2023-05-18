@@ -40,6 +40,7 @@ document.body.style.margin="0px";
             }
 
 
+            var ecgwaveform=document.getElementById("ecg_canvas");
 
             var ctx = ecg_canvas.getContext("2d");
             var w = ecg_canvas.width,
