@@ -41,9 +41,9 @@ document.body.style.margin="0px";
 
 
             var ecgwaveform=document.getElementById("ecg");
-            var ctx = ecg.getContext("2d");
-            var w = ecg.width,
-            h = ecg.height,
+            var ctx = ecgwaveform.getContext("2d");
+            var w = ecgwaveform.width,
+            h = ecgwaveform.height,
             speed = 1,
             scanBarWidth = 20,
             i=0,
