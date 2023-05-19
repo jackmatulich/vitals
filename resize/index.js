@@ -16,7 +16,7 @@ var opy = py; /* should equal 50 if height 100px */
 ctx.strokeStyle = color;
 ctx.lineWidth = 3;
 ctx.setTransform(1, 0, 0, -1, 0, h);
-var data = [-200, -200, -200, -200, -200, -200, -200, -200,-200, -200, -200, -200, -200, -200, -200, -200,-200, -200, -200, -200, -200, -200, -200, -200, 200, 200, 200, 200, 200, 200,200, 200, 200, 200, 200, 200,200, 200, 200, 200, 200, 200]
+var data = [-20, -20, -20, -20, -20, -20, -20, -20,-20, -20, -20, -20, -20, -20, -20, -20,-20, -20, -20, -20, -20, -20, -20, -20, 20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20,20, 20, 20, 20, 20, 20]
 
 
 drawWave();
@@ -27,7 +27,7 @@ function drawWave() {
     ctx.beginPath();/* starts the line OR resets */
     ctx.moveTo(opx, opy);/* moves point to XY */
     ctx.lineJoin = 'round';/* rounds the join */
-    py = (data[++i >= data.length ? i = 0 : i++] / 450 + 30); /* and */
+    py = (data[++i >= data.length ? i = 0 : i++] +(0.5*h)); /* and */
     ctx.lineTo(px, py);/* and */
     ctx.stroke();/* and */
     opx = px;/* and */
