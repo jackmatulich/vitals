@@ -27,7 +27,7 @@ function drawWave() {
     ctx.beginPath();/* starts the line OR resets */
     ctx.moveTo(opx, opy);/* moves point to XY */
     ctx.lineJoin = 'round';/* rounds the join */
-    py = (data[++i >= data.length ? i = 0 : i++] +(0.0*h)); /* and */
+    py = (data[++i >= data.length ? i = 0 : i++] +(1.0*h)); /* and */
     ctx.lineTo(px, py);/* and */
     ctx.stroke();/* and */
     opx = px;/* and */
