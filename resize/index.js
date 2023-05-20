@@ -14,9 +14,9 @@ window.onload = function () {
 }
 var ecgwaveform = document.getElementById("ecg");
 var ctx = ecgwaveform.getContext("2d");
-var w = ecgwaveform.width,
-    h = ecgwaveform.height,
-    speed = Math.round(w/1000),
+var w = window.innerWidth * .8,
+    h = (window.innerHeight * .9)/rows,
+    speed = Math.round((window.innerWidth * .8)/1000),
     scanBarWidth = 50,
     i = 0,
     color = '#00ff00';
