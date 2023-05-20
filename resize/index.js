@@ -33,7 +33,7 @@ var data = [30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30
 
 function drawWave() {
     ctx.strokeStyle = color;
-    speed = Math.round(w/1000),
+    speed = Math.round((window.innerWidth * .8)/1000),
     ctx.lineWidth = 3;
     console.log('canvas width:');
     console.log(w);
