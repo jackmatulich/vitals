@@ -32,6 +32,8 @@ var data = [-20, -20, -20, -20, -20, -20, -20, -20,-20, -20, -20, -20, -20, -20,
 
 
 function drawWave() {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
     px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */
     ctx.clearRect(px, 0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */
     ctx.beginPath();/* starts the line OR resets */
