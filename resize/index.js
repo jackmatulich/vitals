@@ -59,7 +59,7 @@ window.onresize = function () {
     console.log('resizing.');
     w = ecgwaveform.width,
     h = ecgwaveform.height,
-    speed = Math.round(x/1000)
+    speed = Math.round(w/1000)
     py = h / 2; /* should equal 50 if height 100px */
     opy = py; /* should equal 50 if height 100px */
     resizeCanvas();
