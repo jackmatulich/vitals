@@ -14,7 +14,7 @@ var px = 0;
 var opx = 0;
 var py = h / 2; /* should equal 50 if height 100px */
 var opy = py; /* should equal 50 if height 100px */
-ctx.style.backgroundColor = "#282a36";
+ctx.backgroundColor = "#282a36";
 ctx.strokeStyle = color;
 ctx.lineWidth = 3;
 ctx.setTransform(1, 0, 0, -1, 0, h);
