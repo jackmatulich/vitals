@@ -65,9 +65,13 @@ function drawWave() {
 
 window.onresize = function () {
     console.log('resizing.');
-    w = ecgwaveform.width,
-    h = ecgwaveform.height,
-    speed = Math.round(w/1000)
+    w = window.innerWidth * .8,
+    h = (window.innerHeight * .9)/rows,
+    speed = Math.round((window.innerWidth * .8)/1000),
+    i = 0,
+    px = 0;
+    opx = 0;
+
     py = h / 2; /* should equal 50 if height 100px */
     opy = py; /* should equal 50 if height 100px */
     resizeCanvas();
