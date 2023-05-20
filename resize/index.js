@@ -80,8 +80,8 @@ function resizeCanvas() {
 
 }
 function prepareDocument() {
-    document.body.style.padding = "0px";
-    document.body.style.margin = "0px";
+   /* document.body.style.padding = "0px"; */
+   /*  document.body.style.margin = "0px"; */
 
 }
 function rowchange() {
