@@ -33,7 +33,13 @@ var data = [30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30
 
 function drawWave() {
     ctx.strokeStyle = color;
+    speed = Math.round(w/1000),
     ctx.lineWidth = 3;
+    console.log('canvas width:');
+    console.log(w);
+    console.log('step width=');
+    console.log(speed);
+
     px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */
     ctx.clearRect(px, 0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */
     ctx.beginPath();/* starts the line OR resets */
