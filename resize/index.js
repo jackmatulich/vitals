@@ -1,9 +1,19 @@
 
+
+
+
 var rows = 4;
 
+window.onload = function () {
+    console.log('loading.');
+
+    ecg.style.backgroundColor = "#282a36";
+    prepareDocument();
+    resizeCanvas();
+    drawWave();
+}
 var ecgwaveform = document.getElementById("ecg");
 var ctx = ecgwaveform.getContext("2d");
-
 var w = ecgwaveform.width,
     h = ecgwaveform.height,
     speed = 1,
@@ -14,7 +24,6 @@ var px = 0;
 var opx = 0;
 var py = h / 2; /* should equal 50 if height 100px */
 var opy = py; /* should equal 50 if height 100px */
-ecg.style.backgroundColor = "#282a36";
 ctx.strokeStyle = color;
 ctx.lineWidth = 3;
 ctx.setTransform(1, 0, 0, -1, 0, h);
@@ -44,29 +53,20 @@ function drawWave() {
 
 
 
-window.onload = function () {
-    console.log('loading.');
-
- 
-    prepareDocument();
-    resizeCanvas();
-    drawWave();
-}
 window.onresize = function () {
     console.log('resizing.');
- 
+    w = ecgwaveform.width,
+    h = ecgwaveform.height,
+    py = h / 2; /* should equal 50 if height 100px */
+    opy = py; /* should equal 50 if height 100px */
     resizeCanvas();
-
+    drawWave();
 }
 
 function resizeCanvas() {
     ecg.width = window.innerWidth * .8;
     ecg.height = (window.innerHeight * .9) / rows;
-    w = ecgwaveform.width,
-    h = ecgwaveform.height,
-    py = h / 2; /* should equal 50 if height 100px */
-    opy = py; /* should equal 50 if height 100px */
-    drawWave();
+
 }
 function prepareDocument() {
     document.body.style.padding = "0px";
