@@ -14,7 +14,7 @@ window.onload = function () {
 }
 var ecgwaveform = document.getElementById("ecg");
 var ctx = ecgwaveform.getContext("2d");
-var w = window.innerWidth * .8,
+var w = window.innerWidth ,
     h = (window.innerHeight * .9)/rows,
     speed = Math.ceil((window.innerWidth * .8)/1000),
     scanBarWidth = 30,
@@ -33,7 +33,7 @@ var data = [30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30
 
 function drawWave() {
     ctx.strokeStyle = color;
-    speed = Math.ceil((window.innerWidth * .8)/1000),
+
     ctx.lineWidth = 3;
     console.log('canvas width:');
     console.log(w);
