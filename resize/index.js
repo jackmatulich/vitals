@@ -16,7 +16,7 @@ var ecgwaveform = document.getElementById("ecg");
 var ctx = ecgwaveform.getContext("2d");
 var w = ecgwaveform.width,
     h = ecgwaveform.height,
-    speed = 1,
+    speed = Math.round(x/1000),
     scanBarWidth = 20,
     i = 0,
     color = '#00ff00';
@@ -59,6 +59,7 @@ window.onresize = function () {
     console.log('resizing.');
     w = ecgwaveform.width,
     h = ecgwaveform.height,
+    speed = Math.round(x/1000)
     py = h / 2; /* should equal 50 if height 100px */
     opy = py; /* should equal 50 if height 100px */
     resizeCanvas();
