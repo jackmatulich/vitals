@@ -57,8 +57,8 @@ function drawWave() {
     opy = py;/* and */
     if (opx > w) { px = opx = -speed; }/* and */
 
-
-    requestAnimationFrame(drawWave);/* and */
+    setTimeout(() => {  requestAnimationFrame(drawWave); }, ( window.innerWidth *.8)/10);
+   /* and */
 }
 
 
