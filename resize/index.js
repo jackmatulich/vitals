@@ -35,6 +35,9 @@ function drawWave() {
     ctx.strokeStyle = color;
 
     ctx.lineWidth = 3;
+    console.log('inner width:');
+    console.log( window.innerWidth *.8);
+   
     console.log('canvas width:');
     console.log(w);
     console.log('step width=');
