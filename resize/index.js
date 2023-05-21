@@ -38,7 +38,7 @@ function drawWave() {
     console.log('inner width:');
     console.log( window.innerWidth *.8);
    
-    console.log('canvas width:');
+    console.log('canvas scroll width:');
     console.log(ctx.scrollWidth);
     console.log('step width=');
     console.log(speed);
