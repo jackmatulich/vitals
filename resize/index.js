@@ -83,7 +83,7 @@ window.onresize = function () {
     py = h / 2; /* should equal 50 if height 100px */
     opy = py; /* should equal 50 if height 100px */
     resizeCanvas();
-    drawWave();
+  
 }
 
 function resizeCanvas() {
