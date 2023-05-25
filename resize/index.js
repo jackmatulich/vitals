@@ -45,7 +45,7 @@ function drawWave() {
     console.log('step width=');
     console.log(speed);
 
-    px += 1;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */
+    px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */
     console.log('px=');
     console.log(px);
     ctx.clearRect(px, 0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */
@@ -59,7 +59,9 @@ function drawWave() {
     opy = py;/* and */
     if (opx > w) { px = opx = -speed; }/* and */
 
-    setTimeout(() => {  requestAnimationFrame(drawWave); }, ( window.innerWidth *.8)/100);
+  
+
+    setTimeout(function(){ requestAnimationFrame(drawWave); }, ( window.innerWidth *.8)/100);
    /* and */
 }
 
