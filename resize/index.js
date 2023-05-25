@@ -62,7 +62,7 @@ function drawWave() {
 
   
 
-    setTimeout(function(){ requestAnimationFrame(drawWave); }, 10000/( window.innerWidth *.8));
+    setTimeout(function(){ requestAnimationFrame(drawWave); }, speed*(10000/(window.innerWidth *.8)));
    /* and */
 }
 
