@@ -25,6 +25,7 @@ var px = 0;
 var opx = 0;
 var py = h / 2; /* should equal 50 if height 100px */
 var opy = py; /* should equal 50 if height 100px */
+var invert=0;
 ctx.strokeStyle = color;
 ctx.lineWidth = 3;
 ctx.setTransform(1, 0, 0, -1, 0, h);
@@ -53,7 +54,8 @@ function drawWave() {
     ctx.beginPath();/* starts the line OR resets */
     ctx.moveTo(opx, opy);/* moves point to XY */
     ctx.lineJoin = 'round';/* rounds the join */
-    py = (data[++i >= data.length ? i = 0 : i++] +(.5*h)); /* and */
+    invert = (data[++i >= data.length ? i = 0 : i++] +(.5*h)); /* and */
+    py =ivert-(2*invert);
     ctx.lineTo(px, py);/* and */
     ctx.stroke();/* and */
     opx = px;/* and */
