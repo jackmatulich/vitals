@@ -55,7 +55,7 @@ function drawWave() {
     ctx.moveTo(opx, opy);/* moves point to XY */
     ctx.lineJoin = 'round';/* rounds the join */
     invert = (data[++i >= data.length ? i = 0 : i++] ); /* and */
-    py =(invert-invert-invert)+(.5*h);
+    py =(invert-invert-invert)+(.3*h);
     ctx.lineTo(px, py);/* and */
     ctx.stroke();/* and */
     opx = px;/* and */
