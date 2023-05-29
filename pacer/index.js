@@ -151,7 +151,7 @@ function drawWave() {
         PaceRateCountDown=6000/rate;
       };/* and */
 
-    if (SenseMode="inhibit" && (opy-1)<As){
+    if (SenseMode="inhibit"){ /* && (opy-1)<As*/
         console.log('YES');
 if(APaceRead>At){
     AtrialPacedSuccess.forEach(element => {
