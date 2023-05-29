@@ -148,6 +148,7 @@ function drawWave() {
     if (PaceRateCountDown = 0) { 
         APaceRead=Ao;
         VPaceRead=Vo;
+        PaceRateCountDown=6000/rate;
       };/* and */
 
     if (SenseMode="inhibit" && (opy-1)<As){
