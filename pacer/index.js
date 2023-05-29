@@ -23,8 +23,11 @@ let At = 0;
 let Vo = 0; 
 let Vs = 0; 
 let Vt = 0; 
+let PaceRateCountDown=6000/rate;
+let APaceRead = 0; 
+let VPaceRead = 0; 
+let AVDelay=20;
 
-let PACE=false;
 document.getElementById("Rate").textContent = rate; 
 document.getElementById("Aoutput").textContent = Ao; 
 document.getElementById("Asense").textContent = As; 
@@ -34,11 +37,13 @@ document.getElementById("AThreshold").textContent = At;
 document.getElementById("VThreshold").textContent = Vt; 
 function Rplus() { 
      rate=rate+5; 
+     PaceRateCountDown=6000/rate;
      document.getElementById("Rate").textContent = rate; 
 
  } 
  function Rminus() { 
     rate=rate-5; 
+    PaceRateCountDown=6000/rate;
      document.getElementById("Rate").textContent = rate; 
 
  } 
@@ -108,6 +113,7 @@ var w = window.innerWidth *.8,
     
     scanBarWidth = 30,
     i = 0,
+    pacei=0,
     color = '#00ff00';
 var px = 0;
 var opx = 0;
@@ -122,20 +128,25 @@ var data=[0.15,26.27,51.26,41.25,31.23,21.21,11.19,1.16,-8.87,-18.91,-28.95,-33.
 
 var AtrialPacedSuccess=[0,0,20,1,0,0,1,2,2,1,0];
 var VentriclePacedSuccess=[0,0,20,2,1,0,-1,-2,-3,-15,-30,-45,-50,-45,-30,-20,-15,-5,0,1,2,3,4,5,10,16,20,22,23,23,22,20,15,10,5,4,3,2,1,0];
+var PaceFail=[0,20,1,0]
 
 function drawWave() {
     ctx.strokeStyle = color;
-
     ctx.lineWidth = 3;
     console.log('array length:');
     console.log( data.length);
     console.log('inner width:');
     console.log( window.innerWidth *.8);
-   
     console.log('canvas scroll width:');
     console.log(ecgwaveform.scrollWidth);
     console.log('step width=');
     console.log(speed);
+    
+    if (PaceRateCountDown > 0 && Ao>At) { 
+    /*  IM UP TO HERE*/
+
+
+    };/* and */
 
     px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */
     console.log('px=');
@@ -143,15 +154,24 @@ function drawWave() {
     ctx.clearRect(px, 0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */
     ctx.beginPath();/* starts the line OR resets */
     ctx.moveTo(opx, opy);/* moves point to XY */
+ 
     ctx.lineJoin = 'round';/* rounds the join */
+
+
+
+
     invert = (data[++i >= data.length ? i = 0 : i++] ); /* and */
     py =(invert-invert-invert)+(.6*h);
     ctx.lineTo(px, py);/* and */
     ctx.stroke();/* and */
+
+
     opx = px;/* and */
     opy = py;/* and */
-    if (opx > w) { px = opx = -speed; }/* and */
+    if (opx > w) { px = opx = -speed; };/* and */
 
+     
+    PaceRateCountDown=PaceRateCountDown-1;
   
 
     setTimeout(function(){ requestAnimationFrame(drawWave); }, speed*(10000/(window.innerWidth *.8)));
