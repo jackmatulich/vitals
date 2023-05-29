@@ -12,72 +12,6 @@ window.onload = function () {
     resizeCanvas();
     drawWave();
 }
-
-
-
-
-let rate=30;
-let Ao = 0; 
-let As = 0; 
-let Vo = 0; 
-let Vs = 0; 
-let PACE=false;
-document.getElementById("Rate").textContent = Rate; 
-document.getElementById("Aoutput").textContent = Ao; 
-document.getElementById("Asense").textContent = As; 
-document.getElementById("Voutput").textContent = Vo; 
-document.getElementById("Vsense").textContent = Vs; 
-
-function Rplus() { 
-     Rate=Rate+5; 
-     document.getElementById("Rate").textContent = Rate; 
-
- } 
- function Rminus() { 
-    Rate=Rate-5; 
-     document.getElementById("Rate").textContent = Rate; 
-
- } 
-
-
- function Aoplus() { 
-     Ao++; 
-     document.getElementById("Aoutput").textContent = Ao; 
-
- } 
- function Aominus() { 
-     Ao--; 
-     document.getElementById("Aoutput").textContent = Ao; 
- } 
-
- function Asplus() { 
-     As++; 
-     document.getElementById("Asense").textContent = As; 
- } 
- function Asminus() { 
-     As--; 
-     document.getElementById("Asense").textContent = As; 
- } 
- function Voplus() { 
-     Vo++; 
-     document.getElementById("Voutput").textContent = Vo; 
- } 
- function Vominus() { 
-     Vo--; 
-     document.getElementById("Voutput").textContent = Vo; 
- } 
-
- function Vsplus() { 
-     Vs++; 
-     document.getElementById("Vsense").textContent = Vs; 
- } 
- function Vsminus() { 
-     Vs--; 
-     document.getElementById("Vsense").textContent = Vs; 
- } 
-
-
-
 var ecgwaveform = document.getElementById("ecg");
 var ctx = ecgwaveform.getContext("2d");
 var w = window.innerWidth *.8,
@@ -96,8 +30,8 @@ ctx.strokeStyle = color;
 ctx.lineWidth = 2;
 ctx.setTransform(1, 0, 0, -1, 0, h);
 var data = [1,3,6,9,11,12,11,10,8,5,3,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,-5,50,-5,-4,-3,-2,-1,0,1,2,3,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,17,18,18,17,15,12,10,8,5,4,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-var AtrialPacedSuccess=[0,0,20,1,0,0,1,2,2,1,0];
-var VentriclePacedSuccess=[0,0,20,2,1,0,-1,-2,-3,-15,-30,-45,-50,-45,-30,-20,-15,-5,0,1,2,3,4,5,10,16,20,22,23,23,22,20,15,10,5,4,3,2,1,0];
+
+
 
 function drawWave() {
     ctx.strokeStyle = color;

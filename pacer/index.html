@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <title>Document</title>
+
+
+
+</head>
+<body>
+    <canvas  id="ecg" width ="1000"height="80"></canvas>
+    Rows: <input type="text" id="mySubmit" value="6">
+    <button onclick="rowchange()">'Go '</button>
+    <p id="rowval"></p>
+    <div>
+        <div>
+            <h2>Rate    <span id="Rate"></span></h2>
+           
+            <button onclick="Rplus()">+5</button>
+            <button onclick="Rminus()">-5</button>
+        
+        
+        </div>
+        
+        
+        <div>
+            <h2>Atria Output    <span id="Aoutput"></span></h2>
+            
+            <button onclick="Aoplus()">+1</button>
+            <button onclick="Aominus()">-1</button>
+        
+        </div>
+        <div>
+            <h2>Ventricular Output  <span id="Voutput"></span></h2>
+            
+            <button onclick="Voplus()">+1</button>
+            <button onclick="Vominus()">-1</button>
+        
+        </div>
+        
+        <div>
+            <h2>Atria Sensitivity   <span id="Asense"></span></h2>
+            
+            <button onclick="Asplus()">+1</button>
+            <button onclick="Asminus()">-1</button>
+        
+        </div>
+        
+        <div>
+            <h2>Ventricular Sensitivity <span id="Vsense"></span></h2>
+            
+            <button onclick="Vsplus()">+1</button>
+            <button onclick="Vsminus()">-1</button>
+        </div>
+        </div>
+    <script src="index.js"></script>
+</body>
+</html>
