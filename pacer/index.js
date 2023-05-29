@@ -143,9 +143,9 @@ function drawWave() {
     console.log('step width=');
     console.log(speed);
     console.log('pacer rate countdown:');
-    console.log( PaceRateCountDown);
+    console.log(PaceRateCountDown);
     
-    if (PaceRateCountDown = 0) { 
+    if (PaceRateCountDown <1) { 
         APaceRead=Ao;
         VPaceRead=Vo;
         PaceRateCountDown=6000/rate;
