@@ -142,6 +142,8 @@ function drawWave() {
     console.log(ecgwaveform.scrollWidth);
     console.log('step width=');
     console.log(speed);
+    console.log('pacer rate countdown:');
+    console.log( PaceRateCountDown);
     
     if (PaceRateCountDown = 0) { 
         APaceRead=Ao;
