@@ -27,6 +27,7 @@ let PaceRateCountDown=6000/rate;
 let APaceRead = 0; 
 let VPaceRead = 0; 
 let AVDelay=20;
+let SenseMode="inhibit";
 
 document.getElementById("Rate").textContent = rate; 
 document.getElementById("Aoutput").textContent = Ao; 
@@ -142,11 +143,48 @@ function drawWave() {
     console.log('step width=');
     console.log(speed);
     
-    if (PaceRateCountDown > 0 && Ao>At) { 
-    /*  IM UP TO HERE*/
+    if (PaceRateCountDown = 0) { 
+        APaceRead=Ao;
+        VPaceRead=Vo;
+      };/* and */
+
+    if (SenseMode="inhibit" && (opy-1)<As){
+if(APaceRead>At){
+    AtrialPacedSuccess.forEach(element => {
+        
+        px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */
+        console.log('px=');
+        console.log(px);
+        ctx.clearRect(px, 0, scanBarWidth, h);/* (x coord of upper left, y coord of upper left, width in px, heigh in px) */
+        ctx.beginPath();/* starts the line OR resets */
+        ctx.moveTo(opx, opy);/* moves point to XY */
+        ctx.lineJoin = 'round';/* rounds the join */
+        invert = element;
+        py =(invert-invert-invert)+(.6*h);
+        ctx.lineTo(px, py);/* and */
+        ctx.stroke();/* and */
+
+        opx = px;/* and */
+        opy = py;/* and */
+        if (opx > w) { px = opx = -speed; };/* and */
+    
+        PaceRateCountDown=PaceRateCountDown-1;
 
 
-    };/* and */
+
+    });
+}
+else{
+    PaceFail.forEach(element => {
+        
+    });
+
+}
+    }
+
+
+
+
 
     px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */
     console.log('px=');
