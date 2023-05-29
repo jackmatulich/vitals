@@ -33,13 +33,13 @@ document.getElementById("Vsense").textContent = Vs;
 document.getElementById("AThreshold").textContent = At; 
 document.getElementById("VThreshold").textContent = Vt; 
 function Rplus() { 
-     Rate=Rate+5; 
-     document.getElementById("Rate").textContent = Rate; 
+     rate=rate+5; 
+     document.getElementById("Rate").textContent = rate; 
 
  } 
  function Rminus() { 
-    Rate=Rate-5; 
-     document.getElementById("Rate").textContent = Rate; 
+    rate=rate-5; 
+     document.getElementById("Rate").textContent = rate; 
 
  } 
 
