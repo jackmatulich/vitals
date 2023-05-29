@@ -173,7 +173,8 @@ if(APaceRead>At){
         if (opx > w) { px = opx = -speed; };/* and */
     
         PaceRateCountDown=PaceRateCountDown-1;
-
+        wait(speed*(10000/(window.innerWidth *.8)));
+    
 
 
     });
