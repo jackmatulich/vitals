@@ -152,9 +152,10 @@ function drawWave() {
       };/* and */
 
     if (SenseMode="inhibit" && (opy-1)<As){
+        console.log('YES');
 if(APaceRead>At){
     AtrialPacedSuccess.forEach(element => {
-        console.log('YES');
+  
         px += speed;  /* adds the value to the right to the variable on the left px(0)+speed (1)=0 */
         console.log('px=');
         console.log(px);
