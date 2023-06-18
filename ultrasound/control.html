@@ -51,7 +51,7 @@
             (function () {
                 var element = document.getElementById("status");
                 var lastPeerId = null;
-                var peer = "jacktest"; // own peer object
+                var peer = null; // own peer object
                 var conn = null;
                 var recvIdInput = document.getElementById("receiver-id");
                 var status = document.getElementById("status");
@@ -89,7 +89,7 @@
 
                 function initialize() {
                     // Create own peer object with connection to shared PeerJS server
-                        peer = new Peer("jacktest", { debug: 2});
+                        peer = new Peer(null, { debug: 2});
 
                     peer.on('open', function (id) {
                         // Workaround for peer.reconnect deleting previous id
