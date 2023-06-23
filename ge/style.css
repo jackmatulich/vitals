@@ -7,33 +7,34 @@ background-color: black;
 .row {
    
     display:flex;
+    background: linear-gradient(229deg, rgba(180,180,180,1) 0%, rgba(138,138,138,1) 55%, rgba(131,131,131,1) 100%);
 
 }
 
 
-.details {
+.detailsrow {
 
 height:10vh;
 }
 
-.ecg {
+.ecgrow {
 
 height:19vh;
 }
-.spo2 {
+.spo2row {
 
 height:15vh;
 }
-.ial {
+.ialrow {
 
 height:15vh;
 }
-.etco2 {
+.etco2row {
 
 height:15vh;
 }
 
-.nibp {
+.nibprow {
 
 height:15vh;
 }
