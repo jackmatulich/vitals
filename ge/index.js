@@ -6,8 +6,6 @@ var rows = 4;
 
 window.onload = function () {
     console.log('loading.');
-
-    ecg.style.backgroundColor = "#282a36";
     prepareDocument();
     resizeCanvas();
     drawWave();
