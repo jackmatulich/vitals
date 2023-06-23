@@ -12,9 +12,9 @@ window.onload = function () {
 }
 var ecgwaveform = document.getElementById("ecg");
 var ctx = ecgwaveform.getContext("2d");
-var w = window.innerWidth *.75,
+var w = window.innerWidth *.79,
     h = (window.innerHeight * .9)/rows,
-    speed = Math.ceil((window.innerWidth * .75)/1000),
+    speed = Math.ceil((window.innerWidth * .79)/1000),
     
     scanBarWidth = 30,
     i = 0,
@@ -38,7 +38,7 @@ function drawWave() {
     console.log('array length:');
     console.log( data.length);
     console.log('inner width:');
-    console.log( window.innerWidth *.8);
+    console.log( window.innerWidth *.79);
    
     console.log('canvas scroll width:');
     console.log(ecgwaveform.scrollWidth);
@@ -79,11 +79,11 @@ window.onresize = function () {
 }
 
 function resizeCanvas() {
-    ecg.width = window.innerWidth * .75;
+    ecg.width = window.innerWidth * .79;
     ecg.height = (window.innerHeight * .9) / rows;
-    w = window.innerWidth * .75;
+    w = window.innerWidth * .79;
     h = (window.innerHeight * .9)/rows;
-    speed = Math.ceil((window.innerWidth * .75)/1000);
+    speed = Math.ceil((window.innerWidth * .79)/1000);
     i = 0;
     px = 0;
     opx = 0;
