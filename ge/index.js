@@ -12,7 +12,7 @@ window.onload = function () {
 }
 var ecgwaveform = document.getElementById("ecg");
 var ctx = ecgwaveform.getContext("2d");
-var w = window.innerWidth *.8,
+var w = window.innerWidth *.75,
     h = (window.innerHeight * .9)/rows,
     speed = Math.ceil((window.innerWidth * .8)/1000),
     
