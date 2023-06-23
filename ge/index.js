@@ -4,6 +4,10 @@
 
 var rows = 4;
 
+var dotwidth=window.innerWidth/100;
+var dotcount=0;
+var doti=0;
+
 window.onload = function () {
     console.log('loading.');
     prepareDocument();
@@ -59,6 +63,7 @@ function drawWave() {
     opx = px;/* and */
     opy = py;/* and */
     if (opx > w) { px = opx = -speed; }/* and */
+    
 
   
 
@@ -90,7 +95,9 @@ function resizeCanvas() {
 
     py = h / 2; /* should equal 50 if height 100px */
     opy = py; /* should equal 50 if height 100px */
-
+     dotwidth=window.innerWidth/50;
+     dotcount=0;
+     doti=0;
 }
 function prepareDocument() {
    /* document.body.style.padding = "0px"; */
