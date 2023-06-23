@@ -79,11 +79,11 @@ window.onresize = function () {
 }
 
 function resizeCanvas() {
-    ecg.width = window.innerWidth * .8;
+    ecg.width = window.innerWidth * .75;
     ecg.height = (window.innerHeight * .9) / rows;
-    w = window.innerWidth * .8;
+    w = window.innerWidth * .75;
     h = (window.innerHeight * .9)/rows;
-    speed = Math.ceil((window.innerWidth * .8)/1000);
+    speed = Math.ceil((window.innerWidth * .75)/1000);
     i = 0;
     px = 0;
     opx = 0;
