@@ -7,34 +7,34 @@ background-color: black;
 .row {
    
     display:flex;
-    background: linear-gradient(229deg, rgba(180,180,180,1) 0%, rgba(138,138,138,1) 55%, rgba(131,131,131,1) 100%);
+    
 
 }
 
 
-.detailsrow {
+.details {
 
 height:10vh;
 }
 
-.ecgrow {
+.ecg {
 
 height:19vh;
 }
-.spo2row {
+.spo2 {
 
 height:15vh;
 }
-.ialrow {
+.ial {
 
 height:15vh;
 }
-.etco2row {
+.etco2 {
 
 height:15vh;
 }
 
-.nibprow {
+.nibp {
 
 height:15vh;
 }
@@ -45,7 +45,7 @@ height:15vh;
 .wvfm {
     background-color:#000000;
     width: 80%;
-
+    background: linear-gradient(229deg, rgba(180,180,180,1) 0%, rgba(138,138,138,1) 55%, rgba(131,131,131,1) 100%);
 }
 .nmbr {
 
