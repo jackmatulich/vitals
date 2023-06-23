@@ -14,7 +14,7 @@ var ecgwaveform = document.getElementById("ecg");
 var ctx = ecgwaveform.getContext("2d");
 var w = window.innerWidth *.75,
     h = (window.innerHeight * .9)/rows,
-    speed = Math.ceil((window.innerWidth * .8)/1000),
+    speed = Math.ceil((window.innerWidth * .75)/1000),
     
     scanBarWidth = 30,
     i = 0,
