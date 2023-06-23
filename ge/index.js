@@ -4,7 +4,7 @@
 
 var rows = 4;
 
-var dotwidth=window.innerWidth/100;
+var dotwidth=window.innerWidth/50;
 var dotcount=0;
 var doti=0;
 
@@ -63,6 +63,7 @@ function drawWave() {
     opx = px;/* and */
     opy = py;/* and */
     if (opx > w) { px = opx = -speed; }/* and */
+    dotcount = ++dotcount >= dotcount ? dotcount = 0 : dotcount++;/* last bit of dodgy coding?? */
     
 
   
