@@ -29,7 +29,7 @@ function minus() {
     document.getElementById("green").innerHTML = green;
     document.getElementById("water").innerHTML = water;
     document.getElementById("dettol").innerHTML = dettol;
-    document.getElementById("xanthan").innerHTML = xantham;
+    document.getElementById("xantham").innerHTML = xantham;
 
 
     
@@ -52,7 +52,7 @@ function minus() {
        document.getElementById("green").innerHTML = green;
        document.getElementById("water").innerHTML = water;
        document.getElementById("dettol").innerHTML = dettol;
-       document.getElementById("xanthan").innerHTML = xantham;
+       document.getElementById("xantham").innerHTML = xantham;
    
    
        
