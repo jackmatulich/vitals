@@ -56,7 +56,6 @@ box-shadow: 0 0 400px 300px rgba(0,0,0,1) inset;
 
 }
 p{
-
 font-family: 'Courier New', Courier, monospace;
 text-align: center;
 }
@@ -97,13 +96,7 @@ h1{
     color: red;
     text-align: center;
     }
- p{
-        font-size: 2em;
-        font-family: 'Courier New', Courier, monospace;
-        font-weight: normal;
-        color: white;
-        text-align: center;
-        }  
+
         
         
 
