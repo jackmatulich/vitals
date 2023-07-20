@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <title>Blood Calculator</title>
 </head>
-<body>
+<body onload="plus()">
     <h1>Simulated Blood Product Calculator</h1>
     <p class="p1">To make:</p>
     <p><span id="units">1</span> unit/s</p>
@@ -16,13 +16,13 @@
     <button class="myButton" onclick="plus()">+</button>
     <br>
     <p class="p1">In container 1 thoroughly mix:</p>
-    <p class="red">Red poster paint <span id="red">1</span> ml</p>
-    <p class="green">Green poster paint <span id="green">1</span> ml</p>
-    <p class="water">Water <span id="water">1</span> ml</p>
+    <p class="red">Red poster paint <span id="red"></span> ml</p>
+    <p class="green">Green poster paint <span id="green"></span> ml</p>
+    <p class="water">Water <span id="water"></span> ml</p>
     <br>
     <p class="p1">In container 2 thoroughly mix:</p>
-    <p class="dettol">Dettol <span id="dettol">1</span> ml</p>
-    <p class="xantham">Xanthan Gum <span id="xantham">1</span> tsp</p>
+    <p class="dettol">Dettol <span id="dettol"></span> ml</p>
+    <p class="xantham">Xanthan Gum <span id="xantham"></span> tsp</p>
     <br>
     <p class="p1">Slowly add container 2 to container 1 while continually stiring.</p>
 

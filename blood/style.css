@@ -71,29 +71,29 @@ font-size: 1.5em;
 
     }
 .red{
-    font-size: 1.5em;
+    font-size: 1.8em;
     color: red;
 }
 .green{
-    font-size: 1.5em;
+    font-size: 1.8em;
     color: darkgreen;
 }
 .dettol{
-    font-size: 1.5em;
+    font-size: 1.8em;
     color: orange;
 }
 .xantham{
-    font-size: 1.5em;
+    font-size: 1.8em;
     color: bisque;
 }
 .water{
-    font-size: 1.5em;
+    font-size: 1.8em;
     color:  lightblue;
 }
 
 
 h1{
-    font-size: 3em;
+    font-size: 2.5em;
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
     color: red;
