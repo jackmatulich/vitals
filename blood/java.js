@@ -1,6 +1,6 @@
 
 var units=1;
-var mls=Math.floor(units*17.85714);
+var mls=Math.floor(units*250);
 var red=Math.floor(units*17.85714);
 var green=Math.floor(units*5.357143);
 var water=Math.floor(units*217.85714);
@@ -16,7 +16,7 @@ function minus() {
 
 
  units=units-1;
- mls=Math.floor(units*17.85714);
+ mls=Math.floor(units*250);
  red=Math.floor(units*17.85714);
  green=Math.floor(units*5.357143);
  water=Math.floor(units*217.85714);
@@ -39,7 +39,7 @@ function minus() {
 
 
     units=units+1;
-    mls=Math.floor(units*17.85714);
+    mls=Math.floor(units*250);
     red=Math.floor(units*17.85714);
     green=Math.floor(units*5.357143);
     water=Math.floor(units*217.85714);
