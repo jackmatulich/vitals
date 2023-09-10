@@ -67,7 +67,7 @@
                  */
                  function initialize() {
                     // Create own peer object with connection to shared PeerJS server
-                    peer = new Peer(null, {
+                    peer = new Peer((Math.random()*1e32).toString(36), {
                         debug: 2
                     });
 
