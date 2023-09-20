@@ -70,6 +70,7 @@
                     peer = new Peer((Math.random()*1e32).toString(36), {
                         debug: 2
                     });
+                    console.log(peer.id);
 
                     peer.on('open', function (id) {
                         // Workaround for peer.reconnect deleting previous id
