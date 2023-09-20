@@ -68,7 +68,8 @@
                  function initialize() {
                     // Create own peer object with connection to shared PeerJS server
                     peer = new Peer('JACKM654321', {
-                        debug: 3
+                        debug: 3,
+                        port: 9000,
                     });
                     console.log(peer.id);
 
