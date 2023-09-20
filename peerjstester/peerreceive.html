@@ -67,6 +67,10 @@
                  function initialize() {
                     // Create own peer object with connection to shared PeerJS server
                     peer = new Peer({
+                        host: "0.peerjs.com",
+  port: 443,
+  path: "/",
+  pingInterval: 5000,
                         debug: 3,
                      
                     });
