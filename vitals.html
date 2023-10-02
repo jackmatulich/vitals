@@ -463,7 +463,7 @@ spo2Probe=parseInt(dweet.content["spo2probe"]);
 console.log(hr);
 };
 
-setInterval(getDweet, 1000);
+setInterval(getDweet, 500);
 
 
 function cyclebp(){
@@ -512,7 +512,7 @@ document.getElementById("TEMP").innerHTML = temp;
 
 };
 
-setInterval(VitalsVariability, 3000);
+setInterval(VitalsVariability, 500);
 
 function VitalsVariability() {
   var variability=(Math.floor(Math.random() * 7)-3);
