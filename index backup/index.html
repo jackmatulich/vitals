@@ -185,48 +185,44 @@
 
 
 
-        function checkData(){
+        dweetio.listen_for("jacktester", function (dweet) {
+
           dweetio.get_latest_dweet_for("jacktester", function (err, dweet) {
 
-var dweet = dweet[0]; // Dweet is always an array of 1
+            var dweet = dweet[0]; // Dweet is always an array of 1
 
 
-console.log("hello"); // The generated name
-hrRaw = parseInt(dweet.content["hr"]);
-ecgDisplay = parseInt(dweet.content["ecgDisplay"]);
-rhythm = parseInt(dweet.content["rhythm"]);
-ectopy = parseInt(dweet.content["ectopy"]);
-ectopyF = parseInt(dweet.content["ectopyF"]);
+            console.log("hello"); // The generated name
+            hrRaw = parseInt(dweet.content["hr"]);
+            ecgDisplay = parseInt(dweet.content["ecgDisplay"]);
+            rhythm = parseInt(dweet.content["rhythm"]);
+            ectopy = parseInt(dweet.content["ectopy"]);
+            ectopyF = parseInt(dweet.content["ectopyF"]);
 
 
-spo2Display = parseInt(dweet.content["spo2Display"]);
-spo2Raw = parseInt(dweet.content["spo2Raw"]);
+            spo2Display = parseInt(dweet.content["spo2Display"]);
+            spo2Raw = parseInt(dweet.content["spo2Raw"]);
 
-iabpDisplay = parseInt(dweet.content["iabpDisplay"]);
-sbpRaw = parseInt(dweet.content["sbp"]);
-dbpRaw = parseInt(dweet.content["dbp"]);
+            iabpDisplay = parseInt(dweet.content["iabpDisplay"]);
+            sbpRaw = parseInt(dweet.content["sbp"]);
+            dbpRaw = parseInt(dweet.content["dbp"]);
 
-cvpDisplay = parseInt(dweet.content["cvpDisplay"]);
-cvpRaw = parseInt(dweet.content["cvpRaw"]);
+            cvpDisplay = parseInt(dweet.content["cvpDisplay"]);
+            cvpRaw = parseInt(dweet.content["cvpRaw"]);
 
-co2Display = parseInt(dweet.content["co2Display"]);
-co2Raw = parseInt(dweet.content["co2Raw"]);
-resprate = parseInt(dweet.content["resprate"]);
-co2waveform = parseInt(dweet.content["co2waveform"]);
-
-
-
-});
+            co2Display = parseInt(dweet.content["co2Display"]);
+            co2Raw = parseInt(dweet.content["co2Raw"]);
+            resprate = parseInt(dweet.content["resprate"]);
+            co2waveform = parseInt(dweet.content["co2waveform"]);
 
 
 
-console.log(hr);
+          });
 
 
-          
-        }
 
-         
+          console.log(hr);
+        });
 
         setInterval(ecgRandom, 3000);
 

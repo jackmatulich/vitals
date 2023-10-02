@@ -437,7 +437,7 @@ qrlink.innerHTML =link;
 new QRCode(document.getElementById("qrcode"),"https://"+link);
 
 
-function getDweet(){
+  dweetio.listen_for(ucode, function(dweet){
    
     dweetio.get_latest_dweet_for(ucode, function(err, dweet){
 
@@ -461,9 +461,8 @@ spo2Probe=parseInt(dweet.content["spo2probe"]);
 });
 
 console.log(hr);
-};
+});
 
-setInterval(getDweet, 1000);
 
 
 function cyclebp(){
