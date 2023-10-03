@@ -438,7 +438,6 @@ qrlink.innerHTML =link;
 new QRCode(document.getElementById("qrcode"),"https://"+link);
 
 
-<<<<<<< HEAD
 dweetio.dweet_for(ucode, {spo2probe:1,cuff:1,tempprobe:1,transition:0,sbp:120,dbp:60,hr:80,spo2:99,temp:36.5}, function(err, dweet){
 
 console.log(dweet.thing); // "my-thing"
@@ -454,9 +453,6 @@ console.log(dweet.created); // The create date of the dweet
 setInterval(refresher, 5000)
 
   function refresher(){
-=======
-function getDweet(){
->>>>>>> e502c73a52954732220022bac4c822de5a093326
    
     dweetio.get_latest_dweet_for(ucode, function(err, dweet){
 
