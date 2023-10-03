@@ -188,6 +188,7 @@ font-weight:bold;
 
 </head>
 <body style="background-color:black;" onload="startTime();">
+    <script src="//dweet.io/client/dweet.io.min.js"></script>
 <script>
 function startTime() {
   const today = new Date();
@@ -390,7 +391,7 @@ function checkTime(i) {
 
 </table>
 
-
+<script src="//dweet.io/client/dweet.io.min.js"></script>
 <script>
 // 
 // var urlcode = window.location.search;
@@ -437,7 +438,25 @@ qrlink.innerHTML =link;
 new QRCode(document.getElementById("qrcode"),"https://"+link);
 
 
+<<<<<<< HEAD
+dweetio.dweet_for(ucode, {spo2probe:1,cuff:1,tempprobe:1,transition:0,sbp:120,dbp:60,hr:80,spo2:99,temp:36.5}, function(err, dweet){
+
+console.log(dweet.thing); // "my-thing"
+console.log(dweet.content); // The content of the dweet
+console.log(dweet.created); // The create date of the dweet
+
+});
+
+
+
+
+
+setInterval(refresher, 5000)
+
+  function refresher(){
+=======
 function getDweet(){
+>>>>>>> e502c73a52954732220022bac4c822de5a093326
    
     dweetio.get_latest_dweet_for(ucode, function(err, dweet){
 
@@ -528,5 +547,6 @@ function VitalsVariability() {
 
 
 </script>
+<script src="//dweet.io/client/dweet.io.min.js"></script>
 </body>
 </html>
