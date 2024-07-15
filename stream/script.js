@@ -18,7 +18,7 @@ console.log(result)
 const code=result;
 console.log("code:"+code);
 // code.innerHTML =result;
-const link="sim.ninja/control/?"+ucode;
+
 var codetitle= document.getElementById('code');
 codetitle.innerHTML =code;
 
