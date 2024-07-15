@@ -10,17 +10,6 @@ var screenSharing = false
 
 
 
-let characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-let result = ''
-let length = 4 // Customize the length here.
-for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
-console.log(result)
-const code=result;
-console.log("code:"+code);
-// code.innerHTML =result;
-
-var codetitle= document.getElementById('code');
-codetitle.innerHTML =code;
 
 
 
@@ -36,11 +25,18 @@ codetitle.innerHTML =code;
 
 function createRoom() {
     console.log("Creating Room")
-    let room = document.getElementById("room-input").value;
-    if (room == " " || room == "") {
-        alert("Please enter room number")
-        return;
-    }
+    let characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    let result = ''
+    let length = 4 // Customize the length here.
+    for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
+    console.log(result)
+    const code=result;
+    console.log("code:"+code);
+    // code.innerHTML =result;
+    
+    var codetitle= document.getElementById('code');
+    codetitle.innerHTML =code;
+    
     room_id = code;
     peer = new Peer(room_id)
     peer.on('open', (id) => {
