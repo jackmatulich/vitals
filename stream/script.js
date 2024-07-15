@@ -18,8 +18,8 @@ function createRoom() {
     // code.innerHTML =result;
     
     var room_id = code;
-    console.log(room_id)
-    peer = new Peer(room_id)
+  
+    peer = new Peer(code)
     peer.on('open', (id) => {
         console.log("Peer Room ID: ", id)
         var codetext= document.getElementById('code');
