@@ -8,21 +8,6 @@ var screenSharing = false
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function createRoom() {
     console.log("Creating Room")
     let characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
