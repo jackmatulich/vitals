@@ -26,7 +26,7 @@ function createRoom() {
     peer.on('open', (id) => {
         console.log("Peer Room ID: ", id)
         var codetitle= document.getElementById('code');
-        codetitle.innerHTML =id;
+        codetitle.innerHTML =room_id;
         getUserMedia({ video: true, audio: true }, (stream) => {
             console.log(stream);
             local_stream = stream;
