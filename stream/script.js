@@ -14,19 +14,16 @@ function createRoom() {
     let result = ''
     let length = 4 // Customize the length here.
     for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
-    
     const code=result;
-
     // code.innerHTML =result;
-  
     
     var room_id = code;
     console.log(room_id)
     peer = new Peer(room_id)
     peer.on('open', (id) => {
         console.log("Peer Room ID: ", id)
-        var codetitle= document.getElementById('code');
-        codetitle.innerHTML =room_id;
+        var code= document.getElementById('code');
+        code.innerHTML =room_id;
         getUserMedia({ video: true, audio: true }, (stream) => {
             console.log(stream);
             local_stream = stream;
