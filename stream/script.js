@@ -20,7 +20,7 @@ function createRoom() {
     // code.innerHTML =result;
   
     
-    room_id = code;
+    var room_id = code;
     peer = new Peer(room_id)
     peer.on('open', (id) => {
         console.log("Peer Room ID: ", id)
