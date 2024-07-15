@@ -41,10 +41,12 @@ function createRoom() {
         alert("Please enter room number")
         return;
     }
-    room_id = room;
+    room_id = code;
     peer = new Peer(room_id)
     peer.on('open', (id) => {
         console.log("Peer Room ID: ", id)
+        var codetitle= document.getElementById('code');
+        codetitle.innerHTML =id;
         getUserMedia({ video: true, audio: true }, (stream) => {
             console.log(stream);
             local_stream = stream;
