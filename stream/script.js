@@ -29,13 +29,11 @@ function createRoom() {
     let result = ''
     let length = 4 // Customize the length here.
     for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
-    console.log(result)
-    const code=result;
-    console.log("code:"+code);
-    // code.innerHTML =result;
     
-    var codetitle= document.getElementById('code');
-    codetitle.innerHTML =code;
+    const code=result;
+
+    // code.innerHTML =result;
+  
     
     room_id = code;
     peer = new Peer(room_id)
