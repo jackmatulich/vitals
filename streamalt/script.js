@@ -10,9 +10,10 @@ var screenSharing = false
 function createRoom() {
   
     peer = new Peer()
-    console.log("Peer Room ID: ", id)
+
     peer.on('open', (id) => {
-        console.log("Peer Room ID: ", id)
+        console.log("Peer Room ID: ")
+        console.log(id)
         var codetext= document.getElementById('code');
         codetext.innerHTML ='testing';
         getUserMedia({ video: true, audio: true }, (stream) => {
