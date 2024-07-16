@@ -9,17 +9,9 @@ var screenSharing = false
 
 
 function createRoom() {
-    console.log("Creating Room")
-    let characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    let result = ''
-    let length = 4 // Customize the length here.
-    for (let i = length; i > 0; --i) result += characters[Math.round(Math.random() * (characters.length - 1))]
-    const code=result;
-    // code.innerHTML =result;
-    
-    var room_id = code;
+   =
   
-    peer = new Peer(code)
+    peer = new Peer()
     peer.on('open', (id) => {
         console.log("Peer Room ID: ", id)
         var codetext= document.getElementById('code');
