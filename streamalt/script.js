@@ -9,7 +9,7 @@ var screenSharing = false
 
 function createRoom() {
   
-    peer = new Peer()
+    peer = new Peer();
 
     peer.on('open', (id) => {
         console.log("Peer Room ID: ")
