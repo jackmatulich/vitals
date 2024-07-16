@@ -6,11 +6,14 @@ var peer = null;
 var currentPeer = null
 var screenSharing = false
 
-
+function nextstep() {
+    console.log("Peer Room ID: ", id)
+}
 
 function createRoom() {
   
     peer = new Peer()
+    nextstep();
     peer.on('open', (id) => {
         console.log("Peer Room ID: ", id)
         var codetext= document.getElementById('code');
@@ -34,6 +37,9 @@ function createRoom() {
         currentPeer = call;
     })
 }
+
+
+
 
 function setLocalStream(stream) {
     document.getElementById("local-vid-container").hidden = false;
