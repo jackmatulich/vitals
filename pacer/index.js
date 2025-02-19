@@ -209,7 +209,7 @@ else{
     ctx.stroke();/* and */
 
 
-    opx = px;/* and */
+    opx = px;/* and *
     opy = py;/* and */
     if (opx > w) { px = opx = -speed; };/* and */
 

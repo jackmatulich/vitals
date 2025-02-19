@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .messages-container { height: calc(100vh - 180px); }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+            <h2 class="text-xl font-bold mb-4">Enter Your Claude API Key</h2>
+            <p class="mb-4 text-gray-600">Your API key will be stored locally in your browser.</p>
+            <form id="apiKeyForm" class="space-y-4">
+                <input 
+                    type="password" 
+                    id="apiKeyInput"
+                    class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="sk-ant-api03-..."
+                    required
+                >
+                <button 
+                    type="submit"
+                    class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    Save API Key
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Chat Interface (hidden initially) -->
+    <div id="chatInterface" class="max-w-4xl mx-auto p-4 hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold">Claude Chatbot</h1>
+            <div class="flex gap-2">
+                <button onclick="setFormat('text')" id="textBtn" class="px-3 py-2 rounded-lg bg-blue-600 text-white">Text</button>
+                <button onclick="setFormat('json')" id="jsonBtn" class="px-3 py-2 rounded-lg bg-gray-200">JSON</button>
+                <button onclick="setFormat('html')" id="htmlBtn" class="px-3 py-2 rounded-lg bg-gray-200">HTML</button>
+                <button onclick="resetApiKey()" class="px-3 py-2 rounded-lg bg-red-500 text-white">Reset API Key</button>
+            </div>
+        </div>
+
+        <div id="messages" class="messages-container overflow-y-auto bg-white rounded-lg p-4 mb-4"></div>
+
+        <form id="chatForm" class="flex gap-2">
+            <input 
+                type="text" 
+                id="messageInput"
+                class="flex-1 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Type your message..."
+            >
+            <button 
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                Send
+            </button>
+        </form>
+    </div>
+
+    <script>
+        let currentFormat = 'text';
+
+        // API Key Management
+        function getApiKey() {
+            return localStorage.getItem('claude_api_key');
+        }
+
+        function setApiKey(key) {
+            localStorage.setItem('claude_api_key', key);
+            document.getElementById('apiKeyModal').classList.add('hidden');
+            document.getElementById('chatInterface').classList.remove('hidden');
+        }
+
+        function resetApiKey() {
+            if (confirm('Are you sure you want to reset your API key?')) {
+                localStorage.removeItem('claude_api_key');
+                location.reload();
+            }
+        }
+
+        // Check for API key on load
+        if (!getApiKey()) {
+            document.getElementById('apiKeyForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const key = document.getElementById('apiKeyInput').value.trim();
+                if (key) setApiKey(key);
+            });
+        } else {
+            document.getElementById('apiKeyModal').classList.add('hidden');
+            document.getElementById('chatInterface').classList.remove('hidden');
+        }
+
+        const messagesContainer = document.getElementById('messages');
+        const chatForm = document.getElementById('chatForm');
+        const messageInput = document.getElementById('messageInput');
+        const formatBtns = {
+            text: document.getElementById('textBtn'),
+            json: document.getElementById('jsonBtn'),
+            html: document.getElementById('htmlBtn')
+        };
+
+        function setFormat(format) {
+            currentFormat = format;
+            Object.keys(formatBtns).forEach(key => {
+                formatBtns[key].className = `px-3 py-2 rounded-lg ${
+                    key === format ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                }`;
+            });
+        }
+
+        function getSystemPrompt() {
+            switch(currentFormat) {
+                case 'json':
+                    return `You are a helpful assistant that always responds in valid JSON format. 
+                            Each response should include "status", "message", and "data" fields.`;
+                case 'html':
+                    return `You are a helpful assistant that always responds with valid HTML.
+                            Wrap your responses in appropriate semantic HTML tags and include basic styling.`;
+                default:
+                    return `You are a helpful assistant that provides clear and concise responses.`;
+            }
+        }
+
+        function addMessage(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `mb-4 ${isUser ? 'ml-auto' : 'mr-auto'} max-w-3xl`;
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `rounded-lg p-4 ${
+                isUser ? 'bg-blue-600 text-white ml-auto' : 'bg-white shadow-sm'
+            }`;
+
+            if (isUser) {
+                contentDiv.textContent = content;
+            } else {
+                switch(currentFormat) {
+                    case 'json':
+                        contentDiv.innerHTML = `<pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto">${
+                            typeof content === 'string' ? content : JSON.stringify(JSON.parse(content), null, 2)
+                        }</pre>`;
+                        break;
+                    case 'html':
+                        contentDiv.innerHTML = content;
+                        break;
+                    default:
+                        contentDiv.textContent = content;
+                }
+            }
+
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        async function sendMessage(userInput) {
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': getApiKey(),
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-3-sonnet-20240229',
+                        max_tokens: 4096,
+                        messages: [
+                            {
+                                role: 'system',
+                                content: getSystemPrompt()
+                            },
+                            {
+                                role: 'user',
+                                content: userInput
+                            }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Error:', errorText);
+                    if (response.status === 401) {
+                        resetApiKey();
+                        throw new Error('Invalid API key');
+                    }
+                    throw new Error(`API request failed: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.content[0].text;
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;
+            }
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userInput = messageInput.value.trim();
+            if (!userInput) return;
+
+            messageInput.disabled = true;
+            const submitBtn = chatForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Sending...';
+
+            messageInput.value = '';
+            addMessage(userInput, true);
+
+            try {
+                const response = await sendMessage(userInput);
+                addMessage(response);
+            } catch (error) {
+                console.error('Error:', error);
+                if (error.message.includes('API key')) {
+                    addMessage('Error: Invalid API key. Please reset your API key and try again.');
+                } else {
+                    addMessage('Error: Failed to get response from Claude. Please try again.');
+                }
+            } finally {
+                messageInput.disabled = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                messageInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
