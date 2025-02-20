@@ -220,7 +220,26 @@
                 document.getElementById('qr-code').src = url;
             });
 
-            // TODO: Set up dweet.io communication
+            // Set up session start button
+            const startSessionBtn = document.getElementById('start-session');
+            const endSessionBtn = document.getElementById('end-session');
+
+            startSessionBtn.addEventListener('click', () => {
+                // Simulation of session start
+                alert(`Session ${state.sessionId} started!`);
+                startSessionBtn.disabled = true;
+                endSessionBtn.disabled = false;
+            });
+
+            endSessionBtn.addEventListener('click', () => {
+                // Simulation of session end
+                alert(`Session ${state.sessionId} ended.`);
+                startSessionBtn.disabled = false;
+                endSessionBtn.disabled = true;
+            });
+
+            // Initially disable end session button
+            endSessionBtn.disabled = true;
         }
 
         function showJoinModal() {
