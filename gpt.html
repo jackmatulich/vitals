@@ -4,12 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claude Chatbot</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include Tailwind CSS directly -->
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .messages-container { height: calc(100vh - 180px); }
     </style>
 </head>
 <body class="bg-gray-100">
+    <!-- CORS Proxy Setup Banner -->
+    <div id="corsSetupBanner" class="fixed inset-x-0 top-0 bg-yellow-100 p-4 text-yellow-800">
+        <div class="max-w-4xl mx-auto">
+            <p><strong>First Step:</strong> Click the button below to enable CORS proxy (required one-time setup)</p>
+            <button onclick="enableCorsProxy()" class="mt-2 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                Enable CORS Proxy
+            </button>
+        </div>
+    </div>
+
     <!-- API Key Modal -->
     <div id="apiKeyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
@@ -34,7 +45,7 @@
     </div>
 
     <!-- Main Chat Interface (hidden initially) -->
-    <div id="chatInterface" class="max-w-4xl mx-auto p-4 hidden">
+    <div id="chatInterface" class="max-w-4xl mx-auto p-4 hidden mt-16">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold">Claude Chatbot</h1>
             <div class="flex gap-2">
@@ -65,6 +76,19 @@
 
     <script>
         let currentFormat = 'text';
+        const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+
+        // CORS Proxy Setup
+        async function enableCorsProxy() {
+            try {
+                window.open('https://cors-anywhere.herokuapp.com/corsdemo', '_blank');
+                alert('1. Click "Request temporary access" on the new page\n2. Return to this tab\n3. Start chatting!');
+                document.getElementById('corsSetupBanner').style.display = 'none';
+            } catch (error) {
+                console.error('Error enabling proxy:', error);
+                alert('Failed to open proxy setup. Please check if popups are blocked.');
+            }
+        }
 
         // API Key Management
         function getApiKey() {
@@ -160,7 +184,7 @@
 
         async function sendMessage(userInput) {
             try {
-                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                const response = await fetch(CORS_PROXY + 'https://api.anthropic.com/v1/messages', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
