@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+  <title>A4 landscape</title>
+
+  <!-- Normalize or reset CSS with your favorite library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+
+  <!-- Load paper.css for happy printing -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css">
+
+  <!-- Set page size here: A5, A4 or A3 -->
+  <!-- Set also "landscape" if you need -->
+  <style>
+* {
+  box-sizing: border-box;
+}
+
+@page { 
+size: A4 landscape; 
+font-family: Gill Sans, sans-serif;
+font-size:.8em;
+background:#ffffff;
+color: #616161;
+
+}
+
+
+.vitals {
+ line-height: 2;
+}
+
+.column {
+  float: left;
+
+height:100%;
+
+}
+
+.stageA{
+ width: 45%;
+
+}
+.stageB{
+ width: 20%;
+padding-top:1%;
+padding-right:3%;
+text-align:right;
+  
+}
+
+.stageC{
+ width: 35%;
+ padding-top: 10px;
+padding-left: 10px;
+}
+
+
+
+.left {
+  width: 30%;
+  padding-right: 10px;
+ padding-right: 10px;
+}
+
+.right {
+  width: 70%;
+  padding-left: 10px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+
+
+body{ 
+font-family: Gill Sans, sans-serif;
+font-weight: 500;
+  line-height: 0.9;
+color: #616161;
+
+}
+
+
+p{
+font-weight: 500;
+font-size:.8em;
+  line-height: .9;
+
+
+}
+
+
+
+ol{
+font-weight: 500;
+font-size:.8em;
+  line-height: 1;
+ margin: 0px;
+  padding-left: 15px;
+padding-bottom: 7px;
+z-index:2;
+}
+
+ul{
+font-weight: 500;
+font-size:.8em;
+  line-height: 1;
+ margin: 0px;
+  padding-left: 15px;
+padding-bottom: 7px;
+z-index:2;
+  list-style: none;
+    position: relative;
+}
+
+
+
+ul li::before {
+    content: '☐';
+ line-height: 1;
+    position: absolute;
+    left: 0em;          /* Adjust this value so that it appears where you want. */
+    font-size: 1.1em;      /* Adjust this value so that it appears what size you want. */
+
+}
+
+h1{
+font-weight: 500;
+font-size:2em;
+color: #616161;
+text-shadow: #e0e0e0 1px 1px 0;
+  line-height: 0.79;
+padding-top:-10px;
+ 
+}
+
+h2{
+font-weight: 600;
+font-size:.9em;
+color: #616161;
+text-shadow: #e0e0e0 1px 1px 0;
+  line-height: 0.3;
+  padding-left: 10px;
+z-index:2;
+}
+
+h3{
+font-weight: 500;
+font-size:1.7em;
+color: #616161;
+text-shadow: #e0e0e0 1px 1px 0;
+line-height: 1px;
+
+ text-align: center;
+
+
+}
+
+h6{
+font-weight: 600;
+font-size:.7em;
+  line-height: 0.8;
+
+}
+
+
+
+
+.chunk{
+border-radius: 25px;
+background: linear-gradient(145deg, #ced6d8,#d5dddf);
+box-shadow: 7px 7px 10px rgb(156, 161, 163,.7),
+             -7px -7px 10px rgb(242, 251, 254,.7);
+  padding-top: 1px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  width: 100%;
+  height: auto; 
+margin-bottom:20px;
+}
+.stage{
+border-radius: 25px;
+background: linear-gradient(145deg, #ced6d8,#d5dddf);
+box-shadow: 7px 7px 10px rgb(156, 161, 163,.7),
+             -7px -7px 10px rgb(242, 251, 254,.7);
+  padding-top: 1px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  width: 100%;
+  height: auto; 
+margin-bottom:20px;
+
+}
+
+
+
+
+
+.top{
+border-radius: 40px 40px 15px 15px;
+margin-bottom:15px;
+height: 32%; 
+
+}
+
+.middle{
+border-radius: 10px 10px 15px 15px;
+
+margin-bottom:15px;
+height: 32%; 
+
+
+}
+
+.bottom{
+border-radius: 15px 15px 40px 40px;
+height: 32%; 
+
+
+}
+
+
+</style>
+</head>
+
+
+
+<!-- Set "A5", "A4" or "A3" for class name -->
+<!-- Set also "landscape" if you need -->
+
+
+<body class="A4 landscape" contenteditable="true">
+
+  <!-- Each sheet element should have the class "sheet" -->
+  <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
+
+
+
+  <section class="sheet padding-10mm" style="background: #ced6d8;">
+
+    <!-- Write HTML just like a web page -->
+
+
+
+<div class="column left">
+<h1>Simulation Title</h1>
+
+<div class="chunk">
+<h2>Intended Participants</h2>
+<ul>
+<li>Intended Participants 1 </li>
+<li>Intended Participants 2 </li>
+<li>Intended Participants 3 </li>
+</ul>
+</div>
+
+
+<div class="chunk">
+<h2>Purpose</h2>
+<p>Purpose here</p>
+</div>
+
+
+<div class="chunk">
+<h2>Scenario Overview</h2>
+<p>Scenario Overview here</p>
+</div>
+
+
+<div class="chunk">
+<h2>Learning Objectives</h2>
+<ol>
+<li>Learning Objective 1 </li>
+<li>Learning Objective 2 </li>
+<li>Learning Objective 3 </li>
+</ol>
+</div>
+
+
+<div class="chunk">
+<h2>Required Simulation Tools</h2>
+<ol>
+<li>Simulation Tool 1 </li>
+<li>Simulation Tool 2 </li>
+<li>Simulation Tool 3 </li>
+</ol>
+</div>
+
+</div> 
+
+  <div class="column right">
+
+<div class="stage top">
+
+<div class="column stageA">
+<h3>Stage Title</h3>
+<ol>
+<li>Simulation Tool 1 </li>
+<li>Simulation Tool 2 </li>
+<li>Simulation Tool 3 </li>
+</ol>
+</div>
+
+<div class="column stageB">
+<p><span style="font-weight: 600">HR:</span>70</p>
+<p><span style="font-weight: 600">Rhythm: </span>Normal Sinus</p>
+<p><span style="font-weight: 600">BP:</span>120/60 (75)</p>
+<p><span style="font-weight: 600">spO2:</span>99%</p>
+<p><span style="font-weight: 600">RR:</span>16</p>
+<p><span style="font-weight: 600">Temp:</span>37.1</p>
+<p><span style="font-weight: 600">GCS:</span>15 (E4 V5 M6)</p>
+<p><span style="font-weight: 600">BGL:</span>5.6mmol</p>
+
+
+
+</div>
+
+<div class="column stageC">
+<h2 contenteditable="false">Expected Participant Actions</h2>
+<ul>
+<li>Simulation Tool 1 </li>
+<li>Simulation Tool 2 </li>
+<li>Simulation Tool 3 </li>
+</ul>
+</div>
+
+
+ 
+</div>
+
+
+<div class="stage middle">
+
+<div class="column stageA">
+<h3>Stage Title</h3>
+<ol>
+<li>Simulation Tool 1 </li>
+<li>Simulation Tool 2 </li>
+<li>Simulation Tool 3 </li>
+</ol>
+</div>
+
+<div class="column stageB">
+<p><span style="font-weight: 600">HR:</span>70</p>
+<p><span style="font-weight: 600">Rhythm: </span>Normal Sinus</p>
+<p><span style="font-weight: 600">BP:</span>120/60 (75)</p>
+<p><span style="font-weight: 600">spO2:</span>99%</p>
+<p><span style="font-weight: 600">RR:</span>16</p>
+<p><span style="font-weight: 600">Temp:</span>37.1</p>
+<p><span style="font-weight: 600">GCS:</span>15 (E4 V5 M6)</p>
+<p><span style="font-weight: 600">BGL:</span>5.6mmol</p>
+
+
+
+</div>
+
+<div class="column stageC">
+<h2>Expected Participant Actions</h2>
+<ul>
+<li>Simulation Tool 1 </li>
+<li>Simulation Tool 2 </li>
+<li>Simulation Tool 3 </li>
+</ul>
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="stage bottom">
+
+<div class="column stageA">
+<h3>Stage Title</h3>
+<ol>
+<li>Simulation Tool 1 </li>
+<li>Simulation Tool 2 </li>
+<li>Simulation Tool 3 </li>
+</ol>
+</div>
+
+<div class="column stageB">
+<p><span style="font-weight: 600">HR:</span>70</p>
+<p><span style="font-weight: 600">Rhythm: </span>Normal Sinus</p>
+<p><span style="font-weight: 600">BP:</span>120/60 (75)</p>
+<p><span style="font-weight: 600">spO2:</span>99%</p>
+<p><span style="font-weight: 600">RR:</span>16</p>
+<p><span style="font-weight: 600">Temp:</span>37.1</p>
+<p><span style="font-weight: 600">GCS:</span>15 (E4 V5 M6)</p>
+<p><span style="font-weight: 600">BGL:</span>5.6mmol</p>
+
+
+
+</div>
+
+<div class="column stageC">
+<h2>Expected Participant Actions</h2>
+<ul>
+<li>Simulation Tool 1 </li>
+<li>Simulation Tool 2 </li>
+<li>Simulation Tool 3 </li>
+</ul>
+</div>
+
+</div>
+  </section>
+
+
+  <section class="sheet padding-10mm">
+
+    <!-- Write HTML just like a web page -->
+    <article>This is an A4 document (landscape).</article>
+
+  </section>
+
+</body>
+
+</html>
