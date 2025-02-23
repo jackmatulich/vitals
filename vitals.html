@@ -493,6 +493,7 @@ function cyclebp(){
       sbp=variability+sbpRaw;
   dbp=variability+dbpRaw;
   map= Math.floor((((2*dbp)+sbp)/3));
+  DisplayBP=[sbp, dbp].join('/');
 document.getElementById("BP").innerHTML = DisplayBP;
 document.getElementById("MAP").innerHTML = map;
 }, 8000);
