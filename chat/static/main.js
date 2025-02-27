@@ -43,7 +43,7 @@ async function submitMessage() {
 }
 
 async function requestStream(messages) {
-  const stream = await fetch("./stream/anthropic", {
+  const stream = await fetch("/.netlify/functions/anthropic-stream", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -51,7 +51,8 @@ async function requestStream(messages) {
     body: JSON.stringify({ messages }),
   });
 
-  const reader = stream.body.getReader();
+  const text = await stream.text();
+  const parts = text.split(">>");
 
   const newMessage = {
     role: "assistant",
@@ -59,32 +60,21 @@ async function requestStream(messages) {
   };
 
   messages.push(newMessage);
-
   const activeMessage = messages[messages.length - 1];
 
-  while (true) {
-    const { done, value } = await reader.read();
-
-    if (done) {
-      break;
-    }
-
-    const text = new TextDecoder().decode(value);
-    const parts = text.split(">>");
-
-    for (const part of parts) {
-      if (part) {
-        const json = JSON.parse(part);
-        const content = json.message;
-        if (content && content !== "undefined") {
-          activeMessage.content += content;
-        }
+  for (const part of parts) {
+    if (part) {
+      const json = JSON.parse(part);
+      const content = json.message;
+      if (content && content !== "undefined") {
+        activeMessage.content += content;
       }
     }
-
-    updateMessages();
   }
+
+  updateMessages();
 }
+
 
 async function requestAPI(messages) {
   if (STREAM_DATA) {
