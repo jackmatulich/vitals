@@ -43,7 +43,7 @@ async function submitMessage() {
 }
 
 async function requestStream(messages) {
-  const stream = await fetch("chat/.netlify/functions/anthropic-stream", {
+  const stream = await fetch("/.netlify/functions/anthropic-stream", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -80,7 +80,7 @@ async function requestAPI(messages) {
   if (STREAM_DATA) {
     return await requestStream(messages);
   }
-  const req = await fetch("chat/.netlify/functions/anthropic", {
+  const req = await fetch("/.netlify/functions/anthropic", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
