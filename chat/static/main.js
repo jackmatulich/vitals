@@ -122,9 +122,9 @@ function showError(message, variant = "danger", duration = 5000) {
 }
 
 async function init() {
-  const test = await fetch("/api/test");
-  const data = await test.json();
-  console.log(data);
+  //const test = await fetch("/api/test");
+  //const data = await test.json();
+  //console.log(data);
 
   textInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {

@@ -1,6 +1,6 @@
-import { Anthropic } from '@anthropic-ai/sdk';
+const { Anthropic } = require('@anthropic-ai/sdk');
 
-export async function handler(event, context) {
+exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
@@ -35,4 +35,4 @@ export async function handler(event, context) {
       }
     };
   }
-}
+};
