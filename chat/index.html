@@ -1,6 +1,7 @@
+<!-- index.html with form for scenario generation -->
 <html>
   <head>
-    <title>Chat Buddy</title>
+    <title>Medical Simulation Generator</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.0/cdn/themes/light.css"
@@ -10,26 +11,70 @@
   <body>
     <div class="app">
       <div class="header">
-        <h1>Chat Buddy</h1>
+        <h1>Medical Simulation Generator</h1>
       </div>
-      <div class="messages-container">
-        <div id="messages" class="messages">
-          <div class="message assistant">
-            Welcome to Chat Buddy! Chat Buddy is a simple chat application that
-            allows you to chat with an assistant. Feel free to ask any questions
-          </div>
-        </div>
-      </div>
-      <div class="input-container">
-        <sl-textarea
-          placeholder="Type a message..."
-          id="text-input"
-          autofocus
-          rows="1"
-          cols="10"
-          resize="auto"
-        ></sl-textarea>
-        <sl-button id="submit-btn" variant="primary" pill>Submit</sl-button>
+      
+      <div class="simulation-form">
+        <sl-tab-group>
+          <sl-tab slot="nav" panel="chat">Chat</sl-tab>
+          <sl-tab slot="nav" panel="generator">Scenario Generator</sl-tab>
+        
+          <sl-tab-panel name="chat">
+            <div class="messages-container">
+              <div id="messages" class="messages">
+                <div class="message assistant">
+                  Welcome to the Medical Simulation Generator! You can chat with me to create scenarios, or use the Scenario Generator tab for a guided experience.
+                </div>
+              </div>
+            </div>
+            <div class="input-container">
+              <sl-textarea
+                placeholder="Type a message..."
+                id="text-input"
+                autofocus
+                rows="1"
+                cols="10"
+                resize="auto"
+              ></sl-textarea>
+              <sl-button id="submit-btn" variant="primary" pill>Submit</sl-button>
+            </div>
+          </sl-tab-panel>
+          
+          <sl-tab-panel name="generator">
+            <div class="form-container">
+              <h2>Generate Medical Simulation Scenario</h2>
+              
+              <div class="form-group">
+                <sl-select id="scenario-type" placeholder="Select scenario type" clearable>
+                  <sl-option value="HFNC to BIPAP">HFNC to BIPAP Escalation</sl-option>
+                  <sl-option value="Cardiac Arrest">Cardiac Arrest</sl-option>
+                  <sl-option value="Septic Shock">Septic Shock</sl-option>
+                  <sl-option value="Anaphylaxis">Anaphylaxis</sl-option>
+                  <sl-option value="custom">Custom (specify below)</sl-option>
+                </sl-select>
+              </div>
+              
+              <div id="custom-scenario-container" class="form-group hidden">
+                <sl-input id="custom-scenario" placeholder="Describe your custom scenario"></sl-input>
+              </div>
+              
+              <div class="form-group">
+                <sl-textarea id="patient-details" placeholder="Additional patient details (optional)" rows="3"></sl-textarea>
+              </div>
+              
+              <sl-button id="generate-btn" variant="primary">Generate Scenario</sl-button>
+              
+              <div id="scenario-output-container" class="hidden">
+                <h3>Generated Scenario:</h3>
+                <div class="scenario-actions">
+                  <sl-button id="copy-json-btn" size="small">Copy JSON</sl-button>
+                  <sl-button id="download-json-btn" size="small">Download JSON</sl-button>
+                </div>
+                <sl-textarea id="scenario-output" readonly resize="auto" rows="10"></sl-textarea>
+              </div>
+            </div>
+          </sl-tab-panel>
+        </sl-tab-group>
       </div>
     </div>
     <script
