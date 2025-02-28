@@ -130,26 +130,68 @@ async function requestAPI(messages) {
   if (STREAM_DATA) {
     return await requestStream(messages);
   }
-  const req = await fetch("/.netlify/functions/anthropic", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ messages }),
-  });
-  if (req.ok) {
-    const data = await req.json();
-
-    const message = {
-      role: data.role,
-      content: data.content[0].text,
-    };
-
-    messages.push(message);
-    updateMessages();
+  
+  // Detect if this is likely a scenario request
+  const latestMessage = messages[messages.length - 1].content.toLowerCase();
+  const isScenarioRequest = 
+    latestMessage.includes("scenario") || 
+    latestMessage.includes("simulation") || 
+    latestMessage.includes("generate a") || 
+    latestMessage.includes("create a");
+  
+  // If it looks like a scenario request, use the streaming function
+  if (isScenarioRequest) {
+    try {
+      const req = await fetch("/.netlify/functions/anthropic-stream", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages }),
+      });
+      
+      if (req.ok) {
+        const data = await req.json();
+        
+        const message = {
+          role: data.role,
+          content: data.content[0].text,
+        };
+        
+        messages.push(message);
+        updateMessages();
+      } else {
+        console.error("Error:", req.status, req.type, req.body);
+        showError("An error occurred while generating the scenario.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showError("An error occurred while generating the scenario.");
+    }
   } else {
-    console.error("Error:", req.status, req.type, req.body);
-    showError("An error occurred while sending the message.");
+    // Use the regular API for non-scenario requests
+    const req = await fetch("/.netlify/functions/anthropic", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ messages }),
+    });
+    
+    if (req.ok) {
+      const data = await req.json();
+      
+      const message = {
+        role: data.role,
+        content: data.content[0].text,
+      };
+      
+      messages.push(message);
+      updateMessages();
+    } else {
+      console.error("Error:", req.status, req.type, req.body);
+      showError("An error occurred while sending the message.");
+    }
   }
 }
 
