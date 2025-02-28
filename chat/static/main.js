@@ -190,18 +190,17 @@ When creating a scenario:
 ALWAYS return your response as a complete valid JSON document.`;
     }
     
-    // Make direct request to Anthropic API
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    // Use our proxy function instead of direct API call
+    const response = await fetch("/.netlify/functions/anthropic-proxy", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": apiKey,
-        "Anthropic-Version": "2023-06-01"
       },
       body: JSON.stringify({
+        apiKey: apiKey,
         model: isScenarioRequest ? "claude-3-opus-20240229" : "claude-3-haiku-20240307",
         max_tokens: 4000,
-        system: systemPrompt,
+        systemPrompt: systemPrompt,
         messages: messages.filter(m => !m.isLoading).map(m => ({
           role: m.role,
           content: m.content
@@ -213,8 +212,8 @@ ALWAYS return your response as a complete valid JSON document.`;
     messages.pop();
     
     if (!response.ok) {
-      console.error("Anthropic API error:", response.status);
-      let errorMessage = `Error from Anthropic API: ${response.status}`;
+      console.error("API error:", response.status);
+      let errorMessage = `Error from API: ${response.status}`;
       
       try {
         const errorData = await response.json();
@@ -227,7 +226,7 @@ ALWAYS return your response as a complete valid JSON document.`;
       }
       
       // If we got a 401 unauthorized (API key invalid)
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 400) {
         // Clear stored API key
         localStorage.removeItem('anthropicApiKey');
         apiKey = null;
@@ -261,7 +260,6 @@ ALWAYS return your response as a complete valid JSON document.`;
     showError("An error occurred while processing your request: " + error.message);
   }
 }
-
 function showError(message, variant = "danger", duration = 5000) {
   const alert = Object.assign(document.createElement("sl-alert"), {
     variant,

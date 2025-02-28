@@ -2,96 +2,54 @@ const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
   try {
-    const requestBody = JSON.parse(event.body);
-    const { messages, part } = requestBody;
-    
-    // Determine which part of the scenario to generate based on the 'part' parameter
-    let systemPrompt = "You are a helpful assistant that specializes in healthcare education.";
-    
-    if (part) {
-      if (part === 1) {
-        // First part - basic structure and patient info
-        systemPrompt = `You are creating part 1 of a medical simulation scenario. Focus ONLY on the basic structure, title, participants, purpose, overview, learning objectives, and patient info. 
-DO NOT include stages, debriefing points or resources yet. Keep your response as valid JSON with these top-level keys only:
-{
-  "Type": "Scenario",
-  "Sim Title": "",
-  "List of Intended Participants": [],
-  "Purpose": "",
-  "Scenario Overview": "",
-  "Learning Objectives": [],
-  "Actor/patient info": {}
-}`;
-      } else if (part === 2) {
-        // Second part - stages
-        systemPrompt = `You are creating part 2 of a medical simulation scenario. Focus ONLY on the stages section. Create exactly 3 stages with realistic vital signs, technician prompts, and expected actions.
-Keep your response as valid JSON with this structure:
-{
-  "stages": {
-    "Stage 1": {},
-    "Stage 2": {},
-    "Stage 3": {}
-  }
-}`;
-      } else if (part === 3) {
-        // Third part - debriefing and handover
-        systemPrompt = `You are creating part 3 of a medical simulation scenario. Focus ONLY on the debriefing points and handover. 
-Keep your response as valid JSON with this structure:
-{
-  "Debriefing Points": [],
-  "Handover": {}
-}`;
-      } else if (part === 4) {
-        // Fourth part - resources
-        systemPrompt = `You are creating part 4 of a medical simulation scenario. Focus ONLY on creating relevant resources like labs, vital signs readings, etc.
-Keep your response as valid JSON with this structure:
-{
-  "resources": {}
-}`;
-      }
+    // Only accept POST requests
+    if (event.httpMethod !== 'POST') {
+      return {
+        statusCode: 405,
+        body: JSON.stringify({ error: 'Method not allowed' })
+      };
     }
-    
-    // Make request to Anthropic API with the appropriate prompt
+
+    const body = JSON.parse(event.body);
+    const { messages, systemPrompt, apiKey } = body;
+
+    // Validate API key
+    if (!apiKey || typeof apiKey !== 'string' || !apiKey.startsWith('sk-ant-')) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Invalid API key' })
+      };
+    }
+
+    // Forward request to Anthropic
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': process.env.ANTHROPIC_API_KEY,
+        'X-API-Key': apiKey,
         'Anthropic-Version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: "claude-3-haiku-20240307", // Use fastest model to avoid timeout
-        max_tokens: 2000, // Lower token limit to speed up response
-        system: systemPrompt,
+        model: body.model || "claude-3-haiku-20240307",
+        max_tokens: body.max_tokens || 4000,
+        system: systemPrompt || "You are a helpful assistant.",
         messages: messages
       })
     });
-    
-    // Handle API errors
-    if (!response.ok) {
-      const errorData = await response.json();
-      return {
-        statusCode: response.status,
-        body: JSON.stringify(errorData)
-      };
-    }
-    
-    // Get the response data
+
+    // Get response data
     const responseData = await response.json();
-    
-    // Add the part number to the response
-    responseData.part = part;
-    
-    // Return the data
+
+    // Return the Anthropic response
     return {
-      statusCode: 200,
+      statusCode: response.status,
       body: JSON.stringify(responseData)
     };
   } catch (error) {
     console.error('Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to proxy request to Anthropic', message: error.message })
+      body: JSON.stringify({ error: 'Server error', message: error.message })
     };
   }
 };
