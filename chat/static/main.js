@@ -38,13 +38,17 @@ function hideAuthModal() {
 
 // Handle authentication submission
 async function authenticateUser() {
+  console.log("Authentication started");
   const password = passwordInput.value;
+  console.log("Password entered:", password ? "Yes (not shown)" : "No");
+  
   if (!password) {
     authError.textContent = "Please enter a password";
     return;
   }
 
   try {
+    console.log("Submitting authentication request...");
     authSubmitBtn.disabled = true;
     
     const response = await fetch("/.netlify/functions/auth", {
@@ -55,7 +59,9 @@ async function authenticateUser() {
       body: JSON.stringify({ password })
     });
 
+    console.log("Auth response status:", response.status);
     const data = await response.json();
+    console.log("Auth response received:", data.success ? "Success" : "Failed");
 
     if (data.success) {
       // Store API key in local storage
