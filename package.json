@@ -6,7 +6,7 @@
 "dependencies": {
   "@anthropic/sdk": "latest"
 }
-  },
+  }
   "scripts": {
     "build": "echo 'No build step required'"
   }
