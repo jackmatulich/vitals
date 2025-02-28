@@ -3,11 +3,9 @@
   "version": "1.0.0",
   "description": "Medical simulation scenario generator using Claude API",
   "main": "index.js",
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.19.0",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "node-fetch": "^3.3.2"
+"dependencies": {
+  "@anthropic/sdk": "latest"
+}
   },
   "scripts": {
     "build": "echo 'No build step required'"
