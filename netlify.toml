@@ -1,19 +1,24 @@
 [build]
   publish = "."
-  functions = "netlify/functions"
+  command = "echo 'No build command'"
 
 [functions]
-  # General functions configuration
+  directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Function-specific configuration
+# Set timeout for specific function
 [[functions]]
-  # This targets your anthropic function
-  function = "anthropic"
-  # Increase timeout to 30 seconds (maximum allowed by Netlify is 26 seconds)
+  included_files = ["netlify/functions/anthropic/**"]
+  external_node_modules = ["@anthropic-ai/sdk"]
+  pattern = "netlify/functions/anthropic"
   timeout = 26
 
 [[redirects]]
   from = "/chat/*"
   to = "/chat/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
