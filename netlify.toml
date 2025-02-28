@@ -6,7 +6,6 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Set timeout for specific function
 [[functions]]
   included_files = ["netlify/functions/anthropic/**"]
   external_node_modules = ["@anthropic-ai/sdk"]
