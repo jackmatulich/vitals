@@ -5,39 +5,68 @@ const messagesHolder = document.getElementById("messages");
 const textInput = document.getElementById("text-input");
 const submitButton = document.getElementById("submit-btn");
 
-// Scenario generator elements
-const scenarioTypeSelect = document.getElementById("scenario-type");
-const customScenarioContainer = document.getElementById("custom-scenario-container");
-const customScenarioInput = document.getElementById("custom-scenario");
-const patientDetailsInput = document.getElementById("patient-details");
-const generateButton = document.getElementById("generate-btn");
-const scenarioOutputContainer = document.getElementById("scenario-output-container");
-const scenarioOutput = document.getElementById("scenario-output");
-const copyJsonButton = document.getElementById("copy-json-btn");
-const downloadJsonButton = document.getElementById("download-json-btn");
-
 const STREAM_DATA = false;
 
 let submitDisabled = false;
-
-// Add mapping function to convert hyphenated values to display names
-function getScenarioDisplayName(value) {
-  const scenarioMap = {
-    'hfnc-to-bipap': 'HFNC to BIPAP Escalation',
-    'cardiac-arrest': 'Cardiac Arrest',
-    'septic-shock': 'Septic Shock',
-    'anaphylaxis': 'Anaphylaxis'
-  };
-  return scenarioMap[value] || value;
-}
 
 function updateMessages() {
   messagesHolder.innerHTML = "";
   messages.forEach((message) => {
     const messageElement = document.createElement("div");
     messageElement.className = `message ${message.role}`;
-    messageElement.innerText = message.content;
+    
+    // Check if this is a JSON response from the assistant
+    if (message.role === "assistant" && message.content.trim().startsWith("{") && message.content.trim().endsWith("}")) {
+      try {
+        // Validate it's proper JSON
+        const jsonObj = JSON.parse(message.content);
+        
+        // Create a formatted display
+        messageElement.innerHTML = `
+          <div class="json-response">
+            <div class="json-header">
+              <span>Medical Simulation Scenario JSON</span>
+              <sl-button size="small" class="copy-json-btn">Copy JSON</sl-button>
+              <sl-button size="small" class="download-json-btn">Download</sl-button>
+            </div>
+            <pre class="json-content">${JSON.stringify(jsonObj, null, 2)}</pre>
+          </div>
+        `;
+      } catch (e) {
+        // Not valid JSON, display as regular text
+        messageElement.innerText = message.content;
+      }
+    } else {
+      // Regular message
+      messageElement.innerText = message.content;
+    }
+    
     messagesHolder.appendChild(messageElement);
+  });
+  
+  // Add event listeners to copy buttons
+  document.querySelectorAll('.copy-json-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const jsonText = e.target.closest('.json-response').querySelector('.json-content').textContent;
+      navigator.clipboard.writeText(jsonText).then(() => {
+        showError("JSON copied to clipboard!", "success", 3000);
+      });
+    });
+  });
+  
+  // Add event listeners to download buttons
+  document.querySelectorAll('.download-json-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const jsonText = e.target.closest('.json-response').querySelector('.json-content').textContent;
+      try {
+        const jsonObj = JSON.parse(jsonText);
+        const scenarioTitle = jsonObj["Sim Title"] || "medical-scenario";
+        const filename = scenarioTitle.toLowerCase().replace(/\s+/g, '-') + '.json';
+        downloadJson(jsonText, filename);
+      } catch (e) {
+        downloadJson(jsonText, 'medical-scenario.json');
+      }
+    });
   });
 
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -62,88 +91,6 @@ async function submitMessage() {
   }
   submitDisabled = false;
   submitButton.disabled = submitDisabled;
-}
-
-async function generateScenario() {
-  if (submitDisabled) {
-    return;
-  }
-  
-  submitDisabled = true;
-  generateButton.disabled = true;
-  
-  // Get scenario type with proper display name conversion
-  let scenarioTypeValue = scenarioTypeSelect.value;
-  let scenarioType = getScenarioDisplayName(scenarioTypeValue);
-  
-  if (scenarioTypeValue === 'custom') {
-    scenarioType = customScenarioInput.value;
-  }
-  
-  if (!scenarioType) {
-    showError("Please select or specify a scenario type");
-    submitDisabled = false;
-    generateButton.disabled = false;
-    return;
-  }
-  
-  // Get patient details
-  const patientDetails = patientDetailsInput.value;
-  
-  // Show loading state
-  generateButton.innerHTML = '<sl-spinner></sl-spinner> Generating...';
-  
-  try {
-    const req = await fetch("/.netlify/functions/anthropic", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ 
-        scenarioType, 
-        patientDetails: patientDetails ? patientDetails : null 
-      }),
-    });
-    
-    if (req.ok) {
-      const data = await req.json();
-      
-      // Try to extract JSON from the response
-      let jsonOutput = '';
-      try {
-        // Look for JSON in the response
-        const content = data.content[0].text;
-        const jsonStartIndex = content.indexOf('{');
-        const jsonEndIndex = content.lastIndexOf('}') + 1;
-        
-        if (jsonStartIndex >= 0 && jsonEndIndex > 0) {
-          jsonOutput = content.substring(jsonStartIndex, jsonEndIndex);
-          
-          // Validate and pretty-print the JSON
-          const parsedJson = JSON.parse(jsonOutput);
-          jsonOutput = JSON.stringify(parsedJson, null, 2);
-        } else {
-          jsonOutput = content;
-        }
-      } catch (e) {
-        // If JSON parsing fails, just use the raw output
-        jsonOutput = data.content[0].text;
-      }
-      
-      // Display the output
-      scenarioOutput.value = jsonOutput;
-      scenarioOutputContainer.classList.remove('hidden');
-    } else {
-      showError("An error occurred while generating the scenario");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    showError("An error occurred while generating the scenario");
-  } finally {
-    submitDisabled = false;
-    generateButton.disabled = false;
-    generateButton.innerHTML = 'Generate Scenario';
-  }
 }
 
 async function requestStream(messages) {
@@ -223,15 +170,6 @@ function showError(message, variant = "danger", duration = 5000) {
   });
 }
 
-// Utility functions for the scenario generator
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    showError("Copied to clipboard!", "success", 3000);
-  }, () => {
-    showError("Failed to copy to clipboard");
-  });
-}
-
 function downloadJson(text, filename) {
   const blob = new Blob([text], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -255,31 +193,6 @@ async function init() {
 
   submitButton.addEventListener("click", () => {
     submitMessage();
-  });
-  
-  // Scenario generator handlers
-  scenarioTypeSelect.addEventListener("change", () => {
-    if (scenarioTypeSelect.value === 'custom') {
-      customScenarioContainer.classList.remove('hidden');
-    } else {
-      customScenarioContainer.classList.add('hidden');
-    }
-  });
-  
-  generateButton.addEventListener("click", () => {
-    generateScenario();
-  });
-  
-  copyJsonButton.addEventListener("click", () => {
-    copyToClipboard(scenarioOutput.value);
-  });
-  
-  downloadJsonButton.addEventListener("click", () => {
-    const scenarioType = scenarioTypeSelect.value === 'custom' 
-      ? customScenarioInput.value.replace(/\s+/g, '-').toLowerCase() 
-      : scenarioTypeSelect.value.replace(/\s+/g, '-').toLowerCase();
-      
-    downloadJson(scenarioOutput.value, `${scenarioType}-scenario.json`);
   });
 }
 
