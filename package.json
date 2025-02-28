@@ -4,7 +4,7 @@
   "description": "Medical simulation scenario generator using Claude API",
   "main": "index.js",
 "dependencies": {
-    "@anthropic/sdk": "^0.10.0"
+  "@anthropic-ai/sdk": "latest"
 },
   
   "scripts": {
