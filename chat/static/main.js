@@ -4,13 +4,49 @@ const messagesContainer = document.querySelector(".messages-container");
 const messagesHolder = document.getElementById("messages");
 const textInput = document.getElementById("text-input");
 const submitButton = document.getElementById("submit-btn");
+const apiKeyInput = document.getElementById("api-key-input");
+const apiKeySubmit = document.getElementById("api-key-submit");
+const apiKeyStatus = document.getElementById("api-key-status");
+const apiKeyForm = document.getElementById("api-key-form");
 
 const STREAM_DATA = false;
 let submitDisabled = false;
+let apiKey = null;
 
-// For testing - hardcode your API key here or set it as a constant
-// In production, you would want to get this securely from a server
-const API_KEY = "PASTE_YOUR_API_KEY_HERE";  // ⚠️ WARNING: Only for testing!
+// Check for stored API key
+function checkApiKey() {
+  const storedKey = localStorage.getItem('anthropicApiKey');
+  if (storedKey) {
+    apiKey = storedKey;
+    apiKeyStatus.textContent = "API key loaded from storage";
+    apiKeyStatus.className = "api-key-status key-success";
+    apiKeyInput.value = "••••••••••••••••••••••••••";
+  }
+}
+
+// Save API key
+function saveApiKey() {
+  const enteredKey = apiKeyInput.value.trim();
+  if (!enteredKey) {
+    apiKeyStatus.textContent = "Please enter a valid API key";
+    apiKeyStatus.className = "api-key-status key-error";
+    return;
+  }
+  
+  // Simple validation - check if it looks like an Anthropic key
+  if (!enteredKey.startsWith('sk-ant-')) {
+    apiKeyStatus.textContent = "API key should start with sk-ant-";
+    apiKeyStatus.className = "api-key-status key-error";
+    return;
+  }
+  
+  // Save the key and update UI
+  apiKey = enteredKey;
+  localStorage.setItem('anthropicApiKey', apiKey);
+  apiKeyStatus.textContent = "API key saved successfully";
+  apiKeyStatus.className = "api-key-status key-success";
+  apiKeyInput.value = "••••••••••••••••••••••••••";
+}
 
 function updateMessages() {
   messagesHolder.innerHTML = "";
@@ -86,6 +122,13 @@ async function submitMessage() {
     return;
   }
   
+  // Check if API key is available
+  if (!apiKey) {
+    showError("Please enter your Anthropic API key first");
+    apiKeyInput.focus();
+    return;
+  }
+  
   submitDisabled = true;
   submitButton.disabled = submitDisabled;
   const message = textInput.value;
@@ -105,6 +148,13 @@ async function submitMessage() {
 
 async function requestAPI(messages) {
   try {
+    // Check if API key is available
+    if (!apiKey) {
+      showError("Please enter your Anthropic API key first");
+      apiKeyInput.focus();
+      return;
+    }
+    
     // Show loading indicator
     const loadingMessage = {
       role: "assistant",
@@ -145,7 +195,7 @@ ALWAYS return your response as a complete valid JSON document.`;
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": API_KEY,
+        "X-API-Key": apiKey,
         "Anthropic-Version": "2023-06-01"
       },
       body: JSON.stringify({
@@ -174,6 +224,17 @@ ALWAYS return your response as a complete valid JSON document.`;
         }
       } catch (e) {
         // Couldn't parse error as JSON
+      }
+      
+      // If we got a 401 unauthorized (API key invalid)
+      if (response.status === 401) {
+        // Clear stored API key
+        localStorage.removeItem('anthropicApiKey');
+        apiKey = null;
+        apiKeyStatus.textContent = "Invalid API key. Please try again.";
+        apiKeyStatus.className = "api-key-status key-error";
+        apiKeyInput.value = "";
+        apiKeyInput.focus();
       }
       
       showError(errorMessage);
@@ -231,6 +292,18 @@ function downloadJson(text, filename) {
 }
 
 async function init() {
+  // Check for saved API key
+  checkApiKey();
+  
+  // API key event listeners
+  apiKeySubmit.addEventListener("click", saveApiKey);
+  apiKeyInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      saveApiKey();
+    }
+  });
+  
   // Chat handlers
   textInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {

@@ -209,3 +209,34 @@ sl-textarea {
   font-size: 14px;
   min-height: 20px;
 }
+
+.api-key-form {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.api-key-status {
+  font-size: 14px;
+  margin: 5px 0 0 0;
+}
+
+.key-success {
+  color: green;
+}
+
+.key-error {
+  color: red;
+}
+
+.hidden {
+  display: none;
+}

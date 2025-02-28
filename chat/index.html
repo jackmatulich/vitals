@@ -15,7 +15,14 @@
         <h1>Medical Simulation Generator</h1>
         <p>Ask me to create clinical simulation scenarios for any clinical situation</p>
       </div>
-      
+      <div id="api-key-form" class="api-key-form">
+        <h3>Enter Anthropic API Key</h3>
+        <div class="input-row">
+          <sl-input id="api-key-input" type="password" placeholder="sk-ant-api..."></sl-input>
+          <sl-button id="api-key-submit" variant="primary">Save</sl-button>
+        </div>
+        <p id="api-key-status" class="api-key-status"></p>
+      </div>
       <div class="messages-container">
         <div id="messages" class="messages">
           <div class="message assistant">
