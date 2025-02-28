@@ -153,9 +153,6 @@ async function requestAPI(messages) {
       latestMessage.includes("generate a") || 
       latestMessage.includes("create a");
     
-    // Basic system prompt for regular requests
-    let systemPrompt = "You are a helpful assistant that specializes in healthcare education.";
-    
     // For scenario requests, use the chunked approach
     if (isScenarioRequest) {
       await generateScenarioInChunks(messages);
@@ -171,8 +168,8 @@ async function requestAPI(messages) {
     messages.push(loadingMessage);
     updateMessages();
     
-    // Use our proxy function for regular responses
-    const response = await fetch("/.netlify/functions/anthropic-proxy", {
+    // Use regular anthropic function for non-scenarios
+    const response = await fetch("/.netlify/functions/anthropic", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -181,8 +178,7 @@ async function requestAPI(messages) {
         messages: messages.filter(m => !m.isLoading).map(m => ({
           role: m.role,
           content: m.content
-        })),
-        systemPrompt: systemPrompt
+        }))
       })
     });
     
@@ -210,7 +206,15 @@ async function requestAPI(messages) {
   }
 }
 
-// New function to generate scenarios in chunks
+
+
+
+
+
+
+
+
+
 async function generateScenarioInChunks(messages) {
   // Show loading message
   const loadingMessage = {
@@ -224,6 +228,34 @@ async function generateScenarioInChunks(messages) {
   try {
     // Generate the scenario in 4 parts
     let scenarioParts = {};
+    
+    // Helper function to safely parse JSON
+    function safeJsonParse(text) {
+      try {
+        // First try direct parsing
+        return JSON.parse(text);
+      } catch (e) {
+        console.error("Initial JSON parse error:", e);
+        
+        // Try to clean the JSON string before parsing
+        try {
+          // Find the first '{' and last '}'
+          const startIdx = text.indexOf('{');
+          const endIdx = text.lastIndexOf('}') + 1;
+          
+          if (startIdx >= 0 && endIdx > 0) {
+            const jsonText = text.substring(startIdx, endIdx);
+            return JSON.parse(jsonText);
+          }
+        } catch (e2) {
+          console.error("Secondary JSON parse error:", e2);
+        }
+        
+        // If all parsing attempts fail, return a minimal object
+        console.error("Could not parse JSON, using fallback");
+        return {};
+      }
+    }
     
     // Part 1: Basic structure and patient info
     loadingMessage.content = "Generating medical simulation scenario... (1/4: Basic structure)";
@@ -246,7 +278,7 @@ async function generateScenarioInChunks(messages) {
     
     const part1Data = await part1Response.json();
     const part1Content = part1Data.content[0].text;
-    scenarioParts.part1 = JSON.parse(part1Content);
+    scenarioParts.part1 = safeJsonParse(part1Content);
     
     // Part 2: Stages
     loadingMessage.content = "Generating medical simulation scenario... (2/4: Stages)";
@@ -260,7 +292,7 @@ async function generateScenarioInChunks(messages) {
           ...messages.filter(m => !m.isLoading).map(m => ({
             role: m.role, content: m.content
           })),
-          { role: "assistant", content: part1Content }
+          { role: "assistant", content: JSON.stringify(scenarioParts.part1) }
         ],
         part: 2
       })
@@ -272,7 +304,7 @@ async function generateScenarioInChunks(messages) {
     
     const part2Data = await part2Response.json();
     const part2Content = part2Data.content[0].text;
-    scenarioParts.part2 = JSON.parse(part2Content);
+    scenarioParts.part2 = safeJsonParse(part2Content);
     
     // Part 3: Debriefing and handover
     loadingMessage.content = "Generating medical simulation scenario... (3/4: Debriefing)";
@@ -286,7 +318,10 @@ async function generateScenarioInChunks(messages) {
           ...messages.filter(m => !m.isLoading).map(m => ({
             role: m.role, content: m.content
           })),
-          { role: "assistant", content: part1Content + "\n" + part2Content }
+          { 
+            role: "assistant", 
+            content: JSON.stringify(scenarioParts.part1) + "\n" + JSON.stringify(scenarioParts.part2)
+          }
         ],
         part: 3
       })
@@ -298,7 +333,7 @@ async function generateScenarioInChunks(messages) {
     
     const part3Data = await part3Response.json();
     const part3Content = part3Data.content[0].text;
-    scenarioParts.part3 = JSON.parse(part3Content);
+    scenarioParts.part3 = safeJsonParse(part3Content);
     
     // Part 4: Resources
     loadingMessage.content = "Generating medical simulation scenario... (4/4: Resources)";
@@ -312,7 +347,12 @@ async function generateScenarioInChunks(messages) {
           ...messages.filter(m => !m.isLoading).map(m => ({
             role: m.role, content: m.content
           })),
-          { role: "assistant", content: part1Content + "\n" + part2Content + "\n" + part3Content }
+          { 
+            role: "assistant", 
+            content: JSON.stringify(scenarioParts.part1) + "\n" + 
+                     JSON.stringify(scenarioParts.part2) + "\n" + 
+                     JSON.stringify(scenarioParts.part3)
+          }
         ],
         part: 4
       })
@@ -324,7 +364,7 @@ async function generateScenarioInChunks(messages) {
     
     const part4Data = await part4Response.json();
     const part4Content = part4Data.content[0].text;
-    scenarioParts.part4 = JSON.parse(part4Content);
+    scenarioParts.part4 = safeJsonParse(part4Content);
     
     // Combine all parts into a single JSON object
     const combinedScenario = {
@@ -340,7 +380,7 @@ async function generateScenarioInChunks(messages) {
     // Add combined scenario as a message
     const scenarioMessage = {
       role: "assistant",
-      content: JSON.stringify(combinedScenario)
+      content: JSON.stringify(combinedScenario, null, 2)
     };
     
     messages.push(scenarioMessage);
@@ -353,7 +393,6 @@ async function generateScenarioInChunks(messages) {
     showError("Failed to generate scenario: " + error.message);
   }
 }
-
 
 
 
