@@ -1,8 +1,18 @@
 [build]
   publish = "."
   functions = "netlify/functions"
-   [functions.anthropic]
-    timeout = 30 # Increase timeout to 30 seconds
+
+[functions]
+  # General functions configuration
+  node_bundler = "esbuild"
+
+# Function-specific configuration
+[[functions]]
+  # This targets your anthropic function
+  function = "anthropic"
+  # Increase timeout to 30 seconds (maximum allowed by Netlify is 26 seconds)
+  timeout = 26
+
 [[redirects]]
   from = "/chat/*"
   to = "/chat/index.html"
