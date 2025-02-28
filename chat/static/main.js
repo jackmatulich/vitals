@@ -4,15 +4,75 @@ const messagesContainer = document.querySelector(".messages-container");
 const messagesHolder = document.getElementById("messages");
 const textInput = document.getElementById("text-input");
 const submitButton = document.getElementById("submit-btn");
+const authModal = document.getElementById("auth-modal");
+const passwordInput = document.getElementById("password-input");
+const authSubmitBtn = document.getElementById("auth-submit-btn");
+const authError = document.getElementById("auth-error");
 
 const STREAM_DATA = false;
-
 let submitDisabled = false;
+let apiKey = null;
 
-function debugLog(message, data) {
-  console.log(`[DEBUG] ${message}`, data);
+// Check if user is already authenticated
+function checkAuthentication() {
+  // Check local storage for API key
+  const storedKey = localStorage.getItem('apiKey');
+  if (storedKey) {
+    apiKey = storedKey;
+    hideAuthModal();
+  } else {
+    showAuthModal();
+  }
 }
 
+// Show authentication modal
+function showAuthModal() {
+  authModal.classList.remove('hidden');
+  passwordInput.focus();
+}
+
+// Hide authentication modal
+function hideAuthModal() {
+  authModal.classList.add('hidden');
+}
+
+// Handle authentication submission
+async function authenticateUser() {
+  const password = passwordInput.value;
+  if (!password) {
+    authError.textContent = "Please enter a password";
+    return;
+  }
+
+  try {
+    authSubmitBtn.disabled = true;
+    
+    const response = await fetch("/.netlify/functions/auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Store API key in local storage
+      apiKey = data.apiKey;
+      localStorage.setItem('apiKey', apiKey);
+      hideAuthModal();
+      showError("Authentication successful", "success", 3000);
+    } else {
+      authError.textContent = data.error || "Authentication failed";
+    }
+  } catch (error) {
+    console.error("Authentication error:", error);
+    authError.textContent = "An error occurred during authentication";
+  } finally {
+    authSubmitBtn.disabled = false;
+  }
+}
 
 function updateMessages() {
   messagesHolder.innerHTML = "";
@@ -87,6 +147,13 @@ async function submitMessage() {
   if (submitDisabled) {
     return;
   }
+  
+  // Check if authenticated
+  if (!apiKey) {
+    showAuthModal();
+    return;
+  }
+  
   submitDisabled = true;
   submitButton.disabled = submitDisabled;
   const message = textInput.value;
@@ -104,47 +171,23 @@ async function submitMessage() {
   submitButton.disabled = submitDisabled;
 }
 
-async function requestStream(messages) {
-  const stream = await fetch("/.netlify/functions/anthropic-stream", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ messages }),
-  });
-
-  const text = await stream.text();
-  const parts = text.split(">>");
-
-  const newMessage = {
-    role: "assistant",
-    content: "",
-  };
-
-  messages.push(newMessage);
-  const activeMessage = messages[messages.length - 1];
-
-  for (const part of parts) {
-    if (part) {
-      const json = JSON.parse(part);
-      const content = json.message;
-      if (content && content !== "undefined") {
-        activeMessage.content += content;
-      }
-    }
-  }
-
-  updateMessages();
-}
-
-
-
-
-
-
-
 async function requestAPI(messages) {
   try {
+    // Check if authenticated
+    if (!apiKey) {
+      showAuthModal();
+      return;
+    }
+    
+    // Show loading indicator
+    const loadingMessage = {
+      role: "assistant",
+      content: "Generating response...",
+      isLoading: true
+    };
+    messages.push(loadingMessage);
+    updateMessages();
+
     // Check if this is a scenario request
     const latestMessage = messages[messages.length - 1].content.toLowerCase();
     const isScenarioRequest = 
@@ -153,28 +196,36 @@ async function requestAPI(messages) {
       latestMessage.includes("generate a") || 
       latestMessage.includes("create a");
     
-    // For scenario requests, use the chunked approach
+    // Use specific system prompt for scenario generation
+    let systemPrompt = "You are a helpful assistant that specializes in healthcare education.";
+    
     if (isScenarioRequest) {
-      await generateScenarioInChunks(messages);
-      return;
+      systemPrompt = `You are a clinical instructional designer focused on creating medical simulation scenarios for postgraduate hospital training. You specialize in scenarios where a patient's condition deteriorates, requiring emergency management.
+
+When creating a scenario:
+1. Follow the exact JSON structure provided below
+2. Include realistic vital signs that show appropriate progression
+3. Ensure all medical details are clinically accurate
+4. Only include resources (lab tests, imaging) that are clinically relevant
+5. Provide detailed technician prompts for simulation delivery
+6. Create appropriate expected actions for participants
+7. Include clear debriefing points focused on learning objectives
+
+ALWAYS return your response as a complete valid JSON document.`;
     }
     
-    // Normal request for non-scenario questions
-    const loadingMessage = {
-      role: "assistant",
-      content: "Generating response...",
-      isLoading: true
-    };
-    messages.push(loadingMessage);
-    updateMessages();
-    
-    // Use regular anthropic function for non-scenarios
-    const response = await fetch("/.netlify/functions/anthropic", {
+    // Make direct request to Anthropic API
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+        "Anthropic-Version": "2023-06-01"
       },
       body: JSON.stringify({
+        model: isScenarioRequest ? "claude-3-opus-20240229" : "claude-3-haiku-20240307",
+        max_tokens: 4000,
+        system: systemPrompt,
         messages: messages.filter(m => !m.isLoading).map(m => ({
           role: m.role,
           content: m.content
@@ -182,12 +233,23 @@ async function requestAPI(messages) {
       })
     });
     
-    // Remove the loading message
+    // Remove loading message
     messages.pop();
     
     if (!response.ok) {
-      console.error("API error:", response.status);
-      showError(`Error from API: ${response.status}`);
+      console.error("Anthropic API error:", response.status);
+      
+      // Check if we got a 401 unauthorized (API key invalid)
+      if (response.status === 401) {
+        // Clear stored API key and show auth modal
+        localStorage.removeItem('apiKey');
+        apiKey = null;
+        showAuthModal();
+        showError("API key is invalid or expired. Please authenticate again.");
+        return;
+      }
+      
+      showError(`Error from Anthropic API: ${response.status}`);
       return;
     }
     
@@ -202,206 +264,15 @@ async function requestAPI(messages) {
     updateMessages();
   } catch (error) {
     console.error("Error in requestAPI:", error);
+    
+    // Remove loading message if it exists
+    if (messages.length > 0 && messages[messages.length - 1].isLoading) {
+      messages.pop();
+    }
+    
     showError("An error occurred while processing your request.");
   }
 }
-
-
-
-
-
-
-
-
-
-
-async function generateScenarioInChunks(messages) {
-  // Show loading message
-  const loadingMessage = {
-    role: "assistant",
-    content: "Generating medical simulation scenario... (1/4: Basic structure)",
-    isLoading: true
-  };
-  messages.push(loadingMessage);
-  updateMessages();
-  
-  try {
-    // Generate the scenario in 4 parts
-    let scenarioParts = {};
-    
-    // Helper function to safely parse JSON
-    function safeJsonParse(text) {
-      try {
-        // First try direct parsing
-        return JSON.parse(text);
-      } catch (e) {
-        console.error("Initial JSON parse error:", e);
-        
-        // Try to clean the JSON string before parsing
-        try {
-          // Find the first '{' and last '}'
-          const startIdx = text.indexOf('{');
-          const endIdx = text.lastIndexOf('}') + 1;
-          
-          if (startIdx >= 0 && endIdx > 0) {
-            const jsonText = text.substring(startIdx, endIdx);
-            return JSON.parse(jsonText);
-          }
-        } catch (e2) {
-          console.error("Secondary JSON parse error:", e2);
-        }
-        
-        // If all parsing attempts fail, return a minimal object
-        console.error("Could not parse JSON, using fallback");
-        return {};
-      }
-    }
-    
-    // Part 1: Basic structure and patient info
-    loadingMessage.content = "Generating medical simulation scenario... (1/4: Basic structure)";
-    updateMessages();
-    
-    const part1Response = await fetch("/.netlify/functions/anthropic-proxy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: messages.filter(m => !m.isLoading).map(m => ({
-          role: m.role, content: m.content
-        })),
-        part: 1
-      })
-    });
-    
-    if (!part1Response.ok) {
-      throw new Error(`Failed to generate part 1: ${part1Response.status}`);
-    }
-    
-    const part1Data = await part1Response.json();
-    const part1Content = part1Data.content[0].text;
-    scenarioParts.part1 = safeJsonParse(part1Content);
-    
-    // Part 2: Stages
-    loadingMessage.content = "Generating medical simulation scenario... (2/4: Stages)";
-    updateMessages();
-    
-    const part2Response = await fetch("/.netlify/functions/anthropic-proxy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [
-          ...messages.filter(m => !m.isLoading).map(m => ({
-            role: m.role, content: m.content
-          })),
-          { role: "assistant", content: JSON.stringify(scenarioParts.part1) }
-        ],
-        part: 2
-      })
-    });
-    
-    if (!part2Response.ok) {
-      throw new Error(`Failed to generate part 2: ${part2Response.status}`);
-    }
-    
-    const part2Data = await part2Response.json();
-    const part2Content = part2Data.content[0].text;
-    scenarioParts.part2 = safeJsonParse(part2Content);
-    
-    // Part 3: Debriefing and handover
-    loadingMessage.content = "Generating medical simulation scenario... (3/4: Debriefing)";
-    updateMessages();
-    
-    const part3Response = await fetch("/.netlify/functions/anthropic-proxy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [
-          ...messages.filter(m => !m.isLoading).map(m => ({
-            role: m.role, content: m.content
-          })),
-          { 
-            role: "assistant", 
-            content: JSON.stringify(scenarioParts.part1) + "\n" + JSON.stringify(scenarioParts.part2)
-          }
-        ],
-        part: 3
-      })
-    });
-    
-    if (!part3Response.ok) {
-      throw new Error(`Failed to generate part 3: ${part3Response.status}`);
-    }
-    
-    const part3Data = await part3Response.json();
-    const part3Content = part3Data.content[0].text;
-    scenarioParts.part3 = safeJsonParse(part3Content);
-    
-    // Part 4: Resources
-    loadingMessage.content = "Generating medical simulation scenario... (4/4: Resources)";
-    updateMessages();
-    
-    const part4Response = await fetch("/.netlify/functions/anthropic-proxy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [
-          ...messages.filter(m => !m.isLoading).map(m => ({
-            role: m.role, content: m.content
-          })),
-          { 
-            role: "assistant", 
-            content: JSON.stringify(scenarioParts.part1) + "\n" + 
-                     JSON.stringify(scenarioParts.part2) + "\n" + 
-                     JSON.stringify(scenarioParts.part3)
-          }
-        ],
-        part: 4
-      })
-    });
-    
-    if (!part4Response.ok) {
-      throw new Error(`Failed to generate part 4: ${part4Response.status}`);
-    }
-    
-    const part4Data = await part4Response.json();
-    const part4Content = part4Data.content[0].text;
-    scenarioParts.part4 = safeJsonParse(part4Content);
-    
-    // Combine all parts into a single JSON object
-    const combinedScenario = {
-      ...scenarioParts.part1,
-      ...scenarioParts.part2,
-      ...scenarioParts.part3,
-      ...scenarioParts.part4
-    };
-    
-    // Remove loading message
-    messages.pop();
-    
-    // Add combined scenario as a message
-    const scenarioMessage = {
-      role: "assistant",
-      content: JSON.stringify(combinedScenario, null, 2)
-    };
-    
-    messages.push(scenarioMessage);
-    updateMessages();
-    
-  } catch (error) {
-    console.error("Error generating scenario:", error);
-    // Remove loading message
-    messages.pop();
-    showError("Failed to generate scenario: " + error.message);
-  }
-}
-
-
-
-
-
-
-
-
-
 
 function showError(message, variant = "danger", duration = 5000) {
   const alert = Object.assign(document.createElement("sl-alert"), {
@@ -433,6 +304,18 @@ function downloadJson(text, filename) {
 }
 
 async function init() {
+  // Check authentication on page load
+  checkAuthentication();
+  
+  // Auth event listeners
+  authSubmitBtn.addEventListener("click", authenticateUser);
+  passwordInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      authenticateUser();
+    }
+  });
+  
   // Chat handlers
   textInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
@@ -445,5 +328,3 @@ async function init() {
     submitMessage();
   });
 }
-
-init();
