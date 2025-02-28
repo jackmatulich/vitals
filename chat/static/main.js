@@ -9,6 +9,11 @@ const STREAM_DATA = false;
 
 let submitDisabled = false;
 
+function debugLog(message, data) {
+  console.log(`[DEBUG] ${message}`, data);
+}
+
+
 function updateMessages() {
   messagesHolder.innerHTML = "";
   messages.forEach((message) => {
@@ -127,50 +132,25 @@ async function requestStream(messages) {
 }
 
 async function requestAPI(messages) {
-  if (STREAM_DATA) {
-    return await requestStream(messages);
-  }
-  
-  // Detect if this is likely a scenario request
-  const latestMessage = messages[messages.length - 1].content.toLowerCase();
-  const isScenarioRequest = 
-    latestMessage.includes("scenario") || 
-    latestMessage.includes("simulation") || 
-    latestMessage.includes("generate a") || 
-    latestMessage.includes("create a");
-  
-  // If it looks like a scenario request, use the streaming function
-  if (isScenarioRequest) {
-    try {
-      const req = await fetch("/.netlify/functions/anthropic-stream", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ messages }),
-      });
-      
-      if (req.ok) {
-        const data = await req.json();
-        
-        const message = {
-          role: data.role,
-          content: data.content[0].text,
-        };
-        
-        messages.push(message);
-        updateMessages();
-      } else {
-        console.error("Error:", req.status, req.type, req.body);
-        showError("An error occurred while generating the scenario.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      showError("An error occurred while generating the scenario.");
-    }
-  } else {
-    // Use the regular API for non-scenario requests
-    const req = await fetch("/.netlify/functions/anthropic", {
+  try {
+    // Detect if this is likely a scenario request
+    const latestMessage = messages[messages.length - 1].content.toLowerCase();
+    debugLog("Latest message:", latestMessage);
+    
+    const isScenarioRequest = 
+      latestMessage.includes("scenario") || 
+      latestMessage.includes("simulation") || 
+      latestMessage.includes("generate a") || 
+      latestMessage.includes("create a");
+    
+    // Choose which endpoint to call
+    const endpoint = isScenarioRequest 
+      ? "/.netlify/functions/anthropic-stream" 
+      : "/.netlify/functions/anthropic";
+    
+    debugLog("Using endpoint:", endpoint);
+    
+    const req = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -178,20 +158,33 @@ async function requestAPI(messages) {
       body: JSON.stringify({ messages }),
     });
     
-    if (req.ok) {
-      const data = await req.json();
-      
-      const message = {
-        role: data.role,
-        content: data.content[0].text,
-      };
-      
-      messages.push(message);
-      updateMessages();
-    } else {
-      console.error("Error:", req.status, req.type, req.body);
-      showError("An error occurred while sending the message.");
+    debugLog("Response status:", req.status);
+    
+    if (!req.ok) {
+      console.error(`Error ${req.status} from endpoint ${endpoint}`);
+      try {
+        const errorText = await req.text();
+        console.error("Error details:", errorText);
+      } catch (e) {
+        console.error("Could not read error details");
+      }
+      showError(`Error ${req.status}: Failed to get response`);
+      return;
     }
+    
+    const data = await req.json();
+    debugLog("Response data:", data);
+    
+    const message = {
+      role: data.role || "assistant",
+      content: data.content?.[0]?.text || JSON.stringify(data, null, 2),
+    };
+    
+    messages.push(message);
+    updateMessages();
+  } catch (error) {
+    console.error("Error in requestAPI:", error);
+    showError("An error occurred while processing your request.");
   }
 }
 
