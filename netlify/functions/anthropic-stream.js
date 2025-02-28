@@ -16,7 +16,7 @@ exports.handler = async (event, context) => {
       systemPrompt = "You are a clinical instructional designer..."; // Your full prompt
     }
     
-    // Make request to Anthropic API using a valid model identifier
+    // Make request to Anthropic API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -25,25 +25,12 @@ exports.handler = async (event, context) => {
         'Anthropic-Version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: "claude-3-sonnet-20240229", // Try one of these alternatives
-        // model: "claude-3-opus-20240229", // Or use Opus model
-        // model: "claude-3-sonnet", // Or try without date
-        // model: "claude-3-haiku-20240307", // Or use Haiku model
+        model: "claude-3-sonnet",
         max_tokens: 4000,
         system: systemPrompt,
         messages: messages
       })
     });
-    
-    // Check for API errors
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error("Anthropic API error:", response.status, errorData);
-      return {
-        statusCode: response.status,
-        body: errorData
-      };
-    }
     
     // Get the response data
     const data = await response.json();
@@ -56,11 +43,16 @@ exports.handler = async (event, context) => {
     console.error("Error:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ 
-        error: 'Function execution error',
-        message: error.message,
-        stack: error.stack
-      })
+      body: JSON.stringify({ error: 'Function execution error' })
     };
   }
 };
+
+Make sure you have node-fetch in your dependencies:
+
+jsonCopy{
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.10.0",
+    "node-fetch": "^2.6.7"
+  }
+}
