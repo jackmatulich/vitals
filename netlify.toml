@@ -1,23 +1,8 @@
 [build]
   publish = "."
-  command = "echo 'No build command'"
-
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-
-[[functions]]
-  included_files = ["netlify/functions/anthropic/**"]
-  external_node_modules = ["@anthropic-ai/sdk"]
-  pattern = "netlify/functions/anthropic"
-  timeout = 26
+  functions = "netlify/functions"
 
 [[redirects]]
   from = "/chat/*"
   to = "/chat/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
   status = 200
