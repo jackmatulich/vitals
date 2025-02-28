@@ -139,26 +139,6 @@ async function requestStream(messages) {
 
 async function requestAPI(messages) {
   try {
-    // First get the API key from our secure function
-    const tokenResponse = await fetch("/.netlify/functions/get-anthropic-token");
-    
-    if (!tokenResponse.ok) {
-      console.error("Failed to get API token");
-      showError("Authentication failed. Please try again.");
-      return;
-    }
-    
-    const { apiKey, expires } = await tokenResponse.json();
-    
-    // Validate token hasn't expired
-    if (expires && Date.now() > expires) {
-      console.error("Token expired");
-      showError("Authentication expired. Please refresh the page.");
-      return;
-    }
-    
-    debugLog("Got API token, making direct Anthropic request");
-    
     // Check if this is a scenario request
     const latestMessage = messages[messages.length - 1].content.toLowerCase();
     const isScenarioRequest = 
@@ -194,22 +174,18 @@ ALWAYS return your response as a complete valid JSON document.`;
     messages.push(loadingMessage);
     updateMessages();
     
-    // Make direct request to Anthropic API
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    // Use our proxy function
+    const response = await fetch("/.netlify/functions/anthropic-proxy", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": apiKey,
-        "Anthropic-Version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "claude-3-opus-20240229",
-        max_tokens: 4000,
-        system: systemPrompt,
         messages: messages.filter(m => !m.isLoading).map(m => ({
           role: m.role,
           content: m.content
-        }))
+        })),
+        systemPrompt: systemPrompt
       })
     });
     
@@ -217,17 +193,8 @@ ALWAYS return your response as a complete valid JSON document.`;
     messages.pop();
     
     if (!response.ok) {
-      console.error("Anthropic API error:", response.status);
-      let errorDetails = "Unknown error";
-      try {
-        const errorData = await response.text();
-        console.error("Error details:", errorData);
-        errorDetails = errorData;
-      } catch (e) {
-        console.error("Could not read error details");
-      }
-      
-      showError(`Error from Anthropic API: ${response.status}`);
+      console.error("API error:", response.status);
+      showError(`Error from API: ${response.status}`);
       return;
     }
     
@@ -244,8 +211,7 @@ ALWAYS return your response as a complete valid JSON document.`;
     console.error("Error in requestAPI:", error);
     showError("An error occurred while processing your request.");
   }
-}
-
+} 
 function showError(message, variant = "danger", duration = 5000) {
   const alert = Object.assign(document.createElement("sl-alert"), {
     variant,
