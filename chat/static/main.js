@@ -20,8 +20,14 @@ function updateMessages() {
     const messageElement = document.createElement("div");
     messageElement.className = `message ${message.role}`;
     
-    // Check if this is a JSON response from the assistant
-    if (message.role === "assistant" && message.content.trim().startsWith("{") && message.content.trim().endsWith("}")) {
+    if (message.isLoading) {
+      messageElement.innerHTML = `
+        <div class="loading-message">
+          <div class="loading-spinner"></div>
+          <p>${message.content}</p>
+        </div>
+      `;
+    } else if (message.role === "assistant" && message.content.trim().startsWith("{") && message.content.trim().endsWith("}")) {
       try {
         // Validate it's proper JSON
         const jsonObj = JSON.parse(message.content);
@@ -133,51 +139,103 @@ async function requestStream(messages) {
 
 async function requestAPI(messages) {
   try {
-    // Detect if this is likely a scenario request
-    const latestMessage = messages[messages.length - 1].content.toLowerCase();
-    debugLog("Latest message:", latestMessage);
+    // First get the API key from our secure function
+    const tokenResponse = await fetch("/.netlify/functions/get-anthropic-token");
     
+    if (!tokenResponse.ok) {
+      console.error("Failed to get API token");
+      showError("Authentication failed. Please try again.");
+      return;
+    }
+    
+    const { apiKey, expires } = await tokenResponse.json();
+    
+    // Validate token hasn't expired
+    if (expires && Date.now() > expires) {
+      console.error("Token expired");
+      showError("Authentication expired. Please refresh the page.");
+      return;
+    }
+    
+    debugLog("Got API token, making direct Anthropic request");
+    
+    // Check if this is a scenario request
+    const latestMessage = messages[messages.length - 1].content.toLowerCase();
     const isScenarioRequest = 
       latestMessage.includes("scenario") || 
       latestMessage.includes("simulation") || 
       latestMessage.includes("generate a") || 
       latestMessage.includes("create a");
     
-    // Choose which endpoint to call
-    const endpoint = isScenarioRequest 
-      ? "/.netlify/functions/anthropic-stream" 
-      : "/.netlify/functions/anthropic";
+    // Use enhanced system prompt for scenario requests
+    let systemPrompt = "You are a helpful assistant that specializes in healthcare education.";
     
-    debugLog("Using endpoint:", endpoint);
+    if (isScenarioRequest) {
+      systemPrompt = `You are a clinical instructional designer focused on creating medical simulation scenarios for postgraduate hospital training. You specialize in scenarios where a patient's condition deteriorates, requiring emergency management.
+
+When creating a scenario:
+1. Follow the exact JSON structure provided below
+2. Include realistic vital signs that show appropriate progression
+3. Ensure all medical details are clinically accurate
+4. Only include resources (lab tests, imaging) that are clinically relevant
+5. Provide detailed technician prompts for simulation delivery
+6. Create appropriate expected actions for participants
+7. Include clear debriefing points focused on learning objectives
+
+ALWAYS return your response as a complete valid JSON document.`;
+    }
     
-    const req = await fetch(endpoint, {
+    // Show a loading indicator
+    const loadingMessage = {
+      role: "assistant",
+      content: "Generating response... (this may take a moment for complex scenarios)",
+      isLoading: true
+    };
+    messages.push(loadingMessage);
+    updateMessages();
+    
+    // Make direct request to Anthropic API
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+        "Anthropic-Version": "2023-06-01"
       },
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({
+        model: "claude-3-opus-20240229",
+        max_tokens: 4000,
+        system: systemPrompt,
+        messages: messages.filter(m => !m.isLoading).map(m => ({
+          role: m.role,
+          content: m.content
+        }))
+      })
     });
     
-    debugLog("Response status:", req.status);
+    // Remove the loading message
+    messages.pop();
     
-    if (!req.ok) {
-      console.error(`Error ${req.status} from endpoint ${endpoint}`);
+    if (!response.ok) {
+      console.error("Anthropic API error:", response.status);
+      let errorDetails = "Unknown error";
       try {
-        const errorText = await req.text();
-        console.error("Error details:", errorText);
+        const errorData = await response.text();
+        console.error("Error details:", errorData);
+        errorDetails = errorData;
       } catch (e) {
         console.error("Could not read error details");
       }
-      showError(`Error ${req.status}: Failed to get response`);
+      
+      showError(`Error from Anthropic API: ${response.status}`);
       return;
     }
     
-    const data = await req.json();
-    debugLog("Response data:", data);
+    const data = await response.json();
     
     const message = {
-      role: data.role || "assistant",
-      content: data.content?.[0]?.text || JSON.stringify(data, null, 2),
+      role: "assistant",
+      content: data.content[0].text
     };
     
     messages.push(message);
