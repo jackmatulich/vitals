@@ -4,55 +4,13 @@ const messagesContainer = document.querySelector(".messages-container");
 const messagesHolder = document.getElementById("messages");
 const textInput = document.getElementById("text-input");
 const submitButton = document.getElementById("submit-btn");
-const authModal = document.getElementById("auth-modal");
-const passwordInput = document.getElementById("password-input");
-const authSubmitBtn = document.getElementById("auth-submit-btn");
-const authError = document.getElementById("auth-error");
 
 const STREAM_DATA = false;
 let submitDisabled = false;
-let apiKey = null;
 
-// Check if user is already authenticated
-function checkAuthentication() {
-  // Check local storage for API key
-  const storedKey = localStorage.getItem('apiKey');
-  if (storedKey) {
-    apiKey = storedKey;
-    hideAuthModal();
-  } else {
-    showAuthModal();
-  }
-}
-
-// Show authentication modal
-function showAuthModal() {
-  authModal.classList.remove('hidden');
-  passwordInput.focus();
-}
-
-// Hide authentication modal
-function hideAuthModal() {
-  authModal.classList.add('hidden');
-}
-
-// Handle authentication submission
-function authenticateUser() {
-  const password = passwordInput.value;
-  console.log("Authenticating with password:", password);
-  
-  // Basic test - just hide the modal and set a placeholder API key
-  if (password === "testpassword") {
-    apiKey = "test_key";
-    localStorage.setItem('apiKey', apiKey);
-    hideAuthModal();
-    showError("Authentication successful", "success", 3000);
-  } else {
-    authError.textContent = "Incorrect password";
-  }
-}
-
-
+// For testing - hardcode your API key here or set it as a constant
+// In production, you would want to get this securely from a server
+const API_KEY = "PASTE_YOUR_API_KEY_HERE";  // ⚠️ WARNING: Only for testing!
 
 function updateMessages() {
   messagesHolder.innerHTML = "";
@@ -128,12 +86,6 @@ async function submitMessage() {
     return;
   }
   
-  // Check if authenticated
-  if (!apiKey) {
-    showAuthModal();
-    return;
-  }
-  
   submitDisabled = true;
   submitButton.disabled = submitDisabled;
   const message = textInput.value;
@@ -153,12 +105,6 @@ async function submitMessage() {
 
 async function requestAPI(messages) {
   try {
-    // Check if authenticated
-    if (!apiKey) {
-      showAuthModal();
-      return;
-    }
-    
     // Show loading indicator
     const loadingMessage = {
       role: "assistant",
@@ -199,7 +145,7 @@ ALWAYS return your response as a complete valid JSON document.`;
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": apiKey,
+        "X-API-Key": API_KEY,
         "Anthropic-Version": "2023-06-01"
       },
       body: JSON.stringify({
@@ -218,18 +164,19 @@ ALWAYS return your response as a complete valid JSON document.`;
     
     if (!response.ok) {
       console.error("Anthropic API error:", response.status);
+      let errorMessage = `Error from Anthropic API: ${response.status}`;
       
-      // Check if we got a 401 unauthorized (API key invalid)
-      if (response.status === 401) {
-        // Clear stored API key and show auth modal
-        localStorage.removeItem('apiKey');
-        apiKey = null;
-        showAuthModal();
-        showError("API key is invalid or expired. Please authenticate again.");
-        return;
+      try {
+        const errorData = await response.json();
+        console.error("Error details:", errorData);
+        if (errorData.error && errorData.error.message) {
+          errorMessage += ` - ${errorData.error.message}`;
+        }
+      } catch (e) {
+        // Couldn't parse error as JSON
       }
       
-      showError(`Error from Anthropic API: ${response.status}`);
+      showError(errorMessage);
       return;
     }
     
@@ -250,7 +197,7 @@ ALWAYS return your response as a complete valid JSON document.`;
       messages.pop();
     }
     
-    showError("An error occurred while processing your request.");
+    showError("An error occurred while processing your request: " + error.message);
   }
 }
 
@@ -284,18 +231,6 @@ function downloadJson(text, filename) {
 }
 
 async function init() {
-  // Check authentication on page load
-  checkAuthentication();
-  
-  // Auth event listeners
-  authSubmitBtn.addEventListener("click", authenticateUser);
-  passwordInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      authenticateUser();
-    }
-  });
-  
   // Chat handlers
   textInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
@@ -308,3 +243,5 @@ async function init() {
     submitMessage();
   });
 }
+
+init();
