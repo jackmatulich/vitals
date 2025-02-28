@@ -48,11 +48,3 @@ exports.handler = async (event, context) => {
   }
 };
 
-Make sure you have node-fetch in your dependencies:
-
-jsonCopy{
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.10.0",
-    "node-fetch": "^2.6.7"
-  }
-}
