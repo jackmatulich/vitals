@@ -137,6 +137,12 @@ async function requestStream(messages) {
   updateMessages();
 }
 
+
+
+
+
+
+
 async function requestAPI(messages) {
   try {
     // Check if this is a scenario request
@@ -147,34 +153,25 @@ async function requestAPI(messages) {
       latestMessage.includes("generate a") || 
       latestMessage.includes("create a");
     
-    // Use enhanced system prompt for scenario requests
+    // Basic system prompt for regular requests
     let systemPrompt = "You are a helpful assistant that specializes in healthcare education.";
     
+    // For scenario requests, use the chunked approach
     if (isScenarioRequest) {
-      systemPrompt = `You are a clinical instructional designer focused on creating medical simulation scenarios for postgraduate hospital training. You specialize in scenarios where a patient's condition deteriorates, requiring emergency management.
-
-When creating a scenario:
-1. Follow the exact JSON structure provided below
-2. Include realistic vital signs that show appropriate progression
-3. Ensure all medical details are clinically accurate
-4. Only include resources (lab tests, imaging) that are clinically relevant
-5. Provide detailed technician prompts for simulation delivery
-6. Create appropriate expected actions for participants
-7. Include clear debriefing points focused on learning objectives
-
-ALWAYS return your response as a complete valid JSON document.`;
+      await generateScenarioInChunks(messages);
+      return;
     }
     
-    // Show a loading indicator
+    // Normal request for non-scenario questions
     const loadingMessage = {
       role: "assistant",
-      content: "Generating response... (this may take a moment for complex scenarios)",
+      content: "Generating response...",
       isLoading: true
     };
     messages.push(loadingMessage);
     updateMessages();
     
-    // Use our proxy function
+    // Use our proxy function for regular responses
     const response = await fetch("/.netlify/functions/anthropic-proxy", {
       method: "POST",
       headers: {
@@ -211,7 +208,162 @@ ALWAYS return your response as a complete valid JSON document.`;
     console.error("Error in requestAPI:", error);
     showError("An error occurred while processing your request.");
   }
-} 
+}
+
+// New function to generate scenarios in chunks
+async function generateScenarioInChunks(messages) {
+  // Show loading message
+  const loadingMessage = {
+    role: "assistant",
+    content: "Generating medical simulation scenario... (1/4: Basic structure)",
+    isLoading: true
+  };
+  messages.push(loadingMessage);
+  updateMessages();
+  
+  try {
+    // Generate the scenario in 4 parts
+    let scenarioParts = {};
+    
+    // Part 1: Basic structure and patient info
+    loadingMessage.content = "Generating medical simulation scenario... (1/4: Basic structure)";
+    updateMessages();
+    
+    const part1Response = await fetch("/.netlify/functions/anthropic-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: messages.filter(m => !m.isLoading).map(m => ({
+          role: m.role, content: m.content
+        })),
+        part: 1
+      })
+    });
+    
+    if (!part1Response.ok) {
+      throw new Error(`Failed to generate part 1: ${part1Response.status}`);
+    }
+    
+    const part1Data = await part1Response.json();
+    const part1Content = part1Data.content[0].text;
+    scenarioParts.part1 = JSON.parse(part1Content);
+    
+    // Part 2: Stages
+    loadingMessage.content = "Generating medical simulation scenario... (2/4: Stages)";
+    updateMessages();
+    
+    const part2Response = await fetch("/.netlify/functions/anthropic-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [
+          ...messages.filter(m => !m.isLoading).map(m => ({
+            role: m.role, content: m.content
+          })),
+          { role: "assistant", content: part1Content }
+        ],
+        part: 2
+      })
+    });
+    
+    if (!part2Response.ok) {
+      throw new Error(`Failed to generate part 2: ${part2Response.status}`);
+    }
+    
+    const part2Data = await part2Response.json();
+    const part2Content = part2Data.content[0].text;
+    scenarioParts.part2 = JSON.parse(part2Content);
+    
+    // Part 3: Debriefing and handover
+    loadingMessage.content = "Generating medical simulation scenario... (3/4: Debriefing)";
+    updateMessages();
+    
+    const part3Response = await fetch("/.netlify/functions/anthropic-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [
+          ...messages.filter(m => !m.isLoading).map(m => ({
+            role: m.role, content: m.content
+          })),
+          { role: "assistant", content: part1Content + "\n" + part2Content }
+        ],
+        part: 3
+      })
+    });
+    
+    if (!part3Response.ok) {
+      throw new Error(`Failed to generate part 3: ${part3Response.status}`);
+    }
+    
+    const part3Data = await part3Response.json();
+    const part3Content = part3Data.content[0].text;
+    scenarioParts.part3 = JSON.parse(part3Content);
+    
+    // Part 4: Resources
+    loadingMessage.content = "Generating medical simulation scenario... (4/4: Resources)";
+    updateMessages();
+    
+    const part4Response = await fetch("/.netlify/functions/anthropic-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [
+          ...messages.filter(m => !m.isLoading).map(m => ({
+            role: m.role, content: m.content
+          })),
+          { role: "assistant", content: part1Content + "\n" + part2Content + "\n" + part3Content }
+        ],
+        part: 4
+      })
+    });
+    
+    if (!part4Response.ok) {
+      throw new Error(`Failed to generate part 4: ${part4Response.status}`);
+    }
+    
+    const part4Data = await part4Response.json();
+    const part4Content = part4Data.content[0].text;
+    scenarioParts.part4 = JSON.parse(part4Content);
+    
+    // Combine all parts into a single JSON object
+    const combinedScenario = {
+      ...scenarioParts.part1,
+      ...scenarioParts.part2,
+      ...scenarioParts.part3,
+      ...scenarioParts.part4
+    };
+    
+    // Remove loading message
+    messages.pop();
+    
+    // Add combined scenario as a message
+    const scenarioMessage = {
+      role: "assistant",
+      content: JSON.stringify(combinedScenario)
+    };
+    
+    messages.push(scenarioMessage);
+    updateMessages();
+    
+  } catch (error) {
+    console.error("Error generating scenario:", error);
+    // Remove loading message
+    messages.pop();
+    showError("Failed to generate scenario: " + error.message);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 function showError(message, variant = "danger", duration = 5000) {
   const alert = Object.assign(document.createElement("sl-alert"), {
     variant,
