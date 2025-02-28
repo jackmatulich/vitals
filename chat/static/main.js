@@ -20,6 +20,17 @@ const STREAM_DATA = false;
 
 let submitDisabled = false;
 
+// Add mapping function to convert hyphenated values to display names
+function getScenarioDisplayName(value) {
+  const scenarioMap = {
+    'hfnc-to-bipap': 'HFNC to BIPAP Escalation',
+    'cardiac-arrest': 'Cardiac Arrest',
+    'septic-shock': 'Septic Shock',
+    'anaphylaxis': 'Anaphylaxis'
+  };
+  return scenarioMap[value] || value;
+}
+
 function updateMessages() {
   messagesHolder.innerHTML = "";
   messages.forEach((message) => {
@@ -61,9 +72,11 @@ async function generateScenario() {
   submitDisabled = true;
   generateButton.disabled = true;
   
-  // Get scenario type
-  let scenarioType = scenarioTypeSelect.value;
-  if (scenarioType === 'custom') {
+  // Get scenario type with proper display name conversion
+  let scenarioTypeValue = scenarioTypeSelect.value;
+  let scenarioType = getScenarioDisplayName(scenarioTypeValue);
+  
+  if (scenarioTypeValue === 'custom') {
     scenarioType = customScenarioInput.value;
   }
   
