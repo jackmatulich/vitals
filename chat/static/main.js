@@ -37,48 +37,22 @@ function hideAuthModal() {
 }
 
 // Handle authentication submission
-async function authenticateUser() {
-  console.log("Authentication started");
+function authenticateUser() {
   const password = passwordInput.value;
-  console.log("Password entered:", password ? "Yes (not shown)" : "No");
+  console.log("Authenticating with password:", password);
   
-  if (!password) {
-    authError.textContent = "Please enter a password";
-    return;
-  }
-
-  try {
-    console.log("Submitting authentication request...");
-    authSubmitBtn.disabled = true;
-    
-    const response = await fetch("/.netlify/functions/auth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ password })
-    });
-
-    console.log("Auth response status:", response.status);
-    const data = await response.json();
-    console.log("Auth response received:", data.success ? "Success" : "Failed");
-
-    if (data.success) {
-      // Store API key in local storage
-      apiKey = data.apiKey;
-      localStorage.setItem('apiKey', apiKey);
-      hideAuthModal();
-      showError("Authentication successful", "success", 3000);
-    } else {
-      authError.textContent = data.error || "Authentication failed";
-    }
-  } catch (error) {
-    console.error("Authentication error:", error);
-    authError.textContent = "An error occurred during authentication";
-  } finally {
-    authSubmitBtn.disabled = false;
+  // Basic test - just hide the modal and set a placeholder API key
+  if (password === "testpassword") {
+    apiKey = "test_key";
+    localStorage.setItem('apiKey', apiKey);
+    hideAuthModal();
+    showError("Authentication successful", "success", 3000);
+  } else {
+    authError.textContent = "Incorrect password";
   }
 }
+
+
 
 function updateMessages() {
   messagesHolder.innerHTML = "";
