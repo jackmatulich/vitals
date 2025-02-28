@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
         'Anthropic-Version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: "claude-3-sonnet",
+        model: "claude-3-opus-20240229",  
         max_tokens: 4000,
         system: systemPrompt,
         messages: messages
