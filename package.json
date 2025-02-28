@@ -1,19 +1,12 @@
 {
-  "name": "llm-demos",
+  "name": "medical-simulation-generator",
   "version": "1.0.0",
-  "description": "llm demos",
-  "main": "server.js",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo 'No build step needed'"
-  },
-  "author": "cjgammon",
-  "license": "ISC",
+  "description": "Medical simulation scenario generator using Claude API",
+  "main": "index.js",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.19.0",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "node-fetch": "^3.3.2"
+    "@anthropic/sdk": "^0.17.1"
+  },
+  "scripts": {
+    "build": "echo 'No build step required'"
   }
 }
