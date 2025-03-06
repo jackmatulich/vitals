@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Gas Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Blood Gas Generator</h1>
+        <div class="input-container">
+            <textarea id="clinical-scenario" placeholder="Enter clinical scenario (e.g., Moderate anaphylaxis on room air)"></textarea>
+            <div class="radio-container">
+                <label>
+                    <input type="radio" name="gas-type" value="ABG" checked>
+                    ABG
+                </label>
+                <label>
+                    <input type="radio" name="gas-type" value="VBG">
+                    VBG
+                </label>
+            </div>
+            <button id="generate-btn">Generate Blood Gas</button>
+        </div>
+        
+        <div class="result-container" id="result-container" style="display: none;">
+            <div id="blood-gas-result">
+                <div id="header">
+                    <h2 id="scenario-title"></h2>
+                    <p id="gas-type-label"></p>
+                </div>
+                <div id="gas-values">
+                    <!-- Blood gas values will appear here -->
+                </div>
+                <div id="interpretation">
+                    <!-- Interpretation will appear here -->
+                </div>
+            </div>
+            <button id="download-btn">Download Image</button>
+        </div>
+        
+        <div id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Generating blood gas...</p>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
