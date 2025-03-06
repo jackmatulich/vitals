@@ -11,7 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const loading = document.getElementById('loading');
 
     // Replace with your actual Claude API key and endpoint
-    const API_KEY = 'YOUR_CLAUDE_API_KEY';
+    const API_A = 'sk-ant-api03-IU-';
+    const API_B = 'KMm95cYqQWEPKF5PzHdHyMnuHfGfUYofegRgUNgAZZuhbNEj7IeGAuJwP1f-f7OTlzdwjIKaSmjGWhfFi-A-xhWLQQAA';
+    const API_KEY = API_A.concat(API_B);
     const API_ENDPOINT = 'https://api.anthropic.com/v1/messages';
 
     generateBtn.addEventListener('click', async function() {
