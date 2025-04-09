@@ -1,0 +1,761 @@
+<!-- public/controller/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ultrasound Probe Controller</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #1abc9c;
+            --text-light: #ecf0f1;
+            --text-dark: #34495e;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --border-radius: 8px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            touch-action: none;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            padding: 15px;
+            background-color: #34495e;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .connection-status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: var(--error-color);
+            transition: background-color 0.3s;
+        }
+        
+        .status-indicator.connected {
+            background-color: var(--success-color);
+        }
+        
+        .controller-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .probe-model {
+            width: 90%;
+            max-width: 300px;
+            height: 60px;
+            background-color: var(--primary-color);
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .probe-model:after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            width: 60%;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .probe-model-text {
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .sensor-info {
+            background-color: rgba(52, 73, 94, 0.8);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .sensor-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sensor-label {
+            font-weight: bold;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            padding: 15px;
+            background-color: #34495e;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        button {
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 24px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
+        }
+        
+        button:active {
+            background-color: #2980b9;
+            transform: translateY(2px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .freeze-active {
+            background-color: var(--error-color);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #permissions {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        #permissions p {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 600px;
+        }
+        
+        #permissions button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: var(--accent-color);
+        }
+        
+        .visual-feedback {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(46, 204, 113, 0.7);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+        
+        .instructions {
+            background-color: rgba(52, 73, 94, 0.5);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 90%;
+        }
+        
+        .instructions h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .instructions ul {
+            list-style-type: none;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .instructions li:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ultrasound Probe Controller</h1>
+            <div class="connection-status">
+                <div class="status-indicator" id="connectionIndicator"></div>
+                <span id="connectionText">Connecting...</span>
+            </div>
+        </header>
+        
+        <div class="controller-area" id="controllerArea">
+            <div class="probe-model" id="probeModel">
+                <span class="probe-model-text">ULTRASOUND PROBE</span>
+            </div>
+            <div class="visual-feedback" id="visualFeedback"></div>
+            
+            <div class="instructions">
+                <h2>How to use:</h2>
+                <ul>
+                    <li>Hold your phone like a real ultrasound probe</li>
+                    <li>Move your phone to control the virtual probe</li>
+                    <li>Use the Freeze button to pause the image</li>
+                    <li>Use Calibrate to reset the probe position</li>
+                </ul>
+            </div>
+            
+            <div class="sensor-info">
+                <div class="sensor-row">
+                    <span class="sensor-label">Accelerometer:</span>
+                    <span id="accelData">Waiting for data...</span>
+                </div>
+                <div class="sensor-row">
+                    <span class="sensor-label">Gyroscope:</span>
+                    <span id="gyroData">Waiting for data...</span>
+                </div>
+                <div class="sensor-row">
+                    <span class="sensor-label">Orientation:</span>
+                    <span id="orientationData">Waiting for data...</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="freezeButton">Freeze</button>
+            <button id="calibrateButton">Calibrate</button>
+        </div>
+    </div>
+    
+    <div id="permissions">
+        <p>This application needs access to your device's motion and orientation sensors to function as an ultrasound probe controller.</p>
+        <p>Please grant permission when prompted.</p>
+        <button id="grantPermissionButton">Grant Permission</button>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM elements
+            const connectionIndicator = document.getElementById('connectionIndicator');
+            const connectionText = document.getElementById('connectionText');
+            const accelData = document.getElementById('accelData');
+            const gyroData = document.getElementById('gyroData');
+            const orientationData = document.getElementById('orientationData');
+            const freezeButton = document.getElementById('freezeButton');
+            const calibrateButton = document.getElementById('calibrateButton');
+            const permissions = document.getElementById('permissions');
+            const grantPermissionButton = document.getElementById('grantPermissionButton');
+            const visualFeedback = document.getElementById('visualFeedback');
+            const controllerArea = document.getElementById('controllerArea');
+            
+            // State variables
+            let isFrozen = false;
+            let isCalibrating = false;
+            let isConnected = false;
+            let isPermissionGranted = false;
+            let calibrationBaseQuaternion = { x: 0, y: 0, z: 0, w: 1 };
+            let calibrationBasePosition = { x: 0, y: 0, z: 0 };
+            let lastPosition = { x: 0, y: 0, z: 0 };
+            let accelOffset = { x: 0, y: 0, z: 0 };
+            let gyroOffset = { x: 0, y: 0, z: 0 };
+            let sendInterval;
+            
+            // Get connection code from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const connectionCode = urlParams.get('code');
+            
+            // Socket.io connection
+            const socket = io();
+            
+            // Connect to server
+            socket.on('connect', () => {
+                console.log('Connected to server');
+                
+                // Connect controller with the code from URL
+                if (connectionCode) {
+                    console.log('Connecting with code:', connectionCode);
+                    socket.emit('connect-controller', { code: connectionCode });
+                } else {
+                    connectionText.textContent = 'No connection code';
+                    alert('No connection code provided. Please scan the QR code from the main application.');
+                }
+            });
+            
+            socket.on('disconnect', () => {
+                console.log('Disconnected from server');
+                connectionIndicator.classList.remove('connected');
+                connectionText.textContent = 'Disconnected';
+                isConnected = false;
+                clearInterval(sendInterval);
+            });
+            
+            socket.on('controller-connected', (data) => {
+                if (data.success) {
+                    console.log('Controller connected successfully');
+                    connectionIndicator.classList.add('connected');
+                    connectionText.textContent = 'Connected';
+                    isConnected = true;
+                    
+                    // Start sending data if permission is granted
+                    if (isPermissionGranted) {
+                        startSendingData();
+                    }
+                } else {
+                    console.error('Failed to connect controller:', data.message);
+                    connectionText.textContent = 'Connection failed';
+                    alert('Failed to connect: ' + data.message);
+                }
+            });
+            
+            socket.on('main-disconnected', () => {
+                console.log('Main client disconnected');
+                connectionIndicator.classList.remove('connected');
+                connectionText.textContent = 'Main display disconnected';
+                isConnected = false;
+                clearInterval(sendInterval);
+            });
+            
+            socket.on('error', (data) => {
+                console.error('Server error:', data.message);
+                alert('Error: ' + data.message);
+            });
+            
+            // Request device motion and orientation permission
+            grantPermissionButton.addEventListener('click', async () => {
+                try {
+                    // For iOS 13+ devices
+                    if (typeof DeviceOrientationEvent !== 'undefined' && 
+                        typeof DeviceOrientationEvent.requestPermission === 'function') {
+                        const permissionState = await DeviceOrientationEvent.requestPermission();
+                        
+                        if (permissionState === 'granted') {
+                            await initSensors();
+                        } else {
+                            alert('Permission denied for motion sensors.');
+                        }
+                    } 
+                    // For iOS 12.2+ devices
+                    else if (typeof DeviceMotionEvent !== 'undefined' && 
+                            typeof DeviceMotionEvent.requestPermission === 'function') {
+                        const permissionState = await DeviceMotionEvent.requestPermission();
+                        
+                        if (permissionState === 'granted') {
+                            await initSensors();
+                        } else {
+                            alert('Permission denied for motion sensors.');
+                        }
+                    } 
+                    // For Android and other devices that don't require explicit permission
+                    else {
+                        await initSensors();
+                    }
+                } catch (error) {
+                    console.error('Error requesting sensor permission:', error);
+                    alert('Error requesting sensor permission: ' + error.message);
+                }
+            });
+            
+            // Initialize sensors after permission is granted
+            async function initSensors() {
+                permissions.classList.add('hidden');
+                isPermissionGranted = true;
+                
+                // Add event listeners for device sensors
+                window.addEventListener('deviceorientation', handleOrientation);
+                window.addEventListener('devicemotion', handleMotion);
+                
+                // Start sending data if already connected
+                if (isConnected) {
+                    startSendingData();
+                }
+                
+                // Calibrate initial position
+                calibrate();
+            }
+            
+            // Handle device orientation data
+            function handleOrientation(event) {
+                if (isFrozen) return;
+                
+                // Some browsers use alpha, beta, gamma while others use absolute values
+                const alpha = event.alpha || 0;  // Z-axis rotation [0, 360)
+                const beta = event.beta || 0;    // X-axis rotation [-180, 180)
+                const gamma = event.gamma || 0;  // Y-axis rotation [-90, 90)
+                
+                // Display orientation data
+                orientationData.textContent = `α: ${alpha.toFixed(1)}° β: ${beta.toFixed(1)}° γ: ${gamma.toFixed(1)}°`;
+                
+                // Convert Euler angles to quaternion
+                const quaternion = eulerToQuaternion(alpha, beta, gamma);
+                
+                // Calibrate quaternion if necessary
+                const calibratedQuaternion = calibrateQuaternion(quaternion);
+                
+                // Update global state with the calibrated quaternion
+                lastPosition.quaternion = calibratedQuaternion;
+            }
+            
+            // Handle device motion data
+            function handleMotion(event) {
+                if (isFrozen) return;
+                
+                // Get acceleration with gravity
+                const accel = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
+                
+                // Get rotation rate
+                const rotationRate = event.rotationRate || { alpha: 0, beta: 0, gamma: 0 };
+                
+                // Display acceleration data
+                accelData.textContent = `X: ${accel.x ? accel.x.toFixed(2) : 0} Y: ${accel.y ? accel.y.toFixed(2) : 0} Z: ${accel.z ? accel.z.toFixed(2) : 0}`;
+                
+                // Display gyroscope data
+                gyroData.textContent = `X: ${rotationRate.beta ? rotationRate.beta.toFixed(2) : 0} Y: ${rotationRate.gamma ? rotationRate.gamma.toFixed(2) : 0} Z: ${rotationRate.alpha ? rotationRate.alpha.toFixed(2) : 0}`;
+                
+                // Apply calibration offsets
+                const calibratedAccel = {
+                    x: (accel.x || 0) - accelOffset.x,
+                    y: (accel.y || 0) - accelOffset.y,
+                    z: (accel.z || 0) - accelOffset.z
+                };
+                
+                // Simplified position integration from acceleration
+                // In a real application, you would use a more sophisticated approach
+                // This is just a simple approximation for feedback purposes
+                lastPosition.x += calibratedAccel.x * 0.0001;
+                lastPosition.y += calibratedAccel.y * 0.0001;
+                lastPosition.z += calibratedAccel.z * 0.0001;
+                
+                // Apply some damping to prevent drift
+                lastPosition.x *= 0.98;
+                lastPosition.y *= 0.98;
+                lastPosition.z *= 0.98;
+                
+                // Create visual feedback
+                createVisualFeedback(event);
+            }
+            
+            // Start sending sensor data to the server
+            function startSendingData() {
+                // Clear any existing interval
+                if (sendInterval) {
+                    clearInterval(sendInterval);
+                }
+                
+                // Set up interval to send data to server (30 times per second)
+                sendInterval = setInterval(() => {
+                    if (!isFrozen && isConnected && isPermissionGranted) {
+                        // Prepare data to send
+                        const data = {
+                            position: {
+                                x: lastPosition.x,
+                                y: lastPosition.y,
+                                z: lastPosition.z
+                            },
+                            quaternion: lastPosition.quaternion || { x: 0, y: 0, z: 0, w: 1 },
+                            timestamp: Date.now()
+                        };
+                        
+                        // Send IMU data to server
+                        socket.emit('imu-data', data);
+                    }
+                }, 33); // ~30fps
+            }
+            
+            // Calibrate sensors
+            function calibrate() {
+                isCalibrating = true;
+                freezeButton.disabled = true;
+                
+                // Update UI
+                connectionText.textContent = 'Calibrating...';
+                
+                // Collect calibration samples over 2 seconds
+                const samples = [];
+                const samplingInterval = setInterval(() => {
+                    if (lastPosition.quaternion) {
+                        samples.push({
+                            position: { ...lastPosition },
+                            quaternion: { ...lastPosition.quaternion }
+                        });
+                    }
+                }, 100);
+                
+                // After 2 seconds, compute the calibration values
+                setTimeout(() => {
+                    clearInterval(samplingInterval);
+                    
+                    if (samples.length > 0) {
+                        // Average the samples
+                        const avgPosition = { x: 0, y: 0, z: 0 };
+                        const avgQuaternion = { x: 0, y: 0, z: 0, w: 0 };
+                        
+                        samples.forEach(sample => {
+                            avgPosition.x += sample.position.x / samples.length;
+                            avgPosition.y += sample.position.y / samples.length;
+                            avgPosition.z += sample.position.z / samples.length;
+                            
+                            avgQuaternion.x += sample.quaternion.x / samples.length;
+                            avgQuaternion.y += sample.quaternion.y / samples.length;
+                            avgQuaternion.z += sample.quaternion.z / samples.length;
+                            avgQuaternion.w += sample.quaternion.w / samples.length;
+                        });
+                        
+                        // Normalize the quaternion
+                        const magnitude = Math.sqrt(
+                            avgQuaternion.x * avgQuaternion.x +
+                            avgQuaternion.y * avgQuaternion.y +
+                            avgQuaternion.z * avgQuaternion.z +
+                            avgQuaternion.w * avgQuaternion.w
+                        );
+                        
+                        if (magnitude > 0) {
+                            avgQuaternion.x /= magnitude;
+                            avgQuaternion.y /= magnitude;
+                            avgQuaternion.z /= magnitude;
+                            avgQuaternion.w /= magnitude;
+                        }
+                        
+                        // Set calibration values
+                        calibrationBasePosition = { ...avgPosition };
+                        calibrationBaseQuaternion = { ...avgQuaternion };
+                        
+                        // Reset current position
+                        lastPosition = { x: 0, y: 0, z: 0 };
+                        
+                        // Show success message
+                        connectionText.textContent = isConnected ? 'Connected' : 'Disconnected';
+                        
+                        // Create a success visual feedback
+                        createCalibrationFeedback();
+                    } else {
+                        connectionText.textContent = 'Calibration failed, no samples collected';
+                    }
+                    
+                    // Reset state
+                    isCalibrating = false;
+                    freezeButton.disabled = false;
+                }, 2000);
+            }
+            
+            // Calibrate quaternion based on the base calibration
+            function calibrateQuaternion(q) {
+                // Inverse of calibration quaternion
+                const invCal = {
+                    x: -calibrationBaseQuaternion.x,
+                    y: -calibrationBaseQuaternion.y,
+                    z: -calibrationBaseQuaternion.z,
+                    w: calibrationBaseQuaternion.w
+                };
+                
+                // Multiply current quaternion by inverse calibration quaternion
+                return multiplyQuaternions(q, invCal);
+            }
+            
+            // Convert Euler angles to quaternion
+            function eulerToQuaternion(alpha, beta, gamma) {
+                // Convert angles from degrees to radians
+                const alphaRad = alpha * (Math.PI / 180);
+                const betaRad = beta * (Math.PI / 180);
+                const gammaRad = gamma * (Math.PI / 180);
+                
+                // Calculate half angles
+                const cx = Math.cos(betaRad / 2);
+                const sx = Math.sin(betaRad / 2);
+                const cy = Math.cos(gammaRad / 2);
+                const sy = Math.sin(gammaRad / 2);
+                const cz = Math.cos(alphaRad / 2);
+                const sz = Math.sin(alphaRad / 2);
+                
+                // Calculate quaternion components
+                return {
+                    x: sx * cy * cz - cx * sy * sz,
+                    y: cx * sy * cz + sx * cy * sz,
+                    z: cx * cy * sz - sx * sy * cz,
+                    w: cx * cy * cz + sx * sy * sz
+                };
+            }
+            
+            // Multiply two quaternions
+            function multiplyQuaternions(a, b) {
+                return {
+                    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+                    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+                    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
+                    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z
+                };
+            }
+            
+            // Create visual feedback based on acceleration
+            function createVisualFeedback(event) {
+                // Clear previous dots
+                while (visualFeedback.firstChild) {
+                    visualFeedback.removeChild(visualFeedback.firstChild);
+                }
+                
+                // Get acceleration
+                const accel = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
+                if (!accel.x && !accel.y && !accel.z) return;
+                
+                // Scale acceleration to screen coordinates
+                // This is a simplified visualization
+                const screenX = controllerArea.offsetWidth / 2 + (accel.x || 0) * 5;
+                const screenY = controllerArea.offsetHeight / 2 + (accel.y || 0) * 5;
+                
+                // Create a dot to represent the acceleration vector
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.left = `${screenX}px`;
+                dot.style.top = `${screenY}px`;
+                
+                // Scale dot size based on acceleration magnitude
+                const magnitude = Math.sqrt(
+                    Math.pow(accel.x || 0, 2) + 
+                    Math.pow(accel.y || 0, 2) + 
+                    Math.pow(accel.z || 0, 2)
+                );
+                const size = Math.min(40, Math.max(10, magnitude * 2));
+                dot.style.width = `${size}px`;
+                dot.style.height = `${size}px`;
+                
+                visualFeedback.appendChild(dot);
+            }
+            
+            // Create visual feedback for successful calibration
+            function createCalibrationFeedback() {
+                // Clear previous feedback
+                while (visualFeedback.firstChild) {
+                    visualFeedback.removeChild(visualFeedback.firstChild);
+                }
+                
+                // Create ripple effect
+                for (let i = 0; i < 3; i++) {
+                    const ripple = document.createElement('div');
+                    ripple.className = 'dot';
+                    ripple.style.left = '50%';
+                    ripple.style.top = '50%';
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    ripple.style.opacity = '0.8';
+                    ripple.style.transition = 'all 1s ease-out';
+                    ripple.style.transitionDelay = `${i * 0.2}s`;
+                    
+                    visualFeedback.appendChild(ripple);
+                    
+                    // Animate ripple
+                    setTimeout(() => {
+                        ripple.style.width = '200px';
+                        ripple.style.height = '200px';
+                        ripple.style.opacity = '0';
+                    }, 10);
+                    
+                    // Remove ripple after animation
+                    setTimeout(() => {
+                        if (ripple.parentNode === visualFeedback) {
+                            visualFeedback.removeChild(ripple);
+                        }
+                    }, 1500);
+                }
+            }
+            
+            // Toggle freeze mode
+            freezeButton.addEventListener('click', () => {
+                isFrozen = !isFrozen;
+                freezeButton.textContent = isFrozen ? 'Unfreeze' : 'Freeze';
+                freezeButton.classList.toggle('freeze-active', isFrozen);
+            });
+            
+            // Calibrate button
+            calibrateButton.addEventListener('click', calibrate);
+            
+            // Check if we need to auto-init sensors without permission request
+            // This is typically for Android and other non-iOS devices
+            if (
+                typeof DeviceOrientationEvent !== 'undefined' && 
+                typeof DeviceOrientationEvent.requestPermission !== 'function' &&
+                typeof DeviceMotionEvent !== 'undefined' && 
+                typeof DeviceMotionEvent.requestPermission !== 'function'
+            ) {
+                // Try to initialize sensors directly
+                initSensors().catch(error => {
+                    console.error('Error auto-initializing sensors:', error);
+                    // Show permission screen anyway
+                    permissions.classList.remove('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

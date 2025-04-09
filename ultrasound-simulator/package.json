@@ -1,0 +1,29 @@
+{
+    "name": "web-ultrasound-simulator",
+    "version": "1.0.0",
+    "description": "Web-based ultrasound simulator using CT DICOM data and mobile phone IMU control",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js",
+      "dev": "nodemon server.js"
+    },
+    "keywords": [
+      "ultrasound",
+      "simulator",
+      "medical",
+      "dicom",
+      "education",
+      "training",
+      "ct",
+      "imu",
+      "web"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+      "canvas": "^2.11.2",
+      "dicom-parser": "^1.8.21",
+      "express": "^4.18.2",
+      "gl-matrix": "^3.4.3",
+      "socket.io": "^4.7.2",
+      "uuid": "^9
