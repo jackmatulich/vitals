@@ -1,0 +1,120 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Ultrasound Simulator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Medical Ultrasound Simulator</h1>
+            <div class="controls">
+                <button id="connectPhone" class="primary-btn">Connect Phone Controller</button>
+                <div class="settings-panel">
+                    <div class="setting-group">
+                        <label>Ultrasound Mode</label>
+                        <select id="presetSelect">
+                            <option value="abdomen">Abdomen</option>
+                            <option value="cardiac">Cardiac</option>
+                            <option value="obstetric">Obstetric</option>
+                            <option value="vascular">Vascular</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="depthControl">Depth: <span id="depthValue">15</span> cm</label>
+                        <input type="range" id="depthControl" min="5" max="25" value="15" step="1">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="gainControl">Gain: <span id="gainValue">50</span>%</label>
+                        <input type="range" id="gainControl" min="0" max="100" value="50" step="1">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="scanLinesToggle" checked>
+                            Show Scan Lines
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="ultrasound-display">
+                <div class="machine-frame">
+                    <div class="screen">
+                        <canvas id="ultrasoundCanvas"></canvas>
+                        <div id="overlay">
+                            <div id="measurementScale"></div>
+                            <div id="probeIndicator"></div>
+                        </div>
+                        <div class="patient-info">
+                            <div>Patient ID: SIMULATION</div>
+                            <div id="timestamp"></div>
+                        </div>
+                    </div>
+                    <div class="machine-controls">
+                        <button id="freezeBtn">Freeze</button>
+                        <button id="saveBtn">Save Image</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="status-panel">
+                    <h2>Connection Status</h2>
+                    <div class="status-item">
+                        <span class="status-label">Server:</span>
+                        <span id="serverStatus" class="status-value disconnected">Disconnected</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Phone Controller:</span>
+                        <span id="phoneStatus" class="status-value disconnected">Disconnected</span>
+                    </div>
+                </div>
+                
+                <div class="probe-data">
+                    <h2>Probe Position</h2>
+                    <div id="probePositionDisplay">
+                        <div>X: <span id="probeX">0.00</span></div>
+                        <div>Y: <span id="probeY">0.00</span></div>
+                        <div>Z: <span id="probeZ">0.00</span></div>
+                        <div>Angle: <span id="probeAngle">0.00</span>°</div>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <h2>How to Use</h2>
+                    <ol>
+                        <li>Click "Connect Phone Controller"</li>
+                        <li>Scan the QR code on your mobile device</li>
+                        <li>Hold your phone like an ultrasound probe</li>
+                        <li>Move your phone to change the ultrasound view</li>
+                        <li>Adjust settings on this screen as needed</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div id="connectionModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Connect Your Phone</h2>
+                    <p>Scan this QR code with your phone camera:</p>
+                    <div id="qrcode"></div>
+                    <p>Or visit this URL directly on your phone:</p>
+                    <div id="connectionUrl" class="connection-url"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
