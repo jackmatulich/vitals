@@ -725,7 +725,7 @@ const Simulator = {
         ctx.putImageData(imageData, 0, 0);
         
         // Add scan lines effect (characteristic of ultrasound)
-        if (settings.scanLines) {
+        if (settings.scanLines) {https://github.dev/jackmatulich/vitals
             ctx.globalAlpha = 0.2;
             ctx.strokeStyle = 'white';
             ctx.lineWidth = 1;
