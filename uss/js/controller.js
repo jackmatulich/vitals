@@ -1,4 +1,4 @@
-// js/controller.js - Instant permission request on page load
+// js/controller.js - Simple one-button approach
 
 /**
  * Controller module for ultrasound simulator
@@ -14,10 +14,11 @@ const Controller = {
         freezeButton: null,
         calibrateButton: null,
         permissions: null,
-        grantPermissionButton: null,
         visualFeedback: null,
         controllerArea: null,
-        returnToModeSelection: null
+        returnToModeSelection: null,
+        permissionOverlay: null,
+        permissionButton: null
     },
     
     // State
@@ -43,14 +44,22 @@ const Controller = {
         // Initialize DOM elements
         this.initElements();
         
+        // Create the permission overlay and button
+        this.createPermissionOverlay();
+        
+        // Hide built-in permissions panel
+        if (this.elements.permissions) {
+            this.elements.permissions.classList.add('hidden');
+        }
+        
         // Set up event listeners
         this.setupEventListeners();
         
         // Connect to simulator
         this.connect();
         
-        // Immediately try to access sensors
-        this.triggerPermissionPrompt();
+        // Try auto-init for Android devices
+        this.tryAutoInitForAndroid();
     },
     
     /**
@@ -65,27 +74,77 @@ const Controller = {
         this.elements.freezeButton = document.getElementById('freezeButton');
         this.elements.calibrateButton = document.getElementById('calibrateButton');
         this.elements.permissions = document.getElementById('permissions');
-        this.elements.grantPermissionButton = document.getElementById('grantPermissionButton');
         this.elements.visualFeedback = document.getElementById('visualFeedback');
         this.elements.controllerArea = document.getElementById('controllerArea');
         this.elements.returnToModeSelection = document.getElementById('returnToModeSelection');
+    },
+    
+    /**
+     * Create permission overlay with a single button
+     */
+    createPermissionOverlay() {
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.zIndex = '9999';
+        overlay.style.padding = '20px';
+        overlay.style.textAlign = 'center';
         
-        // Create a placeholder div for manual triggering
-        this.elements.manualTrigger = document.createElement('button');
-        this.elements.manualTrigger.textContent = "Tap Here to Enable Sensors";
-        this.elements.manualTrigger.style.position = "fixed";
-        this.elements.manualTrigger.style.top = "50%";
-        this.elements.manualTrigger.style.left = "50%";
-        this.elements.manualTrigger.style.transform = "translate(-50%, -50%)";
-        this.elements.manualTrigger.style.padding = "20px";
-        this.elements.manualTrigger.style.fontSize = "18px";
-        this.elements.manualTrigger.style.backgroundColor = "#3498db";
-        this.elements.manualTrigger.style.color = "white";
-        this.elements.manualTrigger.style.border = "none";
-        this.elements.manualTrigger.style.borderRadius = "8px";
-        this.elements.manualTrigger.style.zIndex = "1000";
-        this.elements.manualTrigger.style.display = "none";
-        document.body.appendChild(this.elements.manualTrigger);
+        // Create message
+        const message = document.createElement('div');
+        message.style.color = 'white';
+        message.style.fontSize = '18px';
+        message.style.marginBottom = '30px';
+        message.style.maxWidth = '500px';
+        
+        // Different message for iOS vs Android
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            message.innerHTML = 'To use this controller, you need to enable motion sensors.<br><br>Tap the button below:';
+        } else {
+            message.innerHTML = 'Touch the button below to activate the controller:';
+        }
+        
+        // Create button
+        const button = document.createElement('button');
+        button.textContent = 'Enable Motion Sensors';
+        button.style.backgroundColor = '#3498db';
+        button.style.color = 'white';
+        button.style.border = 'none';
+        button.style.padding = '20px 40px';
+        button.style.fontSize = '20px';
+        button.style.fontWeight = 'bold';
+        button.style.borderRadius = '8px';
+        button.style.cursor = 'pointer';
+        button.style.transition = 'background-color 0.3s';
+        
+        // Button hover effect
+        button.addEventListener('mouseover', () => {
+            button.style.backgroundColor = '#2980b9';
+        });
+        
+        button.addEventListener('mouseout', () => {
+            button.style.backgroundColor = '#3498db';
+        });
+        
+        // Add elements to overlay
+        overlay.appendChild(message);
+        overlay.appendChild(button);
+        
+        // Add overlay to body
+        document.body.appendChild(overlay);
+        
+        // Store references
+        this.elements.permissionOverlay = overlay;
+        this.elements.permissionButton = button;
     },
     
     /**
@@ -93,6 +152,11 @@ const Controller = {
      */
     setupEventListeners() {
         const self = this;
+        
+        // Permission button - this is the critical handler for iOS!
+        this.elements.permissionButton.addEventListener('click', function() {
+            self.requestSensorPermission();
+        });
         
         // Freeze button
         this.elements.freezeButton.addEventListener('click', function() {
@@ -102,17 +166,6 @@ const Controller = {
         // Calibrate button
         this.elements.calibrateButton.addEventListener('click', function() {
             self.calibrate();
-        });
-        
-        // Grant permission button 
-        this.elements.grantPermissionButton.addEventListener('click', function() {
-            self.requestPermissions();
-        });
-        
-        // Manual trigger button
-        this.elements.manualTrigger.addEventListener('click', function() {
-            self.requestPermissions();
-            self.elements.manualTrigger.style.display = "none";
         });
         
         // Return to mode selection
@@ -125,69 +178,78 @@ const Controller = {
                 }
             });
         }
-        
-        // Hide permission panel initially
-        this.elements.permissions.classList.add('hidden');
     },
     
     /**
-     * Immediately trigger permission prompt on iOS or init sensors on Android
+     * Try to auto-initialize for Android devices
      */
-    triggerPermissionPrompt() {
-        const self = this;
-        
-        // For iOS - we need to wait for a user interaction
-        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            console.log("iOS detected - showing manual trigger button");
-            // Show the manual trigger button
-            this.elements.manualTrigger.style.display = "block";
+    tryAutoInitForAndroid() {
+        // If not iOS, we can try to auto-initialize
+        if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            // For Android, permissions are implied
+            console.log("Android device detected - trying auto-initialization");
             
-            // Also can try to auto-trigger in response to any touch
-            const autoTriggerHandler = function() {
-                self.requestPermissions();
-                document.removeEventListener('touchstart', autoTriggerHandler);
+            // Create test handlers
+            let hasOrientation = false;
+            let hasMotion = false;
+            
+            const testOrientationHandler = () => {
+                hasOrientation = true;
+                window.removeEventListener('deviceorientation', testOrientationHandler);
             };
             
-            document.addEventListener('touchstart', autoTriggerHandler);
-        } else {
-            // For Android/other - can initialize immediately
-            console.log("Non-iOS device - initializing sensors directly");
-            this.requestPermissions();
+            const testMotionHandler = () => {
+                hasMotion = true;
+                window.removeEventListener('devicemotion', testMotionHandler);
+            };
+            
+            // Add test listeners
+            window.addEventListener('deviceorientation', testOrientationHandler);
+            window.addEventListener('devicemotion', testMotionHandler);
+            
+            // Check after a short delay if we got any events
+            setTimeout(() => {
+                if (hasOrientation || hasMotion) {
+                    console.log("Auto-detected sensor events, initializing");
+                    this.initSensors();
+                } else {
+                    console.log("No auto-detected sensor events, keeping overlay");
+                }
+            }, 1000);
         }
     },
     
     /**
-     * Request permissions and initialize sensors
+     * Request permission for device sensors
      */
-    async requestPermissions() {
-        console.log("Requesting sensor permissions...");
+    async requestSensorPermission() {
+        console.log("User clicked permission button");
         const self = this;
         
         try {
-            // For iOS Safari
+            // For iOS devices
             if (typeof DeviceOrientationEvent !== 'undefined' && 
                 typeof DeviceOrientationEvent.requestPermission === 'function') {
                 
-                try {
-                    const permissionState = await DeviceOrientationEvent.requestPermission();
-                    console.log("Permission result:", permissionState);
-                    
-                    if (permissionState === 'granted') {
-                        this.initSensors();
-                    } else {
-                        this.showError("Permission denied. Please allow motion sensors access.");
-                    }
-                } catch (err) {
-                    console.error("Error requesting permission:", err);
-                    this.showError("Error requesting sensors: " + err.message);
+                console.log("iOS detected, requesting DeviceOrientationEvent permission");
+                const permissionState = await DeviceOrientationEvent.requestPermission();
+                
+                console.log("Permission response:", permissionState);
+                if (permissionState === 'granted') {
+                    // Permission granted, initialize sensors
+                    this.initSensors();
+                } else {
+                    // Permission denied
+                    alert("Permission denied. Please allow motion sensor access to use the controller.");
                 }
             } else {
-                // For other browsers (Android, etc.)
+                // For Android/other devices - no permission needed
+                console.log("Non-iOS device or permission already granted");
                 this.initSensors();
             }
         } catch (error) {
-            console.error("Error in requestPermissions:", error);
-            this.showError("Sensor access error: " + error.message);
+            console.error("Error requesting permission:", error);
+            alert("Error accessing motion sensors: " + error.message);
         }
     },
     
@@ -198,17 +260,20 @@ const Controller = {
         console.log("Initializing sensors");
         const self = this;
         
-        // Hide permissions panel if it's visible
-        this.elements.permissions.classList.add('hidden');
+        // Remove the permission overlay
+        if (this.elements.permissionOverlay) {
+            document.body.removeChild(this.elements.permissionOverlay);
+        }
         
-        // Hide the manual trigger
-        this.elements.manualTrigger.style.display = "none";
+        // Update state
+        this.state.isPermissionGranted = true;
         
-        // Create event handlers
+        // Set up orientation handler
         this.state.orientationHandler = function(event) {
             self.handleOrientation(event);
         };
         
+        // Set up motion handler
         this.state.motionHandler = function(event) {
             self.handleMotion(event);
         };
@@ -217,80 +282,14 @@ const Controller = {
         window.addEventListener('deviceorientation', this.state.orientationHandler);
         window.addEventListener('devicemotion', this.state.motionHandler);
         
-        // Set permission granted flag
-        this.state.isPermissionGranted = true;
-        
-        // Start sending data if connected
+        // Start sending data if already connected
         if (this.state.isConnected) {
             this.startSendingData();
         }
         
-        // Check if we're actually getting data
-        setTimeout(() => {
-            if (!this.state.lastPosition.quaternion) {
-                console.warn("No orientation data received after 2 seconds");
-                this.showError("No sensor data received. Your device may not support motion sensors.");
-            } else {
-                console.log("Successfully receiving sensor data!");
-                this.showSuccess("Sensors active! Move your device to control.");
-            }
-        }, 2000);
-        
-        // Do an initial calibration
-        this.calibrate();
-    },
-    
-    /**
-     * Show an error message
-     */
-    showError(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.textContent = message;
-        errorDiv.style.position = 'fixed';
-        errorDiv.style.top = '10px';
-        errorDiv.style.left = '10px';
-        errorDiv.style.right = '10px';
-        errorDiv.style.padding = '15px';
-        errorDiv.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
-        errorDiv.style.color = 'white';
-        errorDiv.style.borderRadius = '8px';
-        errorDiv.style.zIndex = 1000;
-        errorDiv.style.textAlign = 'center';
-        
-        document.body.appendChild(errorDiv);
-        
-        // Remove after 4 seconds
-        setTimeout(() => {
-            document.body.removeChild(errorDiv);
-        }, 4000);
-        
-        // Also show the permission panel as a fallback
-        this.elements.permissions.classList.remove('hidden');
-    },
-    
-    /**
-     * Show a success message
-     */
-    showSuccess(message) {
-        const successDiv = document.createElement('div');
-        successDiv.textContent = message;
-        successDiv.style.position = 'fixed';
-        successDiv.style.top = '10px';
-        successDiv.style.left = '10px';
-        successDiv.style.right = '10px';
-        successDiv.style.padding = '15px';
-        successDiv.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
-        successDiv.style.color = 'white';
-        successDiv.style.borderRadius = '8px';
-        successDiv.style.zIndex = 1000;
-        successDiv.style.textAlign = 'center';
-        
-        document.body.appendChild(successDiv);
-        
-        // Remove after 3 seconds
-        setTimeout(() => {
-            document.body.removeChild(successDiv);
-        }, 3000);
+        // Success message
+        console.log("Sensors initialized successfully");
+        this.showMessage("Sensors active! Move your device to control.", "success");
     },
     
     /**
@@ -312,18 +311,18 @@ const Controller = {
                 this.elements.connectionText.textContent = 'Connected to Session: ' + this.state.sessionId;
                 this.state.isConnected = true;
                 
-                // If permissions already granted, start sending data
+                // Start sending data if permission already granted
                 if (this.state.isPermissionGranted) {
                     this.startSendingData();
                 }
             } else {
                 this.elements.connectionText.textContent = 'Connection failed';
-                this.showError("Failed to connect to session");
+                this.showMessage("Failed to connect to session", "error");
             }
         } catch (error) {
             console.error('Error connecting to session:', error);
             this.elements.connectionText.textContent = 'Connection failed';
-            this.showError("Connection error: " + error.message);
+            this.showMessage("Connection error: " + error.message, "error");
         }
     },
     
@@ -339,30 +338,30 @@ const Controller = {
         const beta = event.beta || 0;    // X-axis rotation [-180, 180)
         const gamma = event.gamma || 0;  // Y-axis rotation [-90, 90)
         
-        // Display orientation data
+        // Update display
         this.elements.orientationData.textContent = `α: ${alpha.toFixed(1)}° β: ${beta.toFixed(1)}° γ: ${gamma.toFixed(1)}°`;
         
-        // Map orientation to position
-        const x = gamma / 90;  // -1 to 1
-        const y = beta / 180;  // -1 to 1
-        const z = alpha / 360; // 0 to 1
+        // Map orientation to position (simple mapping)
+        const x = gamma / 90;  // -1 to 1 based on gamma (-90° to 90°)
+        const y = beta / 180;  // -1 to 1 based on beta (-180° to 180°)
+        const z = 0;  // We're not using z for now
         
         this.state.lastPosition = { x, y, z };
         
-        // Convert Euler angles to quaternion
+        // Create a quaternion from Euler angles
         const rad = Math.PI / 180;
-        const c1 = Math.cos(alpha * rad / 2);
-        const s1 = Math.sin(alpha * rad / 2);
-        const c2 = Math.cos(beta * rad / 2);
-        const s2 = Math.sin(beta * rad / 2);
-        const c3 = Math.cos(gamma * rad / 2);
-        const s3 = Math.sin(gamma * rad / 2);
+        const cy = Math.cos(alpha * rad / 2);
+        const sy = Math.sin(alpha * rad / 2);
+        const cp = Math.cos(beta * rad / 2);
+        const sp = Math.sin(beta * rad / 2);
+        const cr = Math.cos(gamma * rad / 2);
+        const sr = Math.sin(gamma * rad / 2);
         
         this.state.lastPosition.quaternion = {
-            x: s1 * c2 * c3 - c1 * s2 * s3,
-            y: c1 * s2 * c3 + s1 * c2 * s3,
-            z: c1 * c2 * s3 - s1 * s2 * c3,
-            w: c1 * c2 * c3 + s1 * s2 * s3
+            x: sr * cp * cy - cr * sp * sy,
+            y: cr * sp * cy + sr * cp * sy,
+            z: cr * cp * sy - sr * sp * cy,
+            w: cr * cp * cy + sr * sp * sy
         };
         
         // Create visual feedback
@@ -382,10 +381,8 @@ const Controller = {
         // Get rotation rate
         const rotationRate = event.rotationRate || { alpha: 0, beta: 0, gamma: 0 };
         
-        // Display acceleration data
+        // Update display
         this.elements.accelData.textContent = `X: ${accel.x ? accel.x.toFixed(2) : 0} Y: ${accel.y ? accel.y.toFixed(2) : 0} Z: ${accel.z ? accel.z.toFixed(2) : 0}`;
-        
-        // Display gyroscope data
         this.elements.gyroData.textContent = `X: ${rotationRate.beta ? rotationRate.beta.toFixed(2) : 0} Y: ${rotationRate.gamma ? rotationRate.gamma.toFixed(2) : 0} Z: ${rotationRate.alpha ? rotationRate.alpha.toFixed(2) : 0}`;
     },
     
@@ -400,31 +397,28 @@ const Controller = {
             clearInterval(this.state.sendInterval);
         }
         
-        // Set up interval to send data (10 times per second)
+        // Set up interval to send data
         this.state.sendInterval = setInterval(function() {
             if (!self.state.isFrozen && self.state.isConnected && self.state.isPermissionGranted) {
-                // Only send if we have valid quaternion data
-                if (self.state.lastPosition.quaternion) {
-                    // Prepare data to send
-                    const data = {
-                        type: 'imu-data',
-                        position: self.state.lastPosition,
-                        quaternion: self.state.lastPosition.quaternion,
-                        timestamp: Date.now()
-                    };
-                    
-                    // Send IMU data
-                    DweetIO.send(self.state.sessionId, 'controller', data)
-                        .catch(function(error) {
-                            console.error('Error sending data:', error);
-                        });
-                }
+                // Prepare data to send
+                const data = {
+                    type: 'imu-data',
+                    position: self.state.lastPosition,
+                    quaternion: self.state.lastPosition.quaternion || { x: 0, y: 0, z: 0, w: 1 },
+                    timestamp: Date.now()
+                };
+                
+                // Send IMU data
+                DweetIO.send(self.state.sessionId, 'controller', data)
+                    .catch(function(error) {
+                        console.error('Error sending data:', error);
+                    });
             }
-        }, 100);
+        }, 100); // 10 times per second
     },
     
     /**
-     * Create visual feedback
+     * Create visual feedback based on device orientation
      */
     createVisualFeedback() {
         // Don't create visual feedback if frozen
@@ -435,7 +429,7 @@ const Controller = {
             this.elements.visualFeedback.removeChild(this.elements.visualFeedback.firstChild);
         }
         
-        // Create a dot based on the position
+        // Create a dot at the position corresponding to the orientation
         const dot = document.createElement('div');
         dot.className = 'dot';
         
@@ -443,7 +437,7 @@ const Controller = {
         const centerX = this.elements.controllerArea.clientWidth / 2;
         const centerY = this.elements.controllerArea.clientHeight / 2;
         
-        // Maps from -1...1 position to the controller area
+        // Map the position from -1...1 to the visual area
         const x = centerX + this.state.lastPosition.x * centerX;
         const y = centerY + this.state.lastPosition.y * centerY;
         
@@ -459,8 +453,15 @@ const Controller = {
      */
     calibrate() {
         // Reset position to center
-        this.state.lastPosition = { x: 0, y: 0, z: 0 };
-        this.showSuccess("Position calibrated");
+        const currentQuaternion = this.state.lastPosition.quaternion;
+        this.state.lastPosition = { 
+            x: 0, 
+            y: 0, 
+            z: 0,
+            quaternion: currentQuaternion
+        };
+        
+        this.showMessage("Position calibrated", "success");
     },
     
     /**
@@ -470,6 +471,39 @@ const Controller = {
         this.state.isFrozen = !this.state.isFrozen;
         this.elements.freezeButton.textContent = this.state.isFrozen ? 'Unfreeze' : 'Freeze';
         this.elements.freezeButton.classList.toggle('freeze-active', this.state.isFrozen);
+    },
+    
+    /**
+     * Show a message to the user
+     * @param {string} message - Message to show
+     * @param {string} type - 'success' or 'error'
+     */
+    showMessage(message, type = 'info') {
+        const colors = {
+            success: 'rgba(46, 204, 113, 0.9)',
+            error: 'rgba(231, 76, 60, 0.9)',
+            info: 'rgba(52, 152, 219, 0.9)'
+        };
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = message;
+        messageDiv.style.position = 'fixed';
+        messageDiv.style.top = '10px';
+        messageDiv.style.left = '10px';
+        messageDiv.style.right = '10px';
+        messageDiv.style.padding = '15px';
+        messageDiv.style.backgroundColor = colors[type];
+        messageDiv.style.color = 'white';
+        messageDiv.style.borderRadius = '8px';
+        messageDiv.style.zIndex = 1000;
+        messageDiv.style.textAlign = 'center';
+        
+        document.body.appendChild(messageDiv);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            document.body.removeChild(messageDiv);
+        }, 3000);
     },
     
     /**
@@ -488,11 +522,6 @@ const Controller = {
         }
         if (this.state.motionHandler) {
             window.removeEventListener('devicemotion', this.state.motionHandler);
-        }
-        
-        // Remove manual trigger if it exists
-        if (this.elements.manualTrigger && this.elements.manualTrigger.parentNode) {
-            this.elements.manualTrigger.parentNode.removeChild(this.elements.manualTrigger);
         }
         
         // Reset state
