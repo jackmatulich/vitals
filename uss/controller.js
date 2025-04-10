@@ -1,4 +1,4 @@
-// js/controller.js - Phone controller functionality
+// js/controller.js - Phone controller functionality with fixed permission handling
 
 /**
  * Controller module - Handles the ultrasound probe controller functionality
@@ -82,6 +82,39 @@ const Controller = {
         
         // Grant permission button
         this.elements.grantPermissionButton.addEventListener('click', () => this.requestSensorPermission());
+        
+        // Check if we need to auto-init sensors for Android devices
+        if (this.canAutoInitSensors()) {
+            this.tryAutoInitSensors();
+        } else {
+            // Show permissions panel for iOS devices
+            this.elements.permissions.classList.remove('hidden');
+        }
+    },
+    
+    /**
+     * Check if sensors can be auto-initialized (typically Android)
+     */
+    canAutoInitSensors() {
+        return (
+            typeof DeviceOrientationEvent !== 'undefined' && 
+            typeof DeviceOrientationEvent.requestPermission !== 'function' &&
+            typeof DeviceMotionEvent !== 'undefined' && 
+            typeof DeviceMotionEvent.requestPermission !== 'function'
+        );
+    },
+    
+    /**
+     * Try to auto-initialize sensors (typically for Android)
+     */
+    async tryAutoInitSensors() {
+        try {
+            await this.initSensors(true);
+        } catch (error) {
+            console.error('Error auto-initializing sensors:', error);
+            // Show permissions screen on failure
+            this.elements.permissions.classList.remove('hidden');
+        }
     },
     
     /**
@@ -105,7 +138,9 @@ const Controller = {
                 
                 // Show permissions panel if needed
                 if (!this.state.isPermissionGranted) {
-                    this.elements.permissions.classList.remove('hidden');
+                    if (!this.canAutoInitSensors()) {
+                        this.elements.permissions.classList.remove('hidden');
+                    }
                 } else {
                     // Start sending data if permission already granted
                     this.startSendingData();
@@ -148,49 +183,118 @@ const Controller = {
      * Request permission to access device sensors
      */
     async requestSensorPermission() {
+        console.log('Requesting sensor permissions...');
         try {
-            // For iOS 13+ devices
+            // For iOS 13+ devices - Device Orientation
             if (typeof DeviceOrientationEvent !== 'undefined' && 
                 typeof DeviceOrientationEvent.requestPermission === 'function') {
+                
+                console.log('Requesting DeviceOrientationEvent permission...');
                 const permissionState = await DeviceOrientationEvent.requestPermission();
                 
                 if (permissionState === 'granted') {
-                    await this.initSensors();
+                    console.log('DeviceOrientationEvent permission granted');
+                    
+                    // Also request motion permission if available
+                    if (typeof DeviceMotionEvent !== 'undefined' && 
+                        typeof DeviceMotionEvent.requestPermission === 'function') {
+                        
+                        console.log('Requesting DeviceMotionEvent permission...');
+                        const motionPermission = await DeviceMotionEvent.requestPermission();
+                        
+                        if (motionPermission === 'granted') {
+                            console.log('DeviceMotionEvent permission granted');
+                            await this.initSensors();
+                        } else {
+                            console.log('DeviceMotionEvent permission denied');
+                            alert('Motion permission denied. Both orientation and motion sensors are needed.');
+                        }
+                    } else {
+                        // Just orientation is available
+                        await this.initSensors();
+                    }
                 } else {
-                    alert('Permission denied for motion sensors.');
+                    console.log('DeviceOrientationEvent permission denied');
+                    alert('Orientation permission denied. The controller requires sensor access to function.');
                 }
             } 
-            // For iOS 12.2+ devices
+            // For iOS 12.2+ devices - Device Motion
             else if (typeof DeviceMotionEvent !== 'undefined' && 
                     typeof DeviceMotionEvent.requestPermission === 'function') {
+                
+                console.log('Requesting DeviceMotionEvent permission only...');
                 const permissionState = await DeviceMotionEvent.requestPermission();
                 
                 if (permissionState === 'granted') {
+                    console.log('DeviceMotionEvent permission granted');
                     await this.initSensors();
                 } else {
-                    alert('Permission denied for motion sensors.');
+                    console.log('DeviceMotionEvent permission denied');
+                    alert('Motion permission denied. The controller requires sensor access to function.');
                 }
             } 
             // For Android and other devices that don't require explicit permission
             else {
+                console.log('No explicit permission needed, trying to init sensors directly');
                 await this.initSensors();
             }
         } catch (error) {
             console.error('Error requesting sensor permission:', error);
-            alert('Error requesting sensor permission: ' + error.message);
+            alert('Error requesting sensor permission: ' + error.message + 
+                  '\n\nTry using a different browser or device that supports motion sensors.');
         }
     },
     
     /**
      * Initialize sensors after permission is granted
      */
-    async initSensors() {
+    async initSensors(isAutoInit = false) {
+        console.log('Initializing sensors...');
+        
+        // Set up event listeners with specific handlers bound to this object
+        const orientationHandler = this.handleOrientation.bind(this);
+        const motionHandler = this.handleMotion.bind(this);
+        
+        // Test if events actually fire
+        let orientationWorks = false;
+        let motionWorks = false;
+        
+        // Create one-time test handlers
+        const orientationTest = () => { orientationWorks = true; };
+        const motionTest = () => { motionWorks = true; };
+        
+        // Add test listeners
+        window.addEventListener('deviceorientation', orientationTest, { once: true });
+        window.addEventListener('devicemotion', motionTest, { once: true });
+        
+        // Wait a bit to see if events fire
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Remove test listeners
+        window.removeEventListener('deviceorientation', orientationTest);
+        window.removeEventListener('devicemotion', motionTest);
+        
+        // Check if either sensor works
+        if (!orientationWorks && !motionWorks) {
+            if (!isAutoInit) {
+                throw new Error('Device sensors not working or not supported by your browser/device');
+            }
+            return;
+        }
+        
+        // Add real event listeners
+        if (orientationWorks) {
+            window.addEventListener('deviceorientation', orientationHandler);
+        }
+        if (motionWorks) {
+            window.addEventListener('devicemotion', motionHandler);
+        }
+        
+        // Update state and hide permissions panel
         this.elements.permissions.classList.add('hidden');
         this.state.isPermissionGranted = true;
         
-        // Add event listeners for device sensors
-        window.addEventListener('deviceorientation', (event) => this.handleOrientation(event));
-        window.addEventListener('devicemotion', (event) => this.handleMotion(event));
+        console.log('Sensors initialized successfully');
         
         // Start sending data if already connected
         if (this.state.isConnected) {
