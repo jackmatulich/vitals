@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ultrasound Simulator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Mode Selection Screen -->
+    <div id="modeSelection" class="screen active">
+        <div class="mode-container">
+            <h1>Ultrasound Simulator</h1>
+            <p>Select your role:</p>
+            
+            <div class="mode-options">
+                <div class="mode-option" id="simulatorMode">
+                    <div class="mode-icon simulator-icon"></div>
+                    <h2>Simulator</h2>
+                    <p>Run the ultrasound display on this device</p>
+                </div>
+                
+                <div class="mode-option" id="controllerMode">
+                    <div class="mode-icon controller-icon"></div>
+                    <h2>Controller</h2>
+                    <p>Use this device as an ultrasound probe</p>
+                </div>
+            </div>
+            
+            <div class="session-input hidden" id="sessionInputPanel">
+                <h3>Enter Session ID</h3>
+                <input type="text" id="sessionIdInput" placeholder="Enter session ID" maxlength="8">
+                <button id="connectButton" class="primary-btn">Connect</button>
+                <button id="backToModeSelection" class="secondary-btn">Back</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Simulator Screen -->
+    <div id="simulatorScreen" class="screen">
+        <header>
+            <h1>Ultrasound Simulator</h1>
+            <div class="controls">
+                <button id="connectPhone" class="primary-btn">Connect Phone Controller</button>
+                <div class="settings-panel">
+                    <div class="setting-group">
+                        <label>Ultrasound Mode</label>
+                        <select id="presetSelect">
+                            <option value="abdomen">Abdomen</option>
+                            <option value="cardiac">Cardiac</option>
+                            <option value="obstetric">Obstetric</option>
+                            <option value="vascular">Vascular</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="depthControl">Depth: <span id="depthValue">15</span> cm</label>
+                        <input type="range" id="depthControl" min="5" max="25" value="15" step="1">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="gainControl">Gain: <span id="gainValue">50</span>%</label>
+                        <input type="range" id="gainControl" min="0" max="100" value="50" step="1">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="scanLinesToggle" checked>
+                            Show Scan Lines
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="ultrasound-display">
+                <div class="machine-frame">
+                    <div class="screen">
+                        <canvas id="ultrasoundCanvas"></canvas>
+                        <div id="overlay">
+                            <div id="measurementScale"></div>
+                            <div id="probeIndicator"></div>
+                        </div>
+                        <div class="patient-info">
+                            <div>Patient ID: SIMULATION</div>
+                            <div id="timestamp"></div>
+                        </div>
+                    </div>
+                    <div class="machine-controls">
+                        <button id="freezeBtn">Freeze</button>
+                        <button id="saveBtn">Save Image</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="dicom-upload">
+                    <h2>Load DICOM Dataset</h2>
+                    <div class="dicom-upload-form">
+                        <input type="file" id="dicomUpload" accept=".dcm" multiple>
+                        <button id="processDicomBtn" class="primary-btn">Process DICOM Files</button>
+                    </div>
+                    <div class="dicom-status">
+                        <div id="processingStatus">No files loaded</div>
+                        <div class="progress-container" style="display:none">
+                            <div id="progressBar"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="status-panel">
+                    <h2>Connection Status</h2>
+                    <div class="status-item">
+                        <span class="status-label">Session ID:</span>
+                        <span id="sessionId">Generating...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Status:</span>
+                        <span id="connectionStatus" class="status-value disconnected">Disconnected</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Last Update:</span>
+                        <span id="lastUpdate">Never</span>
+                    </div>
+                </div>
+                
+                <div class="probe-data">
+                    <h2>Probe Position</h2>
+                    <div id="probePositionDisplay">
+                        <div>X: <span id="probeX">0.00</span></div>
+                        <div>Y: <span id="probeY">0.00</span></div>
+                        <div>Z: <span id="probeZ">0.00</span></div>
+                        <div>Angle: <span id="probeAngle">0.00</span>°</div>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <h2>How to Use</h2>
+                    <ol>
+                        <li>Upload DICOM files and process them</li>
+                        <li>Click "Connect Phone Controller"</li>
+                        <li>Share the session ID with the controller</li>
+                        <li>Move the phone controller to change the view</li>
+                        <li>Adjust settings as needed</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div id="connectionModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Connect Your Phone</h2>
+                    <p>Open the simulator on another device and select "Controller" mode.</p>
+                    <p>Then enter this Session ID:</p>
+                    <div class="session-code" id="modalSessionId">XXXXXXXX</div>
+                    <p>Or scan this QR code:</p>
+                    <div id="qrcode"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Controller Screen -->
+    <div id="controllerScreen" class="screen">
+        <header>
+            <h1>Ultrasound Probe Controller</h1>
+            <div class="connection-status">
+                <div class="status-indicator" id="controllerConnectionIndicator"></div>
+                <span id="controllerConnectionText">Not Connected</span>
+            </div>
+        </header>
+        
+        <div class="controller-area" id="controllerArea">
+            <div class="probe-model">
+                <span class="probe-model-text">ULTRASOUND PROBE</span>
+            </div>
+            <div class="visual-feedback" id="visualFeedback"></div>
+            
+            <div class="instructions">
+                <h2>How to use:</h2>
+                <ul>
+                    <li>Hold your phone like a real ultrasound probe</li>
+                    <li>Move your phone to control the virtual probe</li>
+                    <li>Use the Freeze button to pause the image</li>
+                    <li>Use Calibrate to reset the probe position</li>
+                </ul>
+            </div>
+            
+            <div class="sensor-info">
+                <div class="sensor-row">
+                    <span class="sensor-label">Accelerometer:</span>
+                    <span id="accelData">Waiting for data...</span>
+                </div>
+                <div class="sensor-row">
+                    <span class="sensor-label">Gyroscope:</span>
+                    <span id="gyroData">Waiting for data...</span>
+                </div>
+                <div class="sensor-row">
+                    <span class="sensor-label">Orientation:</span>
+                    <span id="orientationData">Waiting for data...</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls" id="controlsPanel">
+            <button id="freezeButton">Freeze</button>
+            <button id="calibrateButton">Calibrate</button>
+            <button id="returnToModeSelection" class="secondary-btn">Disconnect</button>
+        </div>
+    </div>
+    
+    <div id="permissions" class="hidden">
+        <p>This application needs access to your device's motion and orientation sensors to function as an ultrasound probe controller.</p>
+        <p>Please grant permission when prompted.</p>
+        <button id="grantPermissionButton">Grant Permission</button>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cornerstone-core/2.6.1/cornerstone.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cornerstone-wado-image-loader/4.13.2/cornerstoneWADOImageLoader.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dicom-parser/1.8.21/dicomParser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/3.4.3/gl-matrix-min.js"></script>
+    
+    <script src="js/common.js"></script>
+    <script src="js/simulator.js"></script>
+    <script src="js/controller.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
