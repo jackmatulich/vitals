@@ -1,4 +1,4 @@
-// js/controller.js - Phone controller functionality
+// js/controller.js - Phone controller functionality (compatible with Eruda)
 
 /**
  * Controller module - Handles the ultrasound probe controller functionality
@@ -32,7 +32,9 @@ const Controller = {
         accelOffset: { x: 0, y: 0, z: 0 },
         gyroOffset: { x: 0, y: 0, z: 0 },
         sendInterval: null,
-        lastSettings: null
+        lastSettings: null,
+        orientationHandler: null,
+        motionHandler: null
     },
     
     /**
@@ -74,14 +76,25 @@ const Controller = {
      * Set up event listeners
      */
     setupEventListeners() {
+        const self = this;
+        
         // Freeze button
-        this.elements.freezeButton.addEventListener('click', () => this.toggleFreeze());
+        this.elements.freezeButton.addEventListener('click', function() {
+            self.toggleFreeze();
+        });
         
         // Calibrate button
-        this.elements.calibrateButton.addEventListener('click', () => this.calibrate());
+        this.elements.calibrateButton.addEventListener('click', function() {
+            self.calibrate();
+        });
         
         // Grant permission button
-        this.elements.grantPermissionButton.addEventListener('click', () => this.requestSensorPermission());
+        this.elements.grantPermissionButton.addEventListener('click', function() {
+            self.requestSensorPermission();
+        });
+        
+        // Initialize permission prompt
+        this.elements.permissions.classList.remove('hidden');
     },
     
     /**
@@ -103,14 +116,6 @@ const Controller = {
                 this.elements.connectionText.textContent = 'Connected to Session: ' + this.state.sessionId;
                 this.state.isConnected = true;
                 
-                // Show permissions panel if needed
-                if (!this.state.isPermissionGranted) {
-                    this.elements.permissions.classList.remove('hidden');
-                } else {
-                    // Start sending data if permission already granted
-                    this.startSendingData();
-                }
-                
                 // Start polling for settings
                 this.startPollingSettings();
             } else {
@@ -128,15 +133,17 @@ const Controller = {
      * Start polling for settings from simulator
      */
     startPollingSettings() {
+        const self = this;
+        
         // Poll for settings every second
-        setInterval(async () => {
-            if (!this.state.isConnected) return;
+        setInterval(async function() {
+            if (!self.state.isConnected) return;
             
             try {
-                const data = await DweetIO.getLatest(this.state.sessionId, 'simulator');
+                const data = await DweetIO.getLatest(self.state.sessionId, 'simulator');
                 
                 if (data && data.type === 'settings') {
-                    this.state.lastSettings = data.settings;
+                    self.state.lastSettings = data.settings;
                 }
             } catch (error) {
                 console.error('Error polling settings:', error);
@@ -148,57 +155,84 @@ const Controller = {
      * Request permission to access device sensors
      */
     async requestSensorPermission() {
+        const self = this;
+        console.log('Requesting sensor permissions...');
+        
         try {
-            // For iOS 13+ devices
+            // For iOS Safari
+            let needsPermission = false;
+            let permissionGranted = false;
+            
+            // Request permissions for iOS (DeviceOrientationEvent)
             if (typeof DeviceOrientationEvent !== 'undefined' && 
                 typeof DeviceOrientationEvent.requestPermission === 'function') {
-                const permissionState = await DeviceOrientationEvent.requestPermission();
                 
-                if (permissionState === 'granted') {
-                    await this.initSensors();
-                } else {
-                    alert('Permission denied for motion sensors.');
+                needsPermission = true;
+                try {
+                    const response = await DeviceOrientationEvent.requestPermission();
+                    if (response === 'granted') {
+                        permissionGranted = true;
+                    } else {
+                        alert('Permission to access device orientation was denied');
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Error requesting orientation permission:', err);
+                    alert('Error requesting device orientation permission');
+                    return;
                 }
-            } 
-            // For iOS 12.2+ devices
-            else if (typeof DeviceMotionEvent !== 'undefined' && 
-                    typeof DeviceMotionEvent.requestPermission === 'function') {
-                const permissionState = await DeviceMotionEvent.requestPermission();
+            }
+            
+            // Request permissions for iOS (DeviceMotionEvent)
+            if (typeof DeviceMotionEvent !== 'undefined' && 
+                typeof DeviceMotionEvent.requestPermission === 'function') {
                 
-                if (permissionState === 'granted') {
-                    await this.initSensors();
-                } else {
-                    alert('Permission denied for motion sensors.');
+                needsPermission = true;
+                try {
+                    const response = await DeviceMotionEvent.requestPermission();
+                    if (response === 'granted') {
+                        permissionGranted = true;
+                    } else {
+                        alert('Permission to access device motion was denied');
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Error requesting motion permission:', err);
+                    alert('Error requesting device motion permission');
+                    return;
                 }
-            } 
-            // For Android and other devices that don't require explicit permission
-            else {
-                await this.initSensors();
+            }
+            
+            // Android or desktop browsers (or permission granted on iOS)
+            if (!needsPermission || permissionGranted) {
+                this.elements.permissions.classList.add('hidden');
+                this.state.isPermissionGranted = true;
+                
+                // Create event handlers with proper binding
+                this.state.orientationHandler = function(event) {
+                    self.handleOrientation(event);
+                };
+                
+                this.state.motionHandler = function(event) {
+                    self.handleMotion(event);
+                };
+                
+                // Add event listeners
+                window.addEventListener('deviceorientation', this.state.orientationHandler);
+                window.addEventListener('devicemotion', this.state.motionHandler);
+                
+                // Start sending data
+                if (this.state.isConnected) {
+                    this.startSendingData();
+                }
+                
+                // Calibrate initial position
+                this.calibrate();
             }
         } catch (error) {
-            console.error('Error requesting sensor permission:', error);
-            alert('Error requesting sensor permission: ' + error.message);
+            console.error('Error in requestSensorPermission:', error);
+            alert('Error accessing device sensors: ' + error.message);
         }
-    },
-    
-    /**
-     * Initialize sensors after permission is granted
-     */
-    async initSensors() {
-        this.elements.permissions.classList.add('hidden');
-        this.state.isPermissionGranted = true;
-        
-        // Add event listeners for device sensors
-        window.addEventListener('deviceorientation', (event) => this.handleOrientation(event));
-        window.addEventListener('devicemotion', (event) => this.handleMotion(event));
-        
-        // Start sending data if already connected
-        if (this.state.isConnected) {
-            this.startSendingData();
-        }
-        
-        // Calibrate initial position
-        this.calibrate();
     },
     
     /**
@@ -253,8 +287,6 @@ const Controller = {
         };
         
         // Simplified position integration from acceleration
-        // In a real application, you would use a more sophisticated approach
-        // This is just a simple approximation for feedback purposes
         this.state.lastPosition.x += calibratedAccel.x * 0.0001;
         this.state.lastPosition.y += calibratedAccel.y * 0.0001;
         this.state.lastPosition.z += calibratedAccel.z * 0.0001;
@@ -272,28 +304,30 @@ const Controller = {
      * Start sending sensor data to the simulator
      */
     startSendingData() {
+        const self = this;
+        
         // Clear any existing interval
         if (this.state.sendInterval) {
             clearInterval(this.state.sendInterval);
         }
         
         // Set up interval to send data (30 times per second)
-        this.state.sendInterval = setInterval(() => {
-            if (!this.state.isFrozen && this.state.isConnected && this.state.isPermissionGranted) {
+        this.state.sendInterval = setInterval(function() {
+            if (!self.state.isFrozen && self.state.isConnected && self.state.isPermissionGranted) {
                 // Prepare data to send
                 const data = {
                     type: 'imu-data',
                     position: {
-                        x: this.state.lastPosition.x,
-                        y: this.state.lastPosition.y,
-                        z: this.state.lastPosition.z
+                        x: self.state.lastPosition.x,
+                        y: self.state.lastPosition.y,
+                        z: self.state.lastPosition.z
                     },
-                    quaternion: this.state.lastPosition.quaternion || { x: 0, y: 0, z: 0, w: 1 },
+                    quaternion: self.state.lastPosition.quaternion || { x: 0, y: 0, z: 0, w: 1 },
                     timestamp: Date.now()
                 };
                 
                 // Send IMU data
-                DweetIO.send(this.state.sessionId, 'controller', data);
+                DweetIO.send(self.state.sessionId, 'controller', data);
             }
         }, 33); // ~30fps
     },
@@ -302,6 +336,7 @@ const Controller = {
      * Calibrate sensors
      */
     calibrate() {
+        const self = this;
         this.state.isCalibrating = true;
         this.elements.freezeButton.disabled = true;
         
@@ -310,17 +345,17 @@ const Controller = {
         
         // Collect calibration samples over 2 seconds
         const samples = [];
-        const samplingInterval = setInterval(() => {
-            if (this.state.lastPosition.quaternion) {
+        const samplingInterval = setInterval(function() {
+            if (self.state.lastPosition.quaternion) {
                 samples.push({
-                    position: { ...this.state.lastPosition },
-                    quaternion: { ...this.state.lastPosition.quaternion }
+                    position: { ...self.state.lastPosition },
+                    quaternion: { ...self.state.lastPosition.quaternion }
                 });
             }
         }, 100);
         
         // After 2 seconds, compute the calibration values
-        setTimeout(() => {
+        setTimeout(function() {
             clearInterval(samplingInterval);
             
             if (samples.length > 0) {
@@ -355,25 +390,25 @@ const Controller = {
                 }
                 
                 // Set calibration values
-                this.state.calibrationBasePosition = { ...avgPosition };
-                this.state.calibrationBaseQuaternion = { ...avgQuaternion };
+                self.state.calibrationBasePosition = { ...avgPosition };
+                self.state.calibrationBaseQuaternion = { ...avgQuaternion };
                 
                 // Reset current position
-                this.state.lastPosition = { x: 0, y: 0, z: 0 };
+                self.state.lastPosition = { x: 0, y: 0, z: 0 };
                 
                 // Show success message
-                this.elements.connectionText.textContent = this.state.isConnected ? 
-                    'Connected to Session: ' + this.state.sessionId : 'Disconnected';
+                self.elements.connectionText.textContent = self.state.isConnected ? 
+                    'Connected to Session: ' + self.state.sessionId : 'Disconnected';
                 
                 // Create a success visual feedback
-                this.createCalibrationFeedback();
+                self.createCalibrationFeedback();
             } else {
-                this.elements.connectionText.textContent = 'Calibration failed, no samples collected';
+                self.elements.connectionText.textContent = 'Calibration failed, no samples collected';
             }
             
             // Reset state
-            this.state.isCalibrating = false;
-            this.elements.freezeButton.disabled = false;
+            self.state.isCalibrating = false;
+            self.elements.freezeButton.disabled = false;
         }, 2000);
     },
     
@@ -500,8 +535,12 @@ const Controller = {
         }
         
         // Remove event listeners
-        window.removeEventListener('deviceorientation', this.handleOrientation);
-        window.removeEventListener('devicemotion', this.handleMotion);
+        if (this.state.orientationHandler) {
+            window.removeEventListener('deviceorientation', this.state.orientationHandler);
+        }
+        if (this.state.motionHandler) {
+            window.removeEventListener('devicemotion', this.state.motionHandler);
+        }
         
         // Reset state
         this.state.isConnected = false;
