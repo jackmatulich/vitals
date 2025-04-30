@@ -4,12 +4,9 @@
 	<meta charset="utf-8">
 	<title>AR Ultrasound Probe</title>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<!-- AR.js by @jerome_etienne - github: https://github.com/jeromeetienne/ar.js -->
-	<!-- Three.js library -->
 	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/build/three.min.js"></script>
 	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/libs/stats.min.js"></script>
-	
-	<!-- AR.js specific includes -->
+	<!-- include jsartookit -->
 	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.min.js"></script>
 	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitsource.js"></script>
 	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.api.js"></script>
@@ -17,14 +14,27 @@
 	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-arbasecontrols.js"></script>
 	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-armarkercontrols.js"></script>
 	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/loaders/GLTFLoader.js"></script>
-	
 	<style>
 		body {
-			margin: 0px;
+			margin : 0px;
 			overflow: hidden;
 			font-family: Monospace;
 		}
-		
+		#info {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			padding: 5px;
+			text-align:center;
+			color: #ffff00
+		}
+		#info a {
+			color: #ffff00;
+			text-decoration: none;
+		}
+		#info a:hover {
+			text-decoration: underline;
+		}
 		.control-panel {
 			position: absolute;
 			bottom: 0;
@@ -35,48 +45,32 @@
 			padding: 10px;
 			z-index: 999;
 		}
-		
 		.slider-group {
 			display: flex;
 			align-items: center;
 			margin: 5px 0;
 		}
-		
 		.slider-label {
 			width: 100px;
 			margin-right: 10px;
 		}
-		
 		.slider {
 			flex-grow: 1;
 		}
-		
 		.value-display {
 			width: 60px;
 			text-align: right;
 			margin-left: 10px;
 		}
-		
 		h3 {
 			margin: 5px 0;
 		}
-		
-		#info {
-			position: absolute;
-			top: 10px;
-			width: 100%;
-			text-align: center;
-			z-index: 100;
-			display: block;
-			color: white;
-			background-color: rgba(0,0,0,0.7);
-			padding: 5px;
-		}
 	</style>
 </head>
+
 <body>
-	<div id="info">
-		AR Ultrasound Probe - Using the marker from magic-cube.html
+	<div style="position: absolute; top: 10px; width: 100%; text-align: center; z-index: 100; color:white; background-color: rgba(0,0,0,0.7); padding: 5px;">
+		AR Ultrasound Probe - Place Kanji marker in view
 	</div>
 	
 	<div class="control-panel">
@@ -126,103 +120,95 @@
 	</div>
 
 <script>
+// Copy of magic-cube.html script with ultrasound probe modifications
+
 var scene, camera, renderer, clock, deltaTime, totalTime;
-
 var arToolkitSource, arToolkitContext;
-
 var markerRoot1;
-
+var mesh1;
 var probeModel;
 
-init();
+// Initialize everything
+initialize();
 animate();
 
-function init() {
-	// init renderer
-	renderer = new THREE.WebGLRenderer({
-		// antialias: true,
-		alpha: true
-	});
-	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-	renderer.setSize(640, 480);
-	renderer.domElement.style.position = 'absolute'
-	renderer.domElement.style.top = '0px'
-	renderer.domElement.style.left = '0px'
-	document.body.appendChild(renderer.domElement);
-
-	// init scene and camera
+function initialize() {
 	scene = new THREE.Scene();
-
-	// Create a camera
 	camera = new THREE.Camera();
 	scene.add(camera);
-
-	// create clock for timing
+	
+	renderer = new THREE.WebGLRenderer({
+		antialias: true,
+		alpha: true
+	});
+	renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+	renderer.setSize(1280, 960); // Use a fixed size initially
+	renderer.domElement.style.position = 'absolute';
+	renderer.domElement.style.top = '0px';
+	renderer.domElement.style.left = '0px';
+	document.body.appendChild(renderer.domElement);
+	
 	clock = new THREE.Clock();
 	deltaTime = 0;
 	totalTime = 0;
 	
-	////////////////////////////////////////////////////////////
-	// setup arToolkitSource
-	////////////////////////////////////////////////////////////
-
+	// Setup AR toolkit source (webcam)
 	arToolkitSource = new THREEx.ArToolkitSource({
 		sourceType: 'webcam',
 	});
-
-	function onResize() {
-		arToolkitSource.onResize()	
-		arToolkitSource.copySizeTo(renderer.domElement)	
-		if (arToolkitContext.arController !== null) {
-			arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)
-		}	
-	}
-
+	
+	// Handle resize
 	arToolkitSource.init(function onReady() {
+		// Resize everything once source is initialized
 		onResize();
 	});
 	
-	// handle resize
+	// Add window resize listener
 	window.addEventListener('resize', function() {
 		onResize();
 	});
 	
-	////////////////////////////////////////////////////////////
-	// setup arToolkitContext
-	////////////////////////////////////////////////////////////	
-
-	// create atToolkitContext
+	function onResize() {
+		arToolkitSource.onResizeElement();
+		arToolkitSource.copyElementSizeTo(renderer.domElement);
+		if (arToolkitContext.arController !== null) {
+			arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
+		}
+	}
+	
+	// Setup AR context
 	arToolkitContext = new THREEx.ArToolkitContext({
 		cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat',
-		detectionMode: 'mono'
+		detectionMode: 'mono',
 	});
 	
-	// copy projection matrix to camera when initialization complete
+	// Copy projection matrix once context is initialized
 	arToolkitContext.init(function onCompleted() {
 		camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
 	});
-
-	////////////////////////////////////////////////////////////
-	// setup markerRoots
-	////////////////////////////////////////////////////////////
-
-	// build markerControls
+	
+	// Create marker
 	markerRoot1 = new THREE.Group();
 	scene.add(markerRoot1);
 	
-	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
-		type: 'pattern', patternUrl: "https://stemkoski.github.io/AR-Examples/data/kanji.patt",
+	// Setup marker controls
+	var markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+		type: 'pattern',
+		patternUrl: "https://stemkoski.github.io/AR-Examples/data/kanji.patt",
 	});
-
-	// Add model group to apply transformations
-	let modelGroup = new THREE.Group();
-	markerRoot1.add(modelGroup);
 	
-	// Load the 3D model
-	let modelUrl = "https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb";
+	// Add ambient light
+	var light = new THREE.AmbientLight(0xffffff);
+	scene.add(light);
 	
-	let loader = new THREE.GLTFLoader();
-	loader.load(modelUrl, function(gltf) {
+	// Add directional light
+	var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+	directionalLight.position.set(10, 15, 10);
+	scene.add(directionalLight);
+	
+	// Load GLB model instead of creating a cube
+	var loader = new THREE.GLTFLoader();
+	loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', function(gltf) {
 		probeModel = gltf.scene;
 		
 		// Apply initial transformations
@@ -234,19 +220,32 @@ function init() {
 		);
 		probeModel.scale.set(40, 40, 40);
 		
-		modelGroup.add(probeModel);
+		markerRoot1.add(probeModel);
 	});
 	
-	// Add lights
-	let ambientLight = new THREE.AmbientLight(0xcccccc, 0.5);
-	scene.add(ambientLight);
-	
-	let directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-	directionalLight.position.set(10, 15, 10);
-	scene.add(directionalLight);
-	
-	// Setup sliders
+	// Setup slider listeners
 	setupSliderListeners();
+}
+
+function update() {
+	// Update AR toolkit
+	if (arToolkitSource.ready) {
+		arToolkitContext.update(arToolkitSource.domElement);
+	}
+}
+
+function render() {
+	renderer.render(scene, camera);
+}
+
+function animate() {
+	requestAnimationFrame(animate);
+	
+	deltaTime = clock.getDelta();
+	totalTime += deltaTime;
+	
+	update();
+	render();
 }
 
 function setupSliderListeners() {
@@ -315,24 +314,6 @@ function setupSliderListeners() {
 		}
 		document.getElementById('scaleValue').textContent = value;
 	});
-}
-
-function update() {
-	// update artoolkit on every frame
-	if (arToolkitSource.ready !== false)
-		arToolkitContext.update(arToolkitSource.domElement);
-}
-
-function render() {
-	renderer.render(scene, camera);
-}
-
-function animate() {
-	requestAnimationFrame(animate);
-	deltaTime = clock.getDelta();
-	totalTime += deltaTime;
-	update();
-	render();
 }
 </script>
 </body>
