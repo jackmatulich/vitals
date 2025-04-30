@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Stemkoski Cube Tracker + Ultrasound Probe</title>
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Cube Tracker + Ultrasound Probe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <!-- Core libraries -->
+  <!-- Stemkoski/AR.js core -->
   <script src="https://stemkoski.github.io/AR-Examples/js/three.js"></script>
   <script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.min.js"></script>
   <script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.api.js"></script>
@@ -60,7 +60,7 @@
 <script>
 let scene, camera, renderer, arToolkitSource, arToolkitContext;
 let markerRootArray = [], markerGroupArray = [];
-let sceneGroup, probeModel;
+let sceneGroup, probeModel, lastParent = null;
 
 const patternArray = ["letterA", "letterB", "letterC", "letterD", "letterF", "kanji"];
 const rotationArray = [
@@ -112,7 +112,6 @@ function init() {
 
   sceneGroup = new THREE.Group();
   sceneGroup.scale.set(0.5, 0.5, 0.5);
-  scene.add(sceneGroup);
 
   const light = new THREE.PointLight(0xffffff, 1, 100);
   light.position.set(2, 4, 4);
@@ -170,7 +169,11 @@ function animate() {
 
   for (let i = 0; i < 6; i++) {
     if (markerRootArray[i].visible) {
-      markerGroupArray[i].add(sceneGroup);
+      if (lastParent !== markerGroupArray[i]) {
+        if (sceneGroup.parent) sceneGroup.parent.remove(sceneGroup);
+        markerGroupArray[i].add(sceneGroup);
+        lastParent = markerGroupArray[i];
+      }
       break;
     }
   }
@@ -180,4 +183,4 @@ function animate() {
 </script>
 
 </body>
-</html> 
+</html>
