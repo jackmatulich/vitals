@@ -3,27 +3,35 @@
 <head>
     <meta charset="utf-8">
     <title>AR Ultrasound Probe Viewer</title>
-    <meta name="description" content="AR Ultrasound Probe Viewer">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="https://stemkoski.github.io/AR-Examples/js/aframe-ar-nft.js"></script>
-    <script>
-        // Register a component to change the color of the cube
-        AFRAME.registerComponent('markerhandler', {
-            init: function() {
-                this.el.sceneEl.addEventListener('markerFound', () => {
-                    console.log('Marker found');
-                    document.getElementById('marker-message').style.display = 'none';
-                });
-                this.el.sceneEl.addEventListener('markerLost', () => {
-                    console.log('Marker lost');
-                    document.getElementById('marker-message').style.display = 'block';
-                });
-            }
-        });
-    </script>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!-- AR.js by @jerome_etienne - github: https://github.com/jeromeetienne/ar.js -->
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/build/three.min.js"></script>
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/libs/stats.min.js"></script>
+    <!-- include jsartookit -->
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.min.js"></script>
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitsource.js"></script>
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.api.js"></script>
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitcontext.js"></script>
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-arbasecontrols.js"></script>
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-armarkercontrols.js"></script>
+    <script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/loaders/GLTFLoader.js"></script>
     <style>
+        body {
+            margin: 0px;
+            overflow: hidden;
+            font-family: Monospace;
+        }
+        #info {
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+        }
+        #info a {
+            color: #00ffff;
+            text-decoration: none;
+        }
         .control-panel {
             position: absolute;
             bottom: 0;
@@ -33,9 +41,6 @@
             color: white;
             padding: 10px;
             z-index: 999;
-            display: flex;
-            flex-direction: column;
-            font-family: Arial, sans-serif;
         }
         .slider-group {
             display: flex;
@@ -59,8 +64,7 @@
         }
         #loading-message {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 10px;
             width: 100%;
             background-color: rgba(0,0,0,0.7);
             color: white;
@@ -68,49 +72,273 @@
             padding: 10px;
             z-index: 1000;
         }
-        #marker-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0,0,0,0.7);
-            color: white;
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            z-index: 1000;
-        }
     </style>
 </head>
-<body style="margin: 0; overflow: hidden;">
-    <div id="loading-message">Loading camera, please wait...</div>
-    <div id="marker-message">Looking for marker cube. Use the same marker cube as in the magic-cube example.</div>
+
+<body>
+    <div id="loading-message">Loading, please wait... Make sure to use the marker cube from the magic-cube example!</div>
+    <div id="container"></div>
     
-    <!-- Using the same marker type as in magic-cube.html (pattern matching) -->
-    <a-scene 
-        embedded 
-        vr-mode-ui="enabled: false"
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; patternRatio: 0.75;"
-        markerhandler>
+    <div class="control-panel">
+        <h3>Ultrasound Probe Controls</h3>
         
-        <a-assets>
-            <a-asset-item id="probe-model" src="https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb"></a-asset-item>
-        </a-assets>
+        <div class="slider-group">
+            <div class="slider-label">Position X</div>
+            <input type="range" min="-3" max="3" step="0.1" value="0.2" class="slider" id="posX">
+            <div class="value-display" id="posXValue">0.2</div>
+        </div>
+        
+        <div class="slider-group">
+            <div class="slider-label">Position Y</div>
+            <input type="range" min="-3" max="3" step="0.1" value="0" class="slider" id="posY">
+            <div class="value-display" id="posYValue">0</div>
+        </div>
+        
+        <div class="slider-group">
+            <div class="slider-label">Position Z</div>
+            <input type="range" min="-3" max="3" step="0.1" value="0" class="slider" id="posZ">
+            <div class="value-display" id="posZValue">0</div>
+        </div>
+        
+        <div class="slider-group">
+            <div class="slider-label">Rotation X</div>
+            <input type="range" min="0" max="360" step="1" value="90" class="slider" id="rotX">
+            <div class="value-display" id="rotXValue">90</div>
+        </div>
+        
+        <div class="slider-group">
+            <div class="slider-label">Rotation Y</div>
+            <input type="range" min="0" max="360" step="1" value="180" class="slider" id="rotY">
+            <div class="value-display" id="rotYValue">180</div>
+        </div>
+        
+        <div class="slider-group">
+            <div class="slider-label">Rotation Z</div>
+            <input type="range" min="0" max="360" step="1" value="0" class="slider" id="rotZ">
+            <div class="value-display" id="rotZValue">0</div>
+        </div>
+        
+        <div class="slider-group">
+            <div class="slider-label">Scale</div>
+            <input type="range" min="1" max="100" step="1" value="40" class="slider" id="scale">
+            <div class="value-display" id="scaleValue">40</div>
+        </div>
+    </div>
 
-        <!-- Using the same pattern marker as in magic-cube.html -->
-        <a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/pattern-kanji.patt" id="cube-marker">
-            <a-entity
-                id="ultrasound-probe"
-                name="Ultrasound Probe"
-                gltf-model="#probe-model"
-                position="0.2 0 0"
-                rotation="90 180 0"
-                scale="40 40 40">
-            </a-entity>
-        </a-marker>
+<script>
+// Initialize variables
+var probeModel;
+var renderer, scene, camera, stats;
+var arToolkitSource, arToolkitContext;
+var markerRoot;
+var artoolkitMarker;
 
-        <a-entity camera></a-entity>
-    </a-scene>
+// Get control references
+var posXSlider = document.getElementById('posX');
+var posYSlider = document.getElementById('posY');
+var posZSlider = document.getElementById('posZ');
+var rotXSlider = document.getElementById('rotX');
+var rotYSlider = document.getElementById('rotY');
+var rotZSlider = document.getElementById('rotZ');
+var scaleSlider = document.getElementById('scale');
+
+var posXValue = document.getElementById('posXValue');
+var posYValue = document.getElementById('posYValue');
+var posZValue = document.getElementById('posZValue');
+var rotXValue = document.getElementById('rotXValue');
+var rotYValue = document.getElementById('rotYValue');
+var rotZValue = document.getElementById('rotZValue');
+var scaleValue = document.getElementById('scaleValue');
+
+// Initial model position
+var modelPosition = {x: 0.2, y: 0, z: 0};
+var modelRotation = {x: 90 * Math.PI/180, y: 180 * Math.PI/180, z: 0};
+var modelScale = 40;
+
+// Initialize everything
+initialize();
+animate();
+
+function initialize() {
+    // Initialize renderer
+    renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+    });
+    renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0px';
+    renderer.domElement.style.left = '0px';
+    document.getElementById('container').appendChild(renderer.domElement);
+
+    // Initialize scene and camera
+    scene = new THREE.Scene();
+    camera = new THREE.Camera();
+    scene.add(camera);
+
+    // Handle resize
+    window.addEventListener('resize', onWindowResize, false);
+
+    // Setup AR toolkit source
+    arToolkitSource = new THREEx.ArToolkitSource({
+        sourceType: 'webcam',
+    });
+
+    arToolkitSource.init(function onReady() {
+        onWindowResize();
+    });
+
+    // Initialize AR toolkit context
+    arToolkitContext = new THREEx.ArToolkitContext({
+        cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat',
+        detectionMode: 'mono',
+        maxDetectionRate: 30,
+        canvasWidth: 1280,
+        canvasHeight: 960,
+    });
+
+    arToolkitContext.init(function onCompleted() {
+        camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+    });
+
+    // Create marker root
+    markerRoot = new THREE.Group();
+    scene.add(markerRoot);
+
+    // Setup artoolkit marker
+    artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+        type: 'pattern',
+        patternUrl: 'https://stemkoski.github.io/AR-Examples/data/kanji.patt',
+    });
+
+    // Create a group to apply transformations separately
+    var modelGroup = new THREE.Group();
+    markerRoot.add(modelGroup);
+
+    // Load 3D model
+    var loader = new THREE.GLTFLoader();
+    loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', function(gltf) {
+        probeModel = gltf.scene;
+        
+        // Apply initial transformations
+        probeModel.position.set(modelPosition.x, modelPosition.y, modelPosition.z);
+        probeModel.rotation.set(modelRotation.x, modelRotation.y, modelRotation.z);
+        probeModel.scale.set(modelScale, modelScale, modelScale);
+        
+        modelGroup.add(probeModel);
+        
+        // Hide loading message
+        document.getElementById('loading-message').style.display = 'none';
+        
+        // Setup slider event listeners now that the model is loaded
+        setupSliderListeners();
+    });
+
+    // Add lights
+    var ambientLight = new THREE.AmbientLight(0xcccccc, 0.5);
+    scene.add(ambientLight);
+
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight.position.set(10, 15, 10);
+    scene.add(directionalLight);
+}
+
+function onWindowResize() {
+    arToolkitSource.onResizeElement();
+    arToolkitSource.copyElementSizeTo(renderer.domElement);
+    if (arToolkitContext.arController !== null) {
+        arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
+    }
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    
+    if (arToolkitSource.ready !== false) {
+        arToolkitContext.update(arToolkitSource.domElement);
+    }
+    
+    renderer.render(scene, camera);
+}
+
+function setupSliderListeners() {
+    // Position X slider
+    posXSlider.addEventListener('input', function() {
+        const value = parseFloat(this.value);
+        modelPosition.x = value;
+        if (probeModel) {
+            probeModel.position.x = value;
+        }
+        posXValue.textContent = value.toFixed(1);
+    });
+    
+    // Position Y slider
+    posYSlider.addEventListener('input', function() {
+        const value = parseFloat(this.value);
+        modelPosition.y = value;
+        if (probeModel) {
+            probeModel.position.y = value;
+        }
+        posYValue.textContent = value.toFixed(1);
+    });
+    
+    // Position Z slider
+    posZSlider.addEventListener('input', function() {
+        const value = parseFloat(this.value);
+        modelPosition.z = value;
+        if (probeModel) {
+            probeModel.position.z = value;
+        }
+        posZValue.textContent = value.toFixed(1);
+    });
+    
+    // Rotation X slider
+    rotXSlider.addEventListener('input', function() {
+        const value = parseInt(this.value);
+        const radians = value * Math.PI/180;
+        modelRotation.x = radians;
+        if (probeModel) {
+            probeModel.rotation.x = radians;
+        }
+        rotXValue.textContent = value;
+    });
+    
+    // Rotation Y slider
+    rotYSlider.addEventListener('input', function() {
+        const value = parseInt(this.value);
+        const radians = value * Math.PI/180;
+        modelRotation.y = radians;
+        if (probeModel) {
+            probeModel.rotation.y = radians;
+        }
+        rotYValue.textContent = value;
+    });
+    
+    // Rotation Z slider
+    rotZSlider.addEventListener('input', function() {
+        const value = parseInt(this.value);
+        const radians = value * Math.PI/180;
+        modelRotation.z = radians;
+        if (probeModel) {
+            probeModel.rotation.z = radians;
+        }
+        rotZValue.textContent = value;
+    });
+    
+    // Scale slider
+    scaleSlider.addEventListener('input', function() {
+        const value = parseInt(this.value);
+        modelScale = value;
+        if (probeModel) {
+            probeModel.scale.set(value, value, value);
+        }
+        scaleValue.textContent = value;
+    });
+}
+</script>
+</body>
+</html>
 
     <div class="control-panel">
         <h3>Ultrasound Probe Controls</h3>
