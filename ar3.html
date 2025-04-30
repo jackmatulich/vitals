@@ -2,25 +2,14 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>AR Ultrasound Probe with Cube Marker</title>
+	<title>AR Ultrasound Probe</title>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<!-- Exactly the same libs as magic-cube example -->
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/build/three.min.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/libs/stats.min.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.min.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitsource.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.api.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitcontext.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-arbasecontrols.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-armarkercontrols.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/loaders/GLTFLoader.js"></script>
+	
+	<!-- Fixed script sources that were working with Hiro marker -->
+	<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+	<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 	
 	<style>
-		body {
-			margin : 0px;
-			overflow: hidden;
-			font-family: Monospace;
-		}
 		.control-panel {
 			position: absolute;
 			bottom: 0;
@@ -51,21 +40,41 @@
 		h3 {
 			margin: 5px 0;
 		}
-		#status-msg {
+		#status-message {
 			position: fixed;
 			top: 10px;
 			width: 100%;
 			background-color: rgba(0,0,0,0.7);
 			color: white;
 			text-align: center;
-			padding: 5px;
-			z-index: 100;
+			padding: 10px;
+			z-index: 1000;
 		}
 	</style>
 </head>
 
-<body>
-	<div id="status-msg">Looking for cube marker from magic-cube example...</div>
+<body style="margin: 0; overflow: hidden;">
+	<div id="status-message">Looking for marker from magic-cube example...</div>
+	
+	<!-- A-Frame Scene -->
+	<a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono;">
+		<a-assets>
+			<a-asset-item id="probe-model" src="https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb"></a-asset-item>
+		</a-assets>
+		
+		<!-- Using the kanji pattern from the magic-cube example instead of hiro -->
+		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/kanji.patt" id="marker">
+			<a-entity
+				id="ultrasound-probe"
+				gltf-model="#probe-model"
+				position="0.2 0 0"
+				rotation="90 180 0"
+				scale="40 40 40">
+			</a-entity>
+		</a-marker>
+		
+		<a-entity camera></a-entity>
+	</a-scene>
 	
 	<div class="control-panel">
 		<h3>Ultrasound Probe Controls</h3>
@@ -114,229 +123,122 @@
 	</div>
 
 <script>
-// Global variables - exactly like magic-cube example
-var scene, camera, renderer, clock, deltaTime, totalTime;
-var arToolkitSource, arToolkitContext;
-var markerRoot1;
-var probeModel;
-
-// Initialize everything
-initialize();
-animate();
-
-function initialize() {
-	// Create scene and camera - exactly like magic-cube example
-	scene = new THREE.Scene();
-	
-	camera = new THREE.Camera();
-	scene.add(camera);
-	
-	// Create renderer
-	renderer = new THREE.WebGLRenderer({
-		antialias: true,
-		alpha: true
-	});
-	renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-	renderer.setSize(640, 480);
-	renderer.domElement.style.position = 'absolute';
-	renderer.domElement.style.top = '0px';
-	renderer.domElement.style.left = '0px';
-	document.body.appendChild(renderer.domElement);
-	
-	// Create clock for timing
-	clock = new THREE.Clock();
-	deltaTime = 0;
-	totalTime = 0;
-	
-	// Initialize AR toolkit source (webcam)
-	arToolkitSource = new THREEx.ArToolkitSource({
-		sourceType: 'webcam',
-	});
-	
-	arToolkitSource.init(function onReady() {
-		// Resize everything once source is initialized
-		onResize();
-		
-		// Update status message
-		document.getElementById('status-msg').innerHTML = 'Camera initialized. Looking for cube marker...';
-	}, function onError() {
-		// Show error message
-		document.getElementById('status-msg').innerHTML = 'ERROR: Could not initialize camera. Please check permissions.';
-	});
-	
-	// Handle resize
-	window.addEventListener('resize', function() {
-		onResize();
-	});
-	
-	function onResize() {
-		arToolkitSource.onResizeElement();
-		arToolkitSource.copyElementSizeTo(renderer.domElement);
-		
-		if (arToolkitContext && arToolkitContext.arController !== null) {
-			arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
-		}
-	}
-	
-	// Initialize AR toolkit context
-	arToolkitContext = new THREEx.ArToolkitContext({
-		cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat',
-		detectionMode: 'mono',
-		maxDetectionRate: 30,
-		canvasWidth: 640,
-		canvasHeight: 480,
-	});
-	
-	arToolkitContext.init(function onCompleted() {
-		// Copy projection matrix to camera
-		camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
-		
-		document.getElementById('status-msg').innerHTML = 'AR system initialized. Looking for cube marker...';
-	});
-	
-	// Create marker root
-	markerRoot1 = new THREE.Group();
-	scene.add(markerRoot1);
-	
-	// Setup marker controls with the EXACT SAME marker as magic-cube example
-	var markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
-		type: 'pattern', 
-		patternUrl: "https://stemkoski.github.io/AR-Examples/data/kanji.patt"
-	});
-	
-	// Add ambient light
-	var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-	scene.add(ambientLight);
-	
-	// Add directional light
-	var directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-	directionalLight.position.set(0, 0, 2);
-	scene.add(directionalLight);
-	
-	// Load the ultrasound probe model instead of creating a cube
-	var loader = new THREE.GLTFLoader();
-	loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', function(gltf) {
-		probeModel = gltf.scene;
-		
-		// Apply initial transformations
-		probeModel.position.set(0.2, 0, 0);
-		probeModel.rotation.set(
-			90 * Math.PI/180,
-			180 * Math.PI/180,
-			0
-		);
-		probeModel.scale.set(40, 40, 40);
-		
-		markerRoot1.add(probeModel);
-		
-		document.getElementById('status-msg').innerHTML = 'Model loaded. Show the kanji marker from magic-cube example.';
-	});
-	
-	// Setup slider controls
-	setupSliderControls();
-}
-
-function setupSliderControls() {
-	// Position X slider
-	document.getElementById('posX').addEventListener('input', function() {
-		const value = parseFloat(this.value);
-		if (probeModel) {
-			probeModel.position.x = value;
-		}
-		document.getElementById('posXValue').textContent = value.toFixed(1);
-	});
-	
-	// Position Y slider
-	document.getElementById('posY').addEventListener('input', function() {
-		const value = parseFloat(this.value);
-		if (probeModel) {
-			probeModel.position.y = value;
-		}
-		document.getElementById('posYValue').textContent = value.toFixed(1);
-	});
-	
-	// Position Z slider
-	document.getElementById('posZ').addEventListener('input', function() {
-		const value = parseFloat(this.value);
-		if (probeModel) {
-			probeModel.position.z = value;
-		}
-		document.getElementById('posZValue').textContent = value.toFixed(1);
-	});
-	
-	// Rotation X slider
-	document.getElementById('rotX').addEventListener('input', function() {
-		const value = parseInt(this.value);
-		const radians = value * Math.PI/180;
-		if (probeModel) {
-			probeModel.rotation.x = radians;
-		}
-		document.getElementById('rotXValue').textContent = value;
-	});
-	
-	// Rotation Y slider
-	document.getElementById('rotY').addEventListener('input', function() {
-		const value = parseInt(this.value);
-		const radians = value * Math.PI/180;
-		if (probeModel) {
-			probeModel.rotation.y = radians;
-		}
-		document.getElementById('rotYValue').textContent = value;
-	});
-	
-	// Rotation Z slider
-	document.getElementById('rotZ').addEventListener('input', function() {
-		const value = parseInt(this.value);
-		const radians = value * Math.PI/180;
-		if (probeModel) {
-			probeModel.rotation.z = radians;
-		}
-		document.getElementById('rotZValue').textContent = value;
-	});
-	
-	// Scale slider
-	document.getElementById('scale').addEventListener('input', function() {
-		const value = parseInt(this.value);
-		if (probeModel) {
-			probeModel.scale.set(value, value, value);
-		}
-		document.getElementById('scaleValue').textContent = value;
-	});
-}
-
-function update() {
-	// Update AR toolkit
-	if (arToolkitSource.ready !== false) {
-		arToolkitContext.update(arToolkitSource.domElement);
-		
-		// Update status message based on marker visibility
-		if (markerRoot1.visible && !markerRoot1.wasVisible) {
-			document.getElementById('status-msg').innerHTML = 'Marker detected! Showing ultrasound probe model.';
-			markerRoot1.wasVisible = true;
-			
-			// Hide message after 3 seconds
-			setTimeout(function() {
-				document.getElementById('status-msg').style.display = 'none';
-			}, 3000);
-		} else if (!markerRoot1.visible && markerRoot1.wasVisible) {
-			document.getElementById('status-msg').style.display = 'block';
-			document.getElementById('status-msg').innerHTML = 'Marker lost. Please show the kanji marker again.';
-			markerRoot1.wasVisible = false;
-		}
-	}
-}
-
-function render() {
-	renderer.render(scene, camera);
-}
-
-function animate() {
-	requestAnimationFrame(animate);
-	deltaTime = clock.getDelta();
-	totalTime += deltaTime;
-	update();
-	render();
-}
+// Wait for document to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    const statusMessage = document.getElementById('status-message');
+    const marker = document.getElementById('marker');
+    const probeModel = document.getElementById('ultrasound-probe');
+    
+    // Set up marker detection events
+    if (marker) {
+        marker.addEventListener('markerFound', function() {
+            statusMessage.textContent = 'Marker found! Displaying model.';
+            statusMessage.style.backgroundColor = 'rgba(0, 128, 0, 0.7)';
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 3000);
+        });
+        
+        marker.addEventListener('markerLost', function() {
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'Marker lost. Please show the marker again.';
+            statusMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        });
+    }
+    
+    // Set up slider controls
+    
+    // Position X slider
+    document.getElementById('posX').addEventListener('input', function() {
+        const value = parseFloat(this.value);
+        if (probeModel) {
+            probeModel.setAttribute('position', {
+                x: value,
+                y: parseFloat(document.getElementById('posY').value),
+                z: parseFloat(document.getElementById('posZ').value)
+            });
+        }
+        document.getElementById('posXValue').textContent = value.toFixed(1);
+    });
+    
+    // Position Y slider
+    document.getElementById('posY').addEventListener('input', function() {
+        const value = parseFloat(this.value);
+        if (probeModel) {
+            probeModel.setAttribute('position', {
+                x: parseFloat(document.getElementById('posX').value),
+                y: value,
+                z: parseFloat(document.getElementById('posZ').value)
+            });
+        }
+        document.getElementById('posYValue').textContent = value.toFixed(1);
+    });
+    
+    // Position Z slider
+    document.getElementById('posZ').addEventListener('input', function() {
+        const value = parseFloat(this.value);
+        if (probeModel) {
+            probeModel.setAttribute('position', {
+                x: parseFloat(document.getElementById('posX').value),
+                y: parseFloat(document.getElementById('posY').value),
+                z: value
+            });
+        }
+        document.getElementById('posZValue').textContent = value.toFixed(1);
+    });
+    
+    // Rotation X slider
+    document.getElementById('rotX').addEventListener('input', function() {
+        const value = parseInt(this.value);
+        if (probeModel) {
+            probeModel.setAttribute('rotation', {
+                x: value,
+                y: parseInt(document.getElementById('rotY').value),
+                z: parseInt(document.getElementById('rotZ').value)
+            });
+        }
+        document.getElementById('rotXValue').textContent = value;
+    });
+    
+    // Rotation Y slider
+    document.getElementById('rotY').addEventListener('input', function() {
+        const value = parseInt(this.value);
+        if (probeModel) {
+            probeModel.setAttribute('rotation', {
+                x: parseInt(document.getElementById('rotX').value),
+                y: value,
+                z: parseInt(document.getElementById('rotZ').value)
+            });
+        }
+        document.getElementById('rotYValue').textContent = value;
+    });
+    
+    // Rotation Z slider
+    document.getElementById('rotZ').addEventListener('input', function() {
+        const value = parseInt(this.value);
+        if (probeModel) {
+            probeModel.setAttribute('rotation', {
+                x: parseInt(document.getElementById('rotX').value),
+                y: parseInt(document.getElementById('rotY').value),
+                z: value
+            });
+        }
+        document.getElementById('rotZValue').textContent = value;
+    });
+    
+    // Scale slider
+    document.getElementById('scale').addEventListener('input', function() {
+        const value = parseInt(this.value);
+        if (probeModel) {
+            probeModel.setAttribute('scale', {
+                x: value,
+                y: value,
+                z: value
+            });
+        }
+        document.getElementById('scaleValue').textContent = value;
+    });
+});
 </script>
 </body>
 </html>
