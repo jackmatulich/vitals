@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Cube Tracker + Ultrasound Probe</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-  <!-- Stemkoski/AR.js core -->
+  <meta charset="UTF-8" />
+  <title>Magic Cube Adapted - Ultrasound Probe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <script src="https://stemkoski.github.io/AR-Examples/js/three.js"></script>
   <script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.min.js"></script>
   <script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.api.js"></script>
@@ -14,58 +12,23 @@
   <script src="https://stemkoski.github.io/AR-Examples/threex/threex-arbasecontrols.js"></script>
   <script src="https://stemkoski.github.io/AR-Examples/threex/threex-armarkercontrols.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
-
-  <style>
-    body { margin: 0; overflow: hidden; }
-    .control-panel {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      font-family: sans-serif;
-      padding: 10px;
-      z-index: 10;
-    }
-    .slider-group {
-      display: flex;
-      align-items: center;
-      margin: 5px 0;
-    }
-    .slider-group label {
-      width: 80px;
-    }
-    .slider-group input {
-      flex: 1;
-    }
-    .value-display {
-      width: 50px;
-      text-align: right;
-      margin-left: 10px;
-    }
-  </style>
+  <style>body { margin: 0; overflow: hidden; }</style>
 </head>
 <body>
-
-<div class="control-panel">
-  <div class="slider-group"><label>Pos X</label><input type="range" id="posX" min="-1" max="1" step="0.01" value="0.2"><div class="value-display" id="valPosX">0.2</div></div>
-  <div class="slider-group"><label>Pos Y</label><input type="range" id="posY" min="-1" max="1" step="0.01" value="0"><div class="value-display" id="valPosY">0</div></div>
-  <div class="slider-group"><label>Pos Z</label><input type="range" id="posZ" min="-1" max="1" step="0.01" value="0"><div class="value-display" id="valPosZ">0</div></div>
-  <div class="slider-group"><label>Rot X</label><input type="range" id="rotX" min="0" max="360" step="1" value="90"><div class="value-display" id="valRotX">90</div></div>
-  <div class="slider-group"><label>Rot Y</label><input type="range" id="rotY" min="0" max="360" step="1" value="180"><div class="value-display" id="valRotY">180</div></div>
-  <div class="slider-group"><label>Rot Z</label><input type="range" id="rotZ" min="0" max="360" step="1" value="0"><div class="value-display" id="valRotZ">0</div></div>
-  <div class="slider-group"><label>Scale</label><input type="range" id="scale" min="0.01" max="1" step="0.01" value="0.4"><div class="value-display" id="valScale">0.4</div></div>
-</div>
-
 <script>
-let scene, camera, renderer, arToolkitSource, arToolkitContext;
-let markerRootArray = [], markerGroupArray = [];
-let sceneGroup, probeModel, lastParent = null;
+let scene, camera, renderer;
+let arToolkitSource, arToolkitContext;
+let markerRoots = [], markerGroups = [], sceneGroup = new THREE.Group();
+let probeModel = null;
 
-const patternArray = ["letterA", "letterB", "letterC", "letterD", "letterF", "kanji"];
-const rotationArray = [
-  new THREE.Vector3(-Math.PI/2,0,0), new THREE.Vector3(0,-Math.PI/2,Math.PI/2), new THREE.Vector3(Math.PI/2,0,Math.PI),
-  new THREE.Vector3(-Math.PI/2,Math.PI/2,0), new THREE.Vector3(Math.PI,0,0), new THREE.Vector3(0,0,0)
+const patterns = ["letterA", "letterB", "letterC", "letterD", "letterF", "kanji"];
+const rotations = [
+  new THREE.Vector3(-Math.PI/2, 0, 0),
+  new THREE.Vector3(0, -Math.PI/2, Math.PI/2),
+  new THREE.Vector3(Math.PI/2, 0, Math.PI),
+  new THREE.Vector3(-Math.PI/2, Math.PI/2, 0),
+  new THREE.Vector3(Math.PI, 0, 0),
+  new THREE.Vector3(0, 0, 0)
 ];
 
 init();
@@ -73,17 +36,17 @@ animate();
 
 function init() {
   scene = new THREE.Scene();
-  camera = new THREE.Camera();
+  camera = new THREE.PerspectiveCamera();
   scene.add(camera);
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.domElement.style.position = 'absolute';
+  renderer.domElement.style.position = "absolute";
   document.body.appendChild(renderer.domElement);
 
   arToolkitSource = new THREEx.ArToolkitSource({ sourceType: 'webcam' });
-  arToolkitSource.init(() => onResize());
-  window.addEventListener('resize', () => onResize());
+  arToolkitSource.init(onResize);
+  window.addEventListener('resize', onResize);
 
   arToolkitContext = new THREEx.ArToolkitContext({
     cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat',
@@ -94,23 +57,22 @@ function init() {
   });
 
   for (let i = 0; i < 6; i++) {
-    let markerRoot = new THREE.Group();
+    const markerRoot = new THREE.Group();
     scene.add(markerRoot);
-    markerRootArray.push(markerRoot);
+    markerRoots.push(markerRoot);
 
     new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
       type: 'pattern',
-      patternUrl: `https://stemkoski.github.io/AR-Examples/data/${patternArray[i]}.patt`
+      patternUrl: `https://stemkoski.github.io/AR-Examples/data/${patterns[i]}.patt`
     });
 
-    let faceGroup = new THREE.Group();
+    const faceGroup = new THREE.Group();
     faceGroup.position.y = -1.25 / 2;
-    faceGroup.rotation.setFromVector3(rotationArray[i]);
+    faceGroup.rotation.setFromVector3(rotations[i]);
     markerRoot.add(faceGroup);
-    markerGroupArray.push(faceGroup);
+    markerGroups.push(faceGroup);
   }
 
-  sceneGroup = new THREE.Group();
   sceneGroup.scale.set(0.5, 0.5, 0.5);
 
   const light = new THREE.PointLight(0xffffff, 1, 100);
@@ -118,13 +80,11 @@ function init() {
   scene.add(light);
 
   const loader = new THREE.GLTFLoader();
-  loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', (gltf) => {
+  loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', gltf => {
     probeModel = gltf.scene;
+    probeModel.scale.set(1, 1, 1);
     sceneGroup.add(probeModel);
-    updateTransform();
   });
-
-  setupSliders();
 }
 
 function onResize() {
@@ -135,44 +95,17 @@ function onResize() {
   }
 }
 
-function setupSliders() {
-  const ids = ["posX", "posY", "posZ", "rotX", "rotY", "rotZ", "scale"];
-  ids.forEach(id => {
-    const input = document.getElementById(id);
-    const display = document.getElementById("val" + id.charAt(0).toUpperCase() + id.slice(1));
-    input.addEventListener('input', () => {
-      if (!probeModel) return;
-      updateTransform();
-      display.textContent = input.value;
-    });
-  });
-}
-
-function updateTransform() {
-  if (!probeModel) return;
-  const x = parseFloat(document.getElementById('posX').value);
-  const y = parseFloat(document.getElementById('posY').value);
-  const z = parseFloat(document.getElementById('posZ').value);
-  const rx = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotX').value));
-  const ry = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotY').value));
-  const rz = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotZ').value));
-  const s = parseFloat(document.getElementById('scale').value);
-
-  probeModel.position.set(x, y, z);
-  probeModel.rotation.set(rx, ry, rz);
-  probeModel.scale.set(s, s, s);
-}
-
 function animate() {
   requestAnimationFrame(animate);
-  if (arToolkitSource.ready) arToolkitContext.update(arToolkitSource.domElement);
+  if (arToolkitSource.ready) {
+    arToolkitContext.update(arToolkitSource.domElement);
+  }
 
   for (let i = 0; i < 6; i++) {
-    if (markerRootArray[i].visible) {
-      if (lastParent !== markerGroupArray[i]) {
+    if (markerRoots[i].visible) {
+      if (sceneGroup.parent !== markerGroups[i]) {
         if (sceneGroup.parent) sceneGroup.parent.remove(sceneGroup);
-        markerGroupArray[i].add(sceneGroup);
-        lastParent = markerGroupArray[i];
+        markerGroups[i].add(sceneGroup);
       }
       break;
     }
@@ -181,6 +114,5 @@ function animate() {
   renderer.render(scene, camera);
 }
 </script>
-
 </body>
 </html>
