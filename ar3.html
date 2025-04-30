@@ -5,9 +5,71 @@
 	<title>AR Ultrasound Probe</title>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	
-	<!-- Fixed script sources that were working with Hiro marker -->
+	<!-- A-Frame and AR.js -->
 	<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
 	<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+	
+	<!-- Custom component to handle the model sharing between markers -->
+	<script>
+	AFRAME.registerComponent('shared-model', {
+		init: function() {
+			// Create a global variable to store the one shared model entity
+			if (!window.sharedModel) {
+				// Define position, rotation and scale variables
+				window.modelPosition = {x: 0.2, y: 0, z: 0};
+				window.modelRotation = {x: 90, y: 180, z: 0};
+				window.modelScale = {x: 40, y: 40, z: 40};
+				
+				// Create the shared model
+				window.sharedModel = document.createElement('a-entity');
+				window.sharedModel.setAttribute('id', 'ultrasound-probe');
+				window.sharedModel.setAttribute('gltf-model', '#probe-model');
+				window.sharedModel.setAttribute('position', window.modelPosition);
+				window.sharedModel.setAttribute('rotation', window.modelRotation);
+				window.sharedModel.setAttribute('scale', window.modelScale);
+				
+				// Track which marker currently has the model
+				window.activeMarker = null;
+			}
+			
+			// When this marker is found, move the model to it
+			this.el.addEventListener('markerFound', () => {
+				// If model is attached to another marker, remove it
+				if (window.activeMarker && window.activeMarker !== this.el) {
+					window.activeMarker.removeChild(window.sharedModel);
+				}
+				
+				// Add model to this marker
+				if (window.sharedModel.parentNode !== this.el) {
+					this.el.appendChild(window.sharedModel);
+					window.activeMarker = this.el;
+				}
+				
+				// Update status message
+				const statusMsg = document.getElementById('status-message');
+				if (statusMsg) {
+					statusMsg.textContent = 'Marker found! Displaying model.';
+					statusMsg.style.backgroundColor = 'rgba(0, 128, 0, 0.7)';
+					setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
+				}
+			});
+			
+			// Handle marker lost events
+			this.el.addEventListener('markerLost', () => {
+				// Only show "marker lost" message if this was the active marker
+				if (window.activeMarker === this.el) {
+					// Update status message
+					const statusMsg = document.getElementById('status-message');
+					if (statusMsg) {
+						statusMsg.style.display = 'block';
+						statusMsg.textContent = 'Marker lost. Please show any side of the cube.';
+						statusMsg.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+					}
+				}
+			});
+		}
+	});
+	</script>
 	
 	<style>
 		.control-panel {
@@ -54,7 +116,7 @@
 </head>
 
 <body style="margin: 0; overflow: hidden;">
-	<div id="status-message">Looking for cube marker (kanji or A/B/C/D sides)...</div>
+	<div id="status-message">Looking for cube marker (any side)...</div>
 	
 	<!-- A-Frame Scene -->
 	<a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono;">
@@ -62,60 +124,12 @@
 			<a-asset-item id="probe-model" src="https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb"></a-asset-item>
 		</a-assets>
 		
-		<!-- Kanji marker from the magic-cube example -->
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/kanji.patt" id="kanji-marker">
-			<a-entity
-				id="kanji-probe"
-				gltf-model="#probe-model"
-				position="0.2 0 0"
-				rotation="90 180 0"
-				scale="40 40 40">
-			</a-entity>
-		</a-marker>
-		
-		<!-- A marker from the magic-cube example -->
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterA.patt" id="a-marker">
-			<a-entity
-				id="a-probe"
-				gltf-model="#probe-model"
-				position="0.2 0 0"
-				rotation="90 180 0"
-				scale="40 40 40">
-			</a-entity>
-		</a-marker>
-		
-		<!-- B marker from the magic-cube example -->
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterB.patt" id="b-marker">
-			<a-entity
-				id="b-probe"
-				gltf-model="#probe-model"
-				position="0.2 0 0"
-				rotation="90 180 0"
-				scale="40 40 40">
-			</a-entity>
-		</a-marker>
-		
-		<!-- C marker from the magic-cube example -->
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterC.patt" id="c-marker">
-			<a-entity
-				id="c-probe"
-				gltf-model="#probe-model"
-				position="0.2 0 0"
-				rotation="90 180 0"
-				scale="40 40 40">
-			</a-entity>
-		</a-marker>
-		
-		<!-- D marker from the magic-cube example -->
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterD.patt" id="d-marker">
-			<a-entity
-				id="d-probe"
-				gltf-model="#probe-model"
-				position="0.2 0 0"
-				rotation="90 180 0"
-				scale="40 40 40">
-			</a-entity>
-		</a-marker>
+		<!-- Using the markers from the magic-cube example -->
+		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/kanji.patt" id="kanji-marker" shared-model></a-marker>
+		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterA.patt" id="a-marker" shared-model></a-marker>
+		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterB.patt" id="b-marker" shared-model></a-marker>
+		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterC.patt" id="c-marker" shared-model></a-marker>
+		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterD.patt" id="d-marker" shared-model></a-marker>
 		
 		<a-entity camera></a-entity>
 	</a-scene>
@@ -169,220 +183,77 @@
 <script>
 // Wait for document to be ready
 document.addEventListener('DOMContentLoaded', function() {
-    const statusMessage = document.getElementById('status-message');
-    
-    // Get all markers
-    const kanjiMarker = document.getElementById('kanji-marker');
-    const aMarker = document.getElementById('a-marker');
-    const bMarker = document.getElementById('b-marker');
-    const cMarker = document.getElementById('c-marker');
-    const dMarker = document.getElementById('d-marker');
-    
-    // Get all probes
-    const kanjiProbe = document.getElementById('kanji-probe');
-    const aProbe = document.getElementById('a-probe');
-    const bProbe = document.getElementById('b-probe');
-    const cProbe = document.getElementById('c-probe');
-    const dProbe = document.getElementById('d-probe');
-    
-    // Current active probe & marker for slider control
-    let activeProbe = null;
-    let markerVisible = false;
-    
-    // Function to handle when any marker is found
-    function markerFound(markerId) {
-        markerVisible = true;
-        statusMessage.textContent = markerId + ' marker found! Displaying model.';
-        statusMessage.style.backgroundColor = 'rgba(0, 128, 0, 0.7)';
-        setTimeout(function() {
-            statusMessage.style.display = 'none';
-        }, 3000);
-    }
-    
-    // Function to handle when all markers are lost
-    function allMarkersLost() {
-        if (!markerVisible) {
-            statusMessage.style.display = 'block';
-            statusMessage.textContent = 'Marker lost. Please show any side of the cube marker.';
-            statusMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        }
-    }
-    
-    // Set up marker found/lost events for kanji marker
-    if (kanjiMarker) {
-        kanjiMarker.addEventListener('markerFound', function() {
-            activeProbe = kanjiProbe;
-            markerFound('Kanji');
-        });
-        
-        kanjiMarker.addEventListener('markerLost', function() {
-            markerVisible = aMarker.object3D.visible || bMarker.object3D.visible || 
-                           cMarker.object3D.visible || dMarker.object3D.visible;
-            allMarkersLost();
-        });
-    }
-    
-    // Set up marker found/lost events for A marker
-    if (aMarker) {
-        aMarker.addEventListener('markerFound', function() {
-            activeProbe = aProbe;
-            markerFound('A');
-        });
-        
-        aMarker.addEventListener('markerLost', function() {
-            markerVisible = kanjiMarker.object3D.visible || bMarker.object3D.visible || 
-                           cMarker.object3D.visible || dMarker.object3D.visible;
-            allMarkersLost();
-        });
-    }
-    
-    // Set up marker found/lost events for B marker
-    if (bMarker) {
-        bMarker.addEventListener('markerFound', function() {
-            activeProbe = bProbe;
-            markerFound('B');
-        });
-        
-        bMarker.addEventListener('markerLost', function() {
-            markerVisible = kanjiMarker.object3D.visible || aMarker.object3D.visible || 
-                           cMarker.object3D.visible || dMarker.object3D.visible;
-            allMarkersLost();
-        });
-    }
-    
-    // Set up marker found/lost events for C marker
-    if (cMarker) {
-        cMarker.addEventListener('markerFound', function() {
-            activeProbe = cProbe;
-            markerFound('C');
-        });
-        
-        cMarker.addEventListener('markerLost', function() {
-            markerVisible = kanjiMarker.object3D.visible || aMarker.object3D.visible || 
-                           bMarker.object3D.visible || dMarker.object3D.visible;
-            allMarkersLost();
-        });
-    }
-    
-    // Set up marker found/lost events for D marker
-    if (dMarker) {
-        dMarker.addEventListener('markerFound', function() {
-            activeProbe = dProbe;
-            markerFound('D');
-        });
-        
-        dMarker.addEventListener('markerLost', function() {
-            markerVisible = kanjiMarker.object3D.visible || aMarker.object3D.visible || 
-                           bMarker.object3D.visible || cMarker.object3D.visible;
-            allMarkersLost();
-        });
-    }
-    
-    // Function to update all probes with the same position
-    function updateAllProbesPosition(x, y, z) {
-        const position = { x: x, y: y, z: z };
-        
-        if (kanjiProbe) kanjiProbe.setAttribute('position', position);
-        if (aProbe) aProbe.setAttribute('position', position);
-        if (bProbe) bProbe.setAttribute('position', position);
-        if (cProbe) cProbe.setAttribute('position', position);
-        if (dProbe) dProbe.setAttribute('position', position);
-    }
-    
-    // Function to update all probes with the same rotation
-    function updateAllProbesRotation(x, y, z) {
-        const rotation = { x: x, y: y, z: z };
-        
-        if (kanjiProbe) kanjiProbe.setAttribute('rotation', rotation);
-        if (aProbe) aProbe.setAttribute('rotation', rotation);
-        if (bProbe) bProbe.setAttribute('rotation', rotation);
-        if (cProbe) cProbe.setAttribute('rotation', rotation);
-        if (dProbe) dProbe.setAttribute('rotation', rotation);
-    }
-    
-    // Function to update all probes with the same scale
-    function updateAllProbesScale(scale) {
-        const scaleObj = { x: scale, y: scale, z: scale };
-        
-        if (kanjiProbe) kanjiProbe.setAttribute('scale', scaleObj);
-        if (aProbe) aProbe.setAttribute('scale', scaleObj);
-        if (bProbe) bProbe.setAttribute('scale', scaleObj);
-        if (cProbe) cProbe.setAttribute('scale', scaleObj);
-        if (dProbe) dProbe.setAttribute('scale', scaleObj);
-    }
-    
     // Set up slider controls
     
     // Position X slider
     document.getElementById('posX').addEventListener('input', function() {
         const value = parseFloat(this.value);
-        updateAllProbesPosition(
-            value,
-            parseFloat(document.getElementById('posY').value),
-            parseFloat(document.getElementById('posZ').value)
-        );
+        if (window.sharedModel) {
+            window.modelPosition.x = value;
+            window.sharedModel.setAttribute('position', window.modelPosition);
+        }
         document.getElementById('posXValue').textContent = value.toFixed(1);
     });
     
     // Position Y slider
     document.getElementById('posY').addEventListener('input', function() {
         const value = parseFloat(this.value);
-        updateAllProbesPosition(
-            parseFloat(document.getElementById('posX').value),
-            value,
-            parseFloat(document.getElementById('posZ').value)
-        );
+        if (window.sharedModel) {
+            window.modelPosition.y = value;
+            window.sharedModel.setAttribute('position', window.modelPosition);
+        }
         document.getElementById('posYValue').textContent = value.toFixed(1);
     });
     
     // Position Z slider
     document.getElementById('posZ').addEventListener('input', function() {
         const value = parseFloat(this.value);
-        updateAllProbesPosition(
-            parseFloat(document.getElementById('posX').value),
-            parseFloat(document.getElementById('posY').value),
-            value
-        );
+        if (window.sharedModel) {
+            window.modelPosition.z = value;
+            window.sharedModel.setAttribute('position', window.modelPosition);
+        }
         document.getElementById('posZValue').textContent = value.toFixed(1);
     });
     
     // Rotation X slider
     document.getElementById('rotX').addEventListener('input', function() {
         const value = parseInt(this.value);
-        updateAllProbesRotation(
-            value,
-            parseInt(document.getElementById('rotY').value),
-            parseInt(document.getElementById('rotZ').value)
-        );
+        if (window.sharedModel) {
+            window.modelRotation.x = value;
+            window.sharedModel.setAttribute('rotation', window.modelRotation);
+        }
         document.getElementById('rotXValue').textContent = value;
     });
     
     // Rotation Y slider
     document.getElementById('rotY').addEventListener('input', function() {
         const value = parseInt(this.value);
-        updateAllProbesRotation(
-            parseInt(document.getElementById('rotX').value),
-            value,
-            parseInt(document.getElementById('rotZ').value)
-        );
+        if (window.sharedModel) {
+            window.modelRotation.y = value;
+            window.sharedModel.setAttribute('rotation', window.modelRotation);
+        }
         document.getElementById('rotYValue').textContent = value;
     });
     
     // Rotation Z slider
     document.getElementById('rotZ').addEventListener('input', function() {
         const value = parseInt(this.value);
-        updateAllProbesRotation(
-            parseInt(document.getElementById('rotX').value),
-            parseInt(document.getElementById('rotY').value),
-            value
-        );
+        if (window.sharedModel) {
+            window.modelRotation.z = value;
+            window.sharedModel.setAttribute('rotation', window.modelRotation);
+        }
         document.getElementById('rotZValue').textContent = value;
     });
     
     // Scale slider
     document.getElementById('scale').addEventListener('input', function() {
         const value = parseInt(this.value);
-        updateAllProbesScale(value);
+        if (window.sharedModel) {
+            window.modelScale.x = value;
+            window.modelScale.y = value;
+            window.modelScale.z = value;
+            window.sharedModel.setAttribute('scale', window.modelScale);
+        }
         document.getElementById('scaleValue').textContent = value;
     });
 });
