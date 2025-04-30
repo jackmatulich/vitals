@@ -1,77 +1,24 @@
 <!DOCTYPE html>
-<html>
 <head>
-	<meta charset="utf-8">
-	<title>AR Ultrasound Probe</title>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	
-	<!-- A-Frame and AR.js -->
-	<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-	<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-	
-	<!-- Custom component to handle the model sharing between markers -->
-	<script>
-	AFRAME.registerComponent('shared-model', {
-		init: function() {
-			// Create a global variable to store the one shared model entity
-			if (!window.sharedModel) {
-				// Define position, rotation and scale variables
-				window.modelPosition = {x: 0.2, y: 0, z: 0};
-				window.modelRotation = {x: 90, y: 180, z: 0};
-				window.modelScale = {x: 40, y: 40, z: 40};
-				
-				// Create the shared model
-				window.sharedModel = document.createElement('a-entity');
-				window.sharedModel.setAttribute('id', 'ultrasound-probe');
-				window.sharedModel.setAttribute('gltf-model', '#probe-model');
-				window.sharedModel.setAttribute('position', window.modelPosition);
-				window.sharedModel.setAttribute('rotation', window.modelRotation);
-				window.sharedModel.setAttribute('scale', window.modelScale);
-				
-				// Track which marker currently has the model
-				window.activeMarker = null;
-			}
-			
-			// When this marker is found, move the model to it
-			this.el.addEventListener('markerFound', () => {
-				// If model is attached to another marker, remove it
-				if (window.activeMarker && window.activeMarker !== this.el) {
-					window.activeMarker.removeChild(window.sharedModel);
-				}
-				
-				// Add model to this marker
-				if (window.sharedModel.parentNode !== this.el) {
-					this.el.appendChild(window.sharedModel);
-					window.activeMarker = this.el;
-				}
-				
-				// Update status message
-				const statusMsg = document.getElementById('status-message');
-				if (statusMsg) {
-					statusMsg.textContent = 'Marker found! Displaying model.';
-					statusMsg.style.backgroundColor = 'rgba(0, 128, 0, 0.7)';
-					setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
-				}
-			});
-			
-			// Handle marker lost events
-			this.el.addEventListener('markerLost', () => {
-				// Only show "marker lost" message if this was the active marker
-				if (window.activeMarker === this.el) {
-					// Update status message
-					const statusMsg = document.getElementById('status-message');
-					if (statusMsg) {
-						statusMsg.style.display = 'block';
-						statusMsg.textContent = 'Marker lost. Please show any side of the cube.';
-						statusMsg.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-					}
-				}
-			});
-		}
-	});
-	</script>
-	
+	<title>AR Ultrasound Probe</title>
+	<!-- include three.js library -->
+	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/build/three.min.js"></script>
+	<!-- include jsartookit -->
+	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.min.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.api.js"></script>
+	<!-- include threex.artoolkit -->
+	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitsource.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitcontext.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-arbasecontrols.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-armarkercontrols.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/loaders/GLTFLoader.js"></script>
 	<style>
+		body {
+			margin: 0px;
+			overflow: hidden;
+			font-family: Monospace;
+		}
 		.control-panel {
 			position: absolute;
 			bottom: 0;
@@ -102,161 +49,351 @@
 		h3 {
 			margin: 5px 0;
 		}
-		#status-message {
+		#status-msg {
 			position: fixed;
 			top: 10px;
 			width: 100%;
 			background-color: rgba(0,0,0,0.7);
 			color: white;
 			text-align: center;
-			padding: 10px;
-			z-index: 1000;
+			padding: 5px;
+			z-index: 100;
 		}
 	</style>
 </head>
 
-<body style="margin: 0; overflow: hidden;">
-	<div id="status-message">Looking for cube marker (any side)...</div>
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+
+<div id="status-msg">Loading AR system...</div>
+
+<div class="control-panel">
+	<h3>Ultrasound Probe Controls</h3>
 	
-	<!-- A-Frame Scene -->
-	<a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono;">
-		<a-assets>
-			<a-asset-item id="probe-model" src="https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb"></a-asset-item>
-		</a-assets>
-		
-		<!-- Using the markers from the magic-cube example -->
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/kanji.patt" id="kanji-marker" shared-model></a-marker>
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterA.patt" id="a-marker" shared-model></a-marker>
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterB.patt" id="b-marker" shared-model></a-marker>
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterC.patt" id="c-marker" shared-model></a-marker>
-		<a-marker type="pattern" url="https://stemkoski.github.io/AR-Examples/data/letterD.patt" id="d-marker" shared-model></a-marker>
-		
-		<a-entity camera></a-entity>
-	</a-scene>
-	
-	<div class="control-panel">
-		<h3>Ultrasound Probe Controls</h3>
-		
-		<div class="slider-group">
-			<div class="slider-label">Position X</div>
-			<input type="range" min="-3" max="3" step="0.1" value="0.2" class="slider" id="posX">
-			<div class="value-display" id="posXValue">0.2</div>
-		</div>
-		
-		<div class="slider-group">
-			<div class="slider-label">Position Y</div>
-			<input type="range" min="-3" max="3" step="0.1" value="0" class="slider" id="posY">
-			<div class="value-display" id="posYValue">0</div>
-		</div>
-		
-		<div class="slider-group">
-			<div class="slider-label">Position Z</div>
-			<input type="range" min="-3" max="3" step="0.1" value="0" class="slider" id="posZ">
-			<div class="value-display" id="posZValue">0</div>
-		</div>
-		
-		<div class="slider-group">
-			<div class="slider-label">Rotation X</div>
-			<input type="range" min="0" max="360" step="1" value="90" class="slider" id="rotX">
-			<div class="value-display" id="rotXValue">90</div>
-		</div>
-		
-		<div class="slider-group">
-			<div class="slider-label">Rotation Y</div>
-			<input type="range" min="0" max="360" step="1" value="180" class="slider" id="rotY">
-			<div class="value-display" id="rotYValue">180</div>
-		</div>
-		
-		<div class="slider-group">
-			<div class="slider-label">Rotation Z</div>
-			<input type="range" min="0" max="360" step="1" value="0" class="slider" id="rotZ">
-			<div class="value-display" id="rotZValue">0</div>
-		</div>
-		
-		<div class="slider-group">
-			<div class="slider-label">Scale</div>
-			<input type="range" min="1" max="100" step="1" value="40" class="slider" id="scale">
-			<div class="value-display" id="scaleValue">40</div>
-		</div>
+	<div class="slider-group">
+		<div class="slider-label">Position X</div>
+		<input type="range" min="-3" max="3" step="0.1" value="0.2" class="slider" id="posX">
+		<div class="value-display" id="posXValue">0.2</div>
 	</div>
+	
+	<div class="slider-group">
+		<div class="slider-label">Position Y</div>
+		<input type="range" min="-3" max="3" step="0.1" value="0" class="slider" id="posY">
+		<div class="value-display" id="posYValue">0</div>
+	</div>
+	
+	<div class="slider-group">
+		<div class="slider-label">Position Z</div>
+		<input type="range" min="-3" max="3" step="0.1" value="0" class="slider" id="posZ">
+		<div class="value-display" id="posZValue">0</div>
+	</div>
+	
+	<div class="slider-group">
+		<div class="slider-label">Rotation X</div>
+		<input type="range" min="0" max="360" step="1" value="90" class="slider" id="rotX">
+		<div class="value-display" id="rotXValue">90</div>
+	</div>
+	
+	<div class="slider-group">
+		<div class="slider-label">Rotation Y</div>
+		<input type="range" min="0" max="360" step="1" value="180" class="slider" id="rotY">
+		<div class="value-display" id="rotYValue">180</div>
+	</div>
+	
+	<div class="slider-group">
+		<div class="slider-label">Rotation Z</div>
+		<input type="range" min="0" max="360" step="1" value="0" class="slider" id="rotZ">
+		<div class="value-display" id="rotZValue">0</div>
+	</div>
+	
+	<div class="slider-group">
+		<div class="slider-label">Scale</div>
+		<input type="range" min="1" max="100" step="1" value="40" class="slider" id="scale">
+		<div class="value-display" id="scaleValue">40</div>
+	</div>
+</div>
 
 <script>
-// Wait for document to be ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Set up slider controls
-    
-    // Position X slider
-    document.getElementById('posX').addEventListener('input', function() {
-        const value = parseFloat(this.value);
-        if (window.sharedModel) {
-            window.modelPosition.x = value;
-            window.sharedModel.setAttribute('position', window.modelPosition);
-        }
-        document.getElementById('posXValue').textContent = value.toFixed(1);
-    });
-    
-    // Position Y slider
-    document.getElementById('posY').addEventListener('input', function() {
-        const value = parseFloat(this.value);
-        if (window.sharedModel) {
-            window.modelPosition.y = value;
-            window.sharedModel.setAttribute('position', window.modelPosition);
-        }
-        document.getElementById('posYValue').textContent = value.toFixed(1);
-    });
-    
-    // Position Z slider
-    document.getElementById('posZ').addEventListener('input', function() {
-        const value = parseFloat(this.value);
-        if (window.sharedModel) {
-            window.modelPosition.z = value;
-            window.sharedModel.setAttribute('position', window.modelPosition);
-        }
-        document.getElementById('posZValue').textContent = value.toFixed(1);
-    });
-    
-    // Rotation X slider
-    document.getElementById('rotX').addEventListener('input', function() {
-        const value = parseInt(this.value);
-        if (window.sharedModel) {
-            window.modelRotation.x = value;
-            window.sharedModel.setAttribute('rotation', window.modelRotation);
-        }
-        document.getElementById('rotXValue').textContent = value;
-    });
-    
-    // Rotation Y slider
-    document.getElementById('rotY').addEventListener('input', function() {
-        const value = parseInt(this.value);
-        if (window.sharedModel) {
-            window.modelRotation.y = value;
-            window.sharedModel.setAttribute('rotation', window.modelRotation);
-        }
-        document.getElementById('rotYValue').textContent = value;
-    });
-    
-    // Rotation Z slider
-    document.getElementById('rotZ').addEventListener('input', function() {
-        const value = parseInt(this.value);
-        if (window.sharedModel) {
-            window.modelRotation.z = value;
-            window.sharedModel.setAttribute('rotation', window.modelRotation);
-        }
-        document.getElementById('rotZValue').textContent = value;
-    });
-    
-    // Scale slider
-    document.getElementById('scale').addEventListener('input', function() {
-        const value = parseInt(this.value);
-        if (window.sharedModel) {
-            window.modelScale.x = value;
-            window.modelScale.y = value;
-            window.modelScale.z = value;
-            window.sharedModel.setAttribute('scale', window.modelScale);
-        }
-        document.getElementById('scaleValue').textContent = value;
-    });
-});
+
+var scene, camera, renderer, clock, deltaTime, totalTime;
+
+var arToolkitSource, arToolkitContext;
+
+var patternArray, markerRootArray, markerGroupArray;
+var probeGroup; // Contains the ultrasound probe model
+var probeModel; // The actual GLB model
+
+initialize();
+animate();
+
+function initialize()
+{
+	scene = new THREE.Scene();
+
+	let ambientLight = new THREE.AmbientLight( 0xcccccc, 0.5 );
+	scene.add( ambientLight );
+				
+	camera = new THREE.Camera();
+	scene.add(camera);
+
+	renderer = new THREE.WebGLRenderer({
+		antialias : true,
+		alpha: true
+	});
+	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+	renderer.setSize( 640, 480 );
+	renderer.domElement.style.position = 'absolute'
+	renderer.domElement.style.top = '0px'
+	renderer.domElement.style.left = '0px'
+	document.body.appendChild( renderer.domElement );
+
+	clock = new THREE.Clock();
+	deltaTime = 0;
+	totalTime = 0;
+	
+	////////////////////////////////////////////////////////////
+	// setup arToolkitSource
+	////////////////////////////////////////////////////////////
+
+	arToolkitSource = new THREEx.ArToolkitSource({
+		sourceType : 'webcam',
+	});
+
+	function onResize()
+	{
+		arToolkitSource.onResize()	
+		arToolkitSource.copySizeTo(renderer.domElement)	
+		if ( arToolkitContext.arController !== null )
+		{
+			arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
+		}	
+	}
+
+	arToolkitSource.init(function onReady(){
+		onResize()
+		document.getElementById('status-msg').innerHTML = 'Camera initialized. Looking for cube marker...';
+	});
+	
+	// handle resize event
+	window.addEventListener('resize', function(){
+		onResize()
+	});
+	
+	////////////////////////////////////////////////////////////
+	// setup arToolkitContext
+	////////////////////////////////////////////////////////////	
+
+	// create atToolkitContext
+	arToolkitContext = new THREEx.ArToolkitContext({
+		cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat',
+		detectionMode: 'mono'
+	});
+	
+	// copy projection matrix to camera when initialization complete
+	arToolkitContext.init( function onCompleted(){
+		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+		document.getElementById('status-msg').innerHTML = 'AR system initialized. Looking for cube marker...';
+	});
+
+	////////////////////////////////////////////////////////////
+	// setup markerRoots
+	////////////////////////////////////////////////////////////
+
+	markerRootArray = [];
+	markerGroupArray = [];
+	patternArray = ["letterA", "letterB", "letterC", "letterD", "letterF", "kanji"];
+	
+	let rotationArray = [
+		new THREE.Vector3(-Math.PI/2, 0, 0),
+		new THREE.Vector3(0, -Math.PI/2, Math.PI/2),
+		new THREE.Vector3(Math.PI/2, 0, Math.PI),
+		new THREE.Vector3(-Math.PI/2, Math.PI/2, 0),
+		new THREE.Vector3(Math.PI, 0, 0),
+		new THREE.Vector3(0, 0, 0)
+	];
+		
+	for (let i = 0; i < 6; i++)
+	{
+		let markerRoot = new THREE.Group();
+		markerRootArray.push(markerRoot);
+		scene.add(markerRoot);
+		let markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+			type: 'pattern',
+			patternUrl: "https://stemkoski.github.io/AR-Examples/data/" + patternArray[i] + ".patt",
+		});
+	
+		let markerGroup = new THREE.Group();
+		markerGroupArray.push(markerGroup);
+		markerGroup.position.y = -1.25/2;
+		markerGroup.rotation.setFromVector3(rotationArray[i]);
+		
+		markerRoot.add(markerGroup);
+	}
+	
+	////////////////////////////////////////////////////////////
+	// setup probe model
+	////////////////////////////////////////////////////////////
+	
+	probeGroup = new THREE.Group();
+	// Scale the model appropriately (similar to how the example scales the cube)
+	probeGroup.scale.set(1.25/2, 1.25/2, 1.25/2);
+	
+	// Add directional light
+	let pointLight = new THREE.PointLight(0xffffff, 1, 50);
+	pointLight.position.set(0.5, 3, 2);
+	scene.add(pointLight);
+	
+	// Load the ultrasound probe model
+	let loader = new THREE.GLTFLoader();
+	loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', function(gltf) {
+		probeModel = gltf.scene;
+		
+		// Apply initial transformations
+		probeModel.position.set(0.2, 0, 0);
+		probeModel.rotation.set(
+			90 * Math.PI/180,
+			180 * Math.PI/180,
+			0
+		);
+		probeModel.scale.set(40, 40, 40);
+		
+		probeGroup.add(probeModel);
+		
+		document.getElementById('status-msg').innerHTML = 'Model loaded. Show any side of the cube marker.';
+		
+		// Setup slider controls
+		setupSliderControls();
+	});
+}
+
+function setupSliderControls() {
+	// Position X slider
+	document.getElementById('posX').addEventListener('input', function() {
+		const value = parseFloat(this.value);
+		if (probeModel) {
+			probeModel.position.x = value;
+		}
+		document.getElementById('posXValue').textContent = value.toFixed(1);
+	});
+	
+	// Position Y slider
+	document.getElementById('posY').addEventListener('input', function() {
+		const value = parseFloat(this.value);
+		if (probeModel) {
+			probeModel.position.y = value;
+		}
+		document.getElementById('posYValue').textContent = value.toFixed(1);
+	});
+	
+	// Position Z slider
+	document.getElementById('posZ').addEventListener('input', function() {
+		const value = parseFloat(this.value);
+		if (probeModel) {
+			probeModel.position.z = value;
+		}
+		document.getElementById('posZValue').textContent = value.toFixed(1);
+	});
+	
+	// Rotation X slider
+	document.getElementById('rotX').addEventListener('input', function() {
+		const value = parseInt(this.value);
+		const radians = value * Math.PI/180;
+		if (probeModel) {
+			probeModel.rotation.x = radians;
+		}
+		document.getElementById('rotXValue').textContent = value;
+	});
+	
+	// Rotation Y slider
+	document.getElementById('rotY').addEventListener('input', function() {
+		const value = parseInt(this.value);
+		const radians = value * Math.PI/180;
+		if (probeModel) {
+			probeModel.rotation.y = radians;
+		}
+		document.getElementById('rotYValue').textContent = value;
+	});
+	
+	// Rotation Z slider
+	document.getElementById('rotZ').addEventListener('input', function() {
+		const value = parseInt(this.value);
+		const radians = value * Math.PI/180;
+		if (probeModel) {
+			probeModel.rotation.z = radians;
+		}
+		document.getElementById('rotZValue').textContent = value;
+	});
+	
+	// Scale slider
+	document.getElementById('scale').addEventListener('input', function() {
+		const value = parseInt(this.value);
+		if (probeModel) {
+			probeModel.scale.set(value, value, value);
+		}
+		document.getElementById('scaleValue').textContent = value;
+	});
+}
+
+function update()
+{
+	// update artoolkit on every frame
+	if (arToolkitSource.ready !== false)
+		arToolkitContext.update(arToolkitSource.domElement);
+	
+	// Check if any marker is visible
+	let markerVisible = false;
+	
+	for (let i = 0; i < 6; i++)
+	{
+		if (markerRootArray[i].visible)
+		{
+			// Move the probe model to this marker
+			markerGroupArray[i].add(probeGroup);
+			markerVisible = true;
+			
+			// Update status message
+			const statusMsg = document.getElementById('status-msg');
+			if (statusMsg && statusMsg.style.display !== 'none') {
+				statusMsg.innerHTML = "Marker " + patternArray[i] + " detected. Showing ultrasound probe.";
+				statusMsg.style.backgroundColor = 'rgba(0, 128, 0, 0.7)';
+				
+				// Hide message after 3 seconds
+				setTimeout(function() {
+					statusMsg.style.display = 'none';
+				}, 3000);
+			}
+			
+			break;
+		}
+	}
+	
+	// If no marker is visible, show status message
+	if (!markerVisible) {
+		const statusMsg = document.getElementById('status-msg');
+		if (statusMsg && statusMsg.style.display === 'none') {
+			statusMsg.style.display = 'block';
+			statusMsg.innerHTML = "Marker lost. Please show any side of the cube marker.";
+			statusMsg.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+		}
+	}
+}
+
+
+function render()
+{
+	renderer.render(scene, camera);
+}
+
+
+function animate()
+{
+	requestAnimationFrame(animate);
+	deltaTime = clock.getDelta();
+	totalTime += deltaTime;
+	update();
+	render();
+}
+
 </script>
+
 </body>
 </html>
