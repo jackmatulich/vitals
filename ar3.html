@@ -2,12 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AR Cube + Ultrasound Probe with Full Rotation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Stemkoski Cube Tracker + Ultrasound Probe</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+  <!-- Core libraries -->
+  <script src="https://stemkoski.github.io/AR-Examples/js/three.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.min.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.api.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/threex/threex-artoolkitsource.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/threex/threex-artoolkitcontext.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/threex/threex-arbasecontrols.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/threex/threex-armarkercontrols.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/three.js/build/ar-threex.js"></script>
 
   <style>
     body { margin: 0; overflow: hidden; }
@@ -52,125 +58,126 @@
 </div>
 
 <script>
-  let scene, camera, renderer;
-  let arSource, arContext;
-  const patternArray = ["letterA", "letterB", "letterC", "letterD", "letterF", "kanji"];
-  const rotationArray = [
-    new THREE.Vector3(-Math.PI/2,0,0), new THREE.Vector3(0,-Math.PI/2,Math.PI/2), new THREE.Vector3(Math.PI/2,0,Math.PI),
-    new THREE.Vector3(-Math.PI/2,Math.PI/2,0), new THREE.Vector3(Math.PI,0,0), new THREE.Vector3(0,0,0)
-  ];
-  const markerRootArray = [], markerGroupArray = [];
-  let sceneGroup, probeModel;
+let scene, camera, renderer, arToolkitSource, arToolkitContext;
+let markerRootArray = [], markerGroupArray = [];
+let sceneGroup, probeModel;
 
-  init();
-  animate();
+const patternArray = ["letterA", "letterB", "letterC", "letterD", "letterF", "kanji"];
+const rotationArray = [
+  new THREE.Vector3(-Math.PI/2,0,0), new THREE.Vector3(0,-Math.PI/2,Math.PI/2), new THREE.Vector3(Math.PI/2,0,Math.PI),
+  new THREE.Vector3(-Math.PI/2,Math.PI/2,0), new THREE.Vector3(Math.PI,0,0), new THREE.Vector3(0,0,0)
+];
 
-  function init() {
-    scene = new THREE.Scene();
-    camera = new THREE.Camera();
-    scene.add(camera);
+init();
+animate();
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.domElement.style.position = 'absolute';
-    document.body.appendChild(renderer.domElement);
+function init() {
+  scene = new THREE.Scene();
+  camera = new THREE.Camera();
+  scene.add(camera);
 
-    arSource = new THREEx.ArToolkitSource({ sourceType: 'webcam' });
-    arSource.init(() => onResize());
-    window.addEventListener('resize', () => onResize());
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.domElement.style.position = 'absolute';
+  document.body.appendChild(renderer.domElement);
 
-    arContext = new THREEx.ArToolkitContext({
-      cameraParametersUrl: 'https://raw.githack.com/AR-js-org/AR.js/master/three.js/data/camera_para.dat',
-      detectionMode: 'mono'
+  arToolkitSource = new THREEx.ArToolkitSource({ sourceType: 'webcam' });
+  arToolkitSource.init(() => onResize());
+  window.addEventListener('resize', () => onResize());
+
+  arToolkitContext = new THREEx.ArToolkitContext({
+    cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat',
+    detectionMode: 'mono'
+  });
+  arToolkitContext.init(() => {
+    camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+  });
+
+  for (let i = 0; i < 6; i++) {
+    let markerRoot = new THREE.Group();
+    scene.add(markerRoot);
+    markerRootArray.push(markerRoot);
+
+    new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+      type: 'pattern',
+      patternUrl: `https://stemkoski.github.io/AR-Examples/data/${patternArray[i]}.patt`
     });
-    arContext.init(() => {
-      camera.projectionMatrix.copy(arContext.getProjectionMatrix());
+
+    let faceGroup = new THREE.Group();
+    faceGroup.position.y = -1.25 / 2;
+    faceGroup.rotation.setFromVector3(rotationArray[i]);
+    markerRoot.add(faceGroup);
+    markerGroupArray.push(faceGroup);
+  }
+
+  sceneGroup = new THREE.Group();
+  sceneGroup.scale.set(0.5, 0.5, 0.5);
+  scene.add(sceneGroup);
+
+  const light = new THREE.PointLight(0xffffff, 1, 100);
+  light.position.set(2, 4, 4);
+  scene.add(light);
+
+  const loader = new THREE.GLTFLoader();
+  loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', (gltf) => {
+    probeModel = gltf.scene;
+    sceneGroup.add(probeModel);
+    updateTransform();
+  });
+
+  setupSliders();
+}
+
+function onResize() {
+  arToolkitSource.onResize();
+  arToolkitSource.copySizeTo(renderer.domElement);
+  if (arToolkitContext.arController) {
+    arToolkitSource.copySizeTo(arToolkitContext.arController.canvas);
+  }
+}
+
+function setupSliders() {
+  const ids = ["posX", "posY", "posZ", "rotX", "rotY", "rotZ", "scale"];
+  ids.forEach(id => {
+    const input = document.getElementById(id);
+    const display = document.getElementById("val" + id.charAt(0).toUpperCase() + id.slice(1));
+    input.addEventListener('input', () => {
+      if (!probeModel) return;
+      updateTransform();
+      display.textContent = input.value;
     });
+  });
+}
 
-    for (let i = 0; i < 6; i++) {
-      const root = new THREE.Group();
-      markerRootArray.push(root);
-      scene.add(root);
-      new THREEx.ArMarkerControls(arContext, root, {
-        type: 'pattern',
-        patternUrl: `https://stemkoski.github.io/AR-Examples/data/${patternArray[i]}.patt`
-      });
+function updateTransform() {
+  if (!probeModel) return;
+  const x = parseFloat(document.getElementById('posX').value);
+  const y = parseFloat(document.getElementById('posY').value);
+  const z = parseFloat(document.getElementById('posZ').value);
+  const rx = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotX').value));
+  const ry = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotY').value));
+  const rz = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotZ').value));
+  const s = parseFloat(document.getElementById('scale').value);
 
-      const faceGroup = new THREE.Group();
-      faceGroup.position.y = -1.25 / 2;
-      faceGroup.rotation.setFromVector3(rotationArray[i]);
-      root.add(faceGroup);
-      markerGroupArray.push(faceGroup);
+  probeModel.position.set(x, y, z);
+  probeModel.rotation.set(rx, ry, rz);
+  probeModel.scale.set(s, s, s);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (arToolkitSource.ready) arToolkitContext.update(arToolkitSource.domElement);
+
+  for (let i = 0; i < 6; i++) {
+    if (markerRootArray[i].visible) {
+      markerGroupArray[i].add(sceneGroup);
+      break;
     }
-
-    sceneGroup = new THREE.Group();
-    sceneGroup.scale.set(0.5, 0.5, 0.5);
-
-    const light = new THREE.PointLight(0xffffff, 1, 100);
-    light.position.set(2, 4, 4);
-    scene.add(light);
-
-    const loader = new THREE.GLTFLoader();
-    loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', (gltf) => {
-      probeModel = gltf.scene;
-      probeModel.scale.setScalar(parseFloat(document.getElementById('scale').value));
-      sceneGroup.add(probeModel);
-      updateTransform(); // Initial sync
-    });
-
-    setupSliders();
   }
 
-  function onResize() {
-    arSource.onResize();
-    arSource.copySizeTo(renderer.domElement);
-    if (arContext.arController) {
-      arSource.copySizeTo(arContext.arController.canvas);
-    }
-  }
-
-  function setupSliders() {
-    const ids = ["posX", "posY", "posZ", "rotX", "rotY", "rotZ", "scale"];
-    ids.forEach(id => {
-      const input = document.getElementById(id);
-      const display = document.getElementById("val" + id.charAt(0).toUpperCase() + id.slice(1));
-      input.addEventListener('input', () => {
-        if (!probeModel) return;
-        updateTransform();
-        display.textContent = input.value;
-      });
-    });
-  }
-
-  function updateTransform() {
-    if (!probeModel) return;
-    const x = parseFloat(document.getElementById('posX').value);
-    const y = parseFloat(document.getElementById('posY').value);
-    const z = parseFloat(document.getElementById('posZ').value);
-    const rx = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotX').value));
-    const ry = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotY').value));
-    const rz = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rotZ').value));
-    const s = parseFloat(document.getElementById('scale').value);
-
-    probeModel.position.set(x, y, z);
-    probeModel.rotation.set(rx, ry, rz);
-    probeModel.scale.set(s, s, s);
-  }
-
-  function animate() {
-    requestAnimationFrame(animate);
-    if (arSource.ready) arContext.update(arSource.domElement);
-
-    for (let i = 0; i < markerRootArray.length; i++) {
-      if (markerRootArray[i].visible) {
-        markerGroupArray[i].add(sceneGroup);
-        break;
-      }
-    }
-
-    renderer.render(scene, camera);
-  }
+  renderer.render(scene, camera);
+}
 </script>
 
 </body>
-</html>
+</html> 
