@@ -2,38 +2,34 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>AR Ultrasound Probe</title>
+	<title>AR Ultrasound Probe - Debug Version</title>
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/build/three.min.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/libs/stats.min.js"></script>
-	<!-- include jsartookit -->
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.min.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitsource.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/build/artoolkit.api.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-artoolkitcontext.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-arbasecontrols.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/ar.js/js/threex/threex-armarkercontrols.js"></script>
-	<script src="https://stemkoski.github.io/AR-Examples/vendor/three.js/examples/js/loaders/GLTFLoader.js"></script>
+	
+	<!-- Use CDN versions of libraries instead of stemkoski links -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+	
+	<!-- AR.js from CDN -->
+	<script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar.js"></script>
+	
+	<!-- GLTFLoader from Three.js CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+	
 	<style>
 		body {
-			margin : 0px;
+			margin: 0;
 			overflow: hidden;
-			font-family: Monospace;
+			font-family: Arial, sans-serif;
+			touch-action: none;
 		}
 		#info {
 			position: absolute;
-			top: 0px;
+			top: 0;
 			width: 100%;
 			padding: 5px;
-			text-align:center;
-			color: #ffff00
-		}
-		#info a {
-			color: #ffff00;
-			text-decoration: none;
-		}
-		#info a:hover {
-			text-decoration: underline;
+			text-align: center;
+			color: white;
+			background-color: rgba(0, 0, 0, 0.7);
+			z-index: 100;
 		}
 		.control-panel {
 			position: absolute;
@@ -65,12 +61,37 @@
 		h3 {
 			margin: 5px 0;
 		}
+		#debug-panel {
+			position: absolute;
+			top: 40px;
+			left: 0;
+			width: 100%;
+			background-color: rgba(0, 0, 0, 0.7);
+			color: white;
+			padding: 10px;
+			z-index: 1000;
+			max-height: 200px;
+			overflow-y: auto;
+		}
+		.debug-message {
+			margin: 5px 0;
+			padding: 3px;
+			border-bottom: 1px solid #444;
+		}
+		.error { color: #ff5555; }
+		.warning { color: #ffaa55; }
+		.success { color: #55ff55; }
+		.info { color: #5555ff; }
 	</style>
 </head>
 
 <body>
-	<div style="position: absolute; top: 10px; width: 100%; text-align: center; z-index: 100; color:white; background-color: rgba(0,0,0,0.7); padding: 5px;">
-		AR Ultrasound Probe - Place Kanji marker in view
+	<div id="info">
+		AR Ultrasound Probe - Debug Version (iPad)
+	</div>
+	
+	<div id="debug-panel">
+		<div class="debug-message info">Starting application...</div>
 	</div>
 	
 	<div class="control-panel">
@@ -120,200 +141,358 @@
 	</div>
 
 <script>
-// Copy of magic-cube.html script with ultrasound probe modifications
-
-var scene, camera, renderer, clock, deltaTime, totalTime;
-var arToolkitSource, arToolkitContext;
-var markerRoot1;
-var mesh1;
-var probeModel;
-
-// Initialize everything
-initialize();
-animate();
-
-function initialize() {
-	scene = new THREE.Scene();
-	camera = new THREE.Camera();
-	scene.add(camera);
-	
-	renderer = new THREE.WebGLRenderer({
-		antialias: true,
-		alpha: true
-	});
-	renderer.setClearColor(new THREE.Color('lightgrey'), 0);
-	renderer.setSize(1280, 960); // Use a fixed size initially
-	renderer.domElement.style.position = 'absolute';
-	renderer.domElement.style.top = '0px';
-	renderer.domElement.style.left = '0px';
-	document.body.appendChild(renderer.domElement);
-	
-	clock = new THREE.Clock();
-	deltaTime = 0;
-	totalTime = 0;
-	
-	// Setup AR toolkit source (webcam)
-	arToolkitSource = new THREEx.ArToolkitSource({
-		sourceType: 'webcam',
-	});
-	
-	// Handle resize
-	arToolkitSource.init(function onReady() {
-		// Resize everything once source is initialized
-		onResize();
-	});
-	
-	// Add window resize listener
-	window.addEventListener('resize', function() {
-		onResize();
-	});
-	
-	function onResize() {
-		arToolkitSource.onResizeElement();
-		arToolkitSource.copyElementSizeTo(renderer.domElement);
-		if (arToolkitContext.arController !== null) {
-			arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
-		}
-	}
-	
-	// Setup AR context
-	arToolkitContext = new THREEx.ArToolkitContext({
-		cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat',
-		detectionMode: 'mono',
-	});
-	
-	// Copy projection matrix once context is initialized
-	arToolkitContext.init(function onCompleted() {
-		camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
-	});
-	
-	// Create marker
-	markerRoot1 = new THREE.Group();
-	scene.add(markerRoot1);
-	
-	// Setup marker controls
-	var markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
-		type: 'pattern',
-		patternUrl: "https://stemkoski.github.io/AR-Examples/data/kanji.patt",
-	});
-	
-	// Add ambient light
-	var light = new THREE.AmbientLight(0xffffff);
-	scene.add(light);
-	
-	// Add directional light
-	var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-	directionalLight.position.set(10, 15, 10);
-	scene.add(directionalLight);
-	
-	// Load GLB model instead of creating a cube
-	var loader = new THREE.GLTFLoader();
-	loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', function(gltf) {
-		probeModel = gltf.scene;
-		
-		// Apply initial transformations
-		probeModel.position.set(0.2, 0, 0);
-		probeModel.rotation.set(
-			90 * Math.PI/180,
-			180 * Math.PI/180,
-			0
-		);
-		probeModel.scale.set(40, 40, 40);
-		
-		markerRoot1.add(probeModel);
-	});
-	
-	// Setup slider listeners
-	setupSliderListeners();
+// Debug function to show messages on screen
+function debugLog(message, type = 'info') {
+    const debugPanel = document.getElementById('debug-panel');
+    const msgElement = document.createElement('div');
+    msgElement.className = `debug-message ${type}`;
+    msgElement.textContent = message;
+    debugPanel.appendChild(msgElement);
+    debugPanel.scrollTop = debugPanel.scrollHeight;
+    
+    // Also log to console if available
+    try {
+        switch(type) {
+            case 'error': console.error(message); break;
+            case 'warning': console.warn(message); break;
+            case 'success': console.log('%c' + message, 'color: green'); break;
+            default: console.log(message);
+        }
+    } catch(e) {}
 }
 
-function update() {
-	// Update AR toolkit
-	if (arToolkitSource.ready) {
-		arToolkitContext.update(arToolkitSource.domElement);
-	}
+// Global error handler
+window.onerror = function(message, source, lineno, colno, error) {
+    debugLog(`ERROR: ${message}`, 'error');
+    return true; // Prevent default error handling
+};
+
+// Variables for AR application
+let scene, camera, renderer;
+let arToolkitSource, arToolkitContext;
+let markerRoot, probeModel;
+
+// Initialization sequence
+initializeAR();
+
+function initializeAR() {
+    debugLog("Starting Three.js initialization");
+    
+    try {
+        // Check if Three.js is loaded
+        if (typeof THREE === 'undefined') {
+            debugLog("Three.js is not loaded!", 'error');
+            return;
+        }
+        
+        debugLog("Three.js loaded successfully", 'success');
+        
+        // Initialize renderer
+        renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true
+        });
+        renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = '0px';
+        renderer.domElement.style.left = '0px';
+        document.body.appendChild(renderer.domElement);
+        
+        debugLog("Renderer created successfully", 'success');
+        
+        // Initialize scene and camera
+        scene = new THREE.Scene();
+        camera = new THREE.Camera();
+        scene.add(camera);
+        
+        debugLog("Scene and camera initialized", 'success');
+        
+        // Setup lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(10, 15, 10);
+        scene.add(directionalLight);
+        
+        debugLog("Lights added to scene", 'success');
+        
+        // Check if AR.js is loaded
+        if (typeof THREEx === 'undefined') {
+            debugLog("AR.js is not loaded!", 'error');
+            return;
+        }
+        
+        debugLog("AR.js loaded successfully", 'success');
+        
+        initializeARToolkit();
+    } catch (error) {
+        debugLog(`Initialization error: ${error.message}`, 'error');
+    }
 }
 
-function render() {
-	renderer.render(scene, camera);
+function initializeARToolkit() {
+    debugLog("Initializing AR toolkit source (webcam)");
+    
+    try {
+        // Initialize AR toolkit source
+        arToolkitSource = new THREEx.ArToolkitSource({
+            sourceType: 'webcam',
+        });
+        
+        // Handle source ready event
+        arToolkitSource.init(function onReady() {
+            debugLog("AR toolkit source initialized", 'success');
+            
+            // Resize handling when source is ready
+            onResize();
+            
+            // Continue with AR context initialization
+            initializeARContext();
+        }, function onError() {
+            debugLog("Failed to initialize AR toolkit source", 'error');
+        });
+        
+        // Handle resize event
+        window.addEventListener('resize', onResize);
+        
+    } catch (error) {
+        debugLog(`AR toolkit source initialization error: ${error.message}`, 'error');
+    }
 }
 
-function animate() {
-	requestAnimationFrame(animate);
-	
-	deltaTime = clock.getDelta();
-	totalTime += deltaTime;
-	
-	update();
-	render();
+function onResize() {
+    try {
+        debugLog("Handling resize event");
+        
+        if (arToolkitSource) {
+            arToolkitSource.onResizeElement();
+            arToolkitSource.copyElementSizeTo(renderer.domElement);
+            
+            if (arToolkitContext && arToolkitContext.arController !== null) {
+                arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
+            }
+            
+            debugLog("Resize handled successfully", 'success');
+        }
+    } catch (error) {
+        debugLog(`Resize error: ${error.message}`, 'error');
+    }
+}
+
+function initializeARContext() {
+    debugLog("Initializing AR toolkit context");
+    
+    try {
+        // Create AR toolkit context
+        arToolkitContext = new THREEx.ArToolkitContext({
+            cameraParametersUrl: 'https://raw.githack.com/AR-js-org/AR.js/master/data/data/camera_para.dat',
+            detectionMode: 'mono',
+            maxDetectionRate: 30,
+            canvasWidth: 1280,
+            canvasHeight: 960,
+        });
+        
+        // Handle context initialization
+        arToolkitContext.init(function onCompleted() {
+            debugLog("AR toolkit context initialized", 'success');
+            
+            // Copy projection matrix to camera
+            camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+            
+            // Continue with marker setup
+            setupMarker();
+        });
+        
+    } catch (error) {
+        debugLog(`AR toolkit context initialization error: ${error.message}`, 'error');
+    }
+}
+
+function setupMarker() {
+    debugLog("Setting up AR marker");
+    
+    try {
+        // Create marker root
+        markerRoot = new THREE.Group();
+        scene.add(markerRoot);
+        
+        // Setup marker controls
+        let markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+            type: 'pattern',
+            patternUrl: 'https://raw.githack.com/AR-js-org/AR.js/master/data/data/patt.kanji',
+        });
+        
+        debugLog("Marker setup complete", 'success');
+        
+        // Add marker detection events
+        markerRoot.visible = false;
+        
+        // Continue with model loading
+        loadModel();
+        
+        // Start animation loop
+        animate();
+        
+    } catch (error) {
+        debugLog(`Marker setup error: ${error.message}`, 'error');
+    }
+}
+
+function loadModel() {
+    debugLog("Loading 3D model");
+    
+    try {
+        // Check if GLTFLoader is available
+        if (typeof THREE.GLTFLoader === 'undefined') {
+            debugLog("GLTFLoader is not available!", 'error');
+            return;
+        }
+        
+        // Create loader
+        const loader = new THREE.GLTFLoader();
+        
+        // Load model
+        loader.load(
+            'https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb',
+            function(gltf) {
+                debugLog("Model loaded successfully", 'success');
+                
+                probeModel = gltf.scene;
+                
+                // Apply initial transformations
+                probeModel.position.set(0.2, 0, 0);
+                probeModel.rotation.set(
+                    90 * Math.PI/180,
+                    180 * Math.PI/180,
+                    0
+                );
+                probeModel.scale.set(40, 40, 40);
+                
+                markerRoot.add(probeModel);
+                
+                // Setup controls after model is loaded
+                setupSliderListeners();
+            },
+            function(xhr) {
+                const percent = Math.floor((xhr.loaded / xhr.total) * 100);
+                debugLog(`Model loading: ${percent}%`);
+            },
+            function(error) {
+                debugLog(`Model loading error: ${error}`, 'error');
+            }
+        );
+        
+    } catch (error) {
+        debugLog(`Model loading setup error: ${error.message}`, 'error');
+    }
 }
 
 function setupSliderListeners() {
-	// Position X slider
-	document.getElementById('posX').addEventListener('input', function() {
-		const value = parseFloat(this.value);
-		if (probeModel) {
-			probeModel.position.x = value;
-		}
-		document.getElementById('posXValue').textContent = value.toFixed(1);
-	});
-	
-	// Position Y slider
-	document.getElementById('posY').addEventListener('input', function() {
-		const value = parseFloat(this.value);
-		if (probeModel) {
-			probeModel.position.y = value;
-		}
-		document.getElementById('posYValue').textContent = value.toFixed(1);
-	});
-	
-	// Position Z slider
-	document.getElementById('posZ').addEventListener('input', function() {
-		const value = parseFloat(this.value);
-		if (probeModel) {
-			probeModel.position.z = value;
-		}
-		document.getElementById('posZValue').textContent = value.toFixed(1);
-	});
-	
-	// Rotation X slider
-	document.getElementById('rotX').addEventListener('input', function() {
-		const value = parseInt(this.value);
-		const radians = value * Math.PI/180;
-		if (probeModel) {
-			probeModel.rotation.x = radians;
-		}
-		document.getElementById('rotXValue').textContent = value;
-	});
-	
-	// Rotation Y slider
-	document.getElementById('rotY').addEventListener('input', function() {
-		const value = parseInt(this.value);
-		const radians = value * Math.PI/180;
-		if (probeModel) {
-			probeModel.rotation.y = radians;
-		}
-		document.getElementById('rotYValue').textContent = value;
-	});
-	
-	// Rotation Z slider
-	document.getElementById('rotZ').addEventListener('input', function() {
-		const value = parseInt(this.value);
-		const radians = value * Math.PI/180;
-		if (probeModel) {
-			probeModel.rotation.z = radians;
-		}
-		document.getElementById('rotZValue').textContent = value;
-	});
-	
-	// Scale slider
-	document.getElementById('scale').addEventListener('input', function() {
-		const value = parseInt(this.value);
-		if (probeModel) {
-			probeModel.scale.set(value, value, value);
-		}
-		document.getElementById('scaleValue').textContent = value;
-	});
+    debugLog("Setting up slider controls");
+    
+    try {
+        // Position X slider
+        document.getElementById('posX').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (probeModel) {
+                probeModel.position.x = value;
+            }
+            document.getElementById('posXValue').textContent = value.toFixed(1);
+        });
+        
+        // Position Y slider
+        document.getElementById('posY').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (probeModel) {
+                probeModel.position.y = value;
+            }
+            document.getElementById('posYValue').textContent = value.toFixed(1);
+        });
+        
+        // Position Z slider
+        document.getElementById('posZ').addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (probeModel) {
+                probeModel.position.z = value;
+            }
+            document.getElementById('posZValue').textContent = value.toFixed(1);
+        });
+        
+        // Rotation X slider
+        document.getElementById('rotX').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            const radians = value * Math.PI/180;
+            if (probeModel) {
+                probeModel.rotation.x = radians;
+            }
+            document.getElementById('rotXValue').textContent = value;
+        });
+        
+        // Rotation Y slider
+        document.getElementById('rotY').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            const radians = value * Math.PI/180;
+            if (probeModel) {
+                probeModel.rotation.y = radians;
+            }
+            document.getElementById('rotYValue').textContent = value;
+        });
+        
+        // Rotation Z slider
+        document.getElementById('rotZ').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            const radians = value * Math.PI/180;
+            if (probeModel) {
+                probeModel.rotation.z = radians;
+            }
+            document.getElementById('rotZValue').textContent = value;
+        });
+        
+        // Scale slider
+        document.getElementById('scale').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (probeModel) {
+                probeModel.scale.set(value, value, value);
+            }
+            document.getElementById('scaleValue').textContent = value;
+        });
+        
+        debugLog("Slider controls set up successfully", 'success');
+        
+    } catch (error) {
+        debugLog(`Slider setup error: ${error.message}`, 'error');
+    }
+}
+
+function animate() {
+    // Request next animation frame
+    requestAnimationFrame(animate);
+    
+    try {
+        // Update AR toolkit
+        if (arToolkitSource && arToolkitSource.ready) {
+            arToolkitContext.update(arToolkitSource.domElement);
+            
+            // Update marker visibility
+            if (markerRoot) {
+                if (markerRoot.visible && !markerRoot.wasVisible) {
+                    debugLog("Marker detected!", 'success');
+                    markerRoot.wasVisible = true;
+                } else if (!markerRoot.visible && markerRoot.wasVisible) {
+                    debugLog("Marker lost", 'warning');
+                    markerRoot.wasVisible = false;
+                }
+            }
+        }
+        
+        // Render scene
+        renderer.render(scene, camera);
+        
+    } catch (error) {
+        debugLog(`Animation error: ${error.message}`, 'error');
+    }
 }
 </script>
 </body>
@@ -668,4 +847,3 @@ function setupSliderListeners() {
     </script>
 </body>
 </html>
-
