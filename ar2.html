@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <title>AR Ultrasound Probe Viewer</title>
     <meta name="description" content="AR Ultrasound Probe Viewer">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/3.4.5/aframe-ar.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
         .control-panel {
             position: absolute;
@@ -40,10 +41,23 @@
         h3 {
             margin: 5px 0;
         }
+        #loading-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix;">
+    <div id="loading-message">Loading camera, please wait...</div>
+    
+    <a-scene embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; trackingMethod: best;">
         <a-assets>
             <a-asset-item id="probe-model" src="https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb"></a-asset-item>
         </a-assets>
@@ -209,6 +223,22 @@
                 z: value
             });
             scaleValue.textContent = value;
+        });
+    </script>
+    <script>
+        // Hide loading message when camera is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            const scene = document.querySelector('a-scene');
+            scene.addEventListener('loaded', function() {
+                scene.addEventListener('camera-init', function() {
+                    document.getElementById('loading-message').style.display = 'none';
+                });
+            });
+            
+            // Fallback timeout to hide message if events don't fire properly
+            setTimeout(function() {
+                document.getElementById('loading-message').style.display = 'none';
+            }, 5000);
         });
     </script>
 </body>
