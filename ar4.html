@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<title>Hello, AR Model!</title>
+	<!-- include three.js library -->
+	<script src='https://stemkoski.github.io/AR-Examples/js/three.js'></script>
+	<!-- include jsartookit -->
+	<script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.min.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.api.js"></script>
+	<!-- include threex.artoolkit -->
+	<script src="https://stemkoski.github.io/AR-Examples/threex/threex-artoolkitsource.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/threex/threex-artoolkitcontext.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/threex/threex-arbasecontrols.js"></script>
+	<script src="https://stemkoski.github.io/AR-Examples/threex/threex-armarkercontrols.js"></script>
+	<!-- include GLTFLoader for loading 3D models -->
+	<script src="https://cdn.jsdelivr.net/npm/three@0.86.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+
+<!-- 
+  Example created by Lee Stemkoski: https://github.com/stemkoski
+  Based on the AR.js library and examples created by Jerome Etienne: https://github.com/jeromeetienne/AR.js/
+  Modified to load a GLB model
+-->
+
+<script>
+
+// Declare global variables for the scene
+var scene, camera, renderer, clock, deltaTime, totalTime;
+
+// Variables for AR toolkit
+var arToolkitSource, arToolkitContext;
+
+// Arrays to hold markers and associated objects
+var patternArray, markerRootArray, markerGroupArray;
+var sceneGroup; // This will contain our 3D objects
+
+// Variables for model animation
+var mixer; // Animation mixer for GLB animations
+
+// Set up the application and start animation
+initialize();
+animate();
+
+function initialize()
+{
+	// Create a new Three.js scene
+	scene = new THREE.Scene();
+
+	// Add ambient lighting to the scene for base illumination
+	let ambientLight = new THREE.AmbientLight( 0xcccccc, 0.5 );
+	scene.add( ambientLight );
+				
+	// Create a camera (will be controlled by AR.js)
+	camera = new THREE.Camera();
+	scene.add(camera);
+
+	// Set up the WebGL renderer with transparency and anti-aliasing
+	renderer = new THREE.WebGLRenderer({
+		antialias : true,
+		alpha: true // Transparent background
+	});
+	renderer.setClearColor(new THREE.Color('lightgrey'), 0); // Set clear color with alpha 0 (fully transparent)
+	renderer.setSize( 640, 480 ); // Set initial size
+	renderer.domElement.style.position = 'absolute'; // Position the canvas
+	renderer.domElement.style.top = '0px';
+	renderer.domElement.style.left = '0px';
+	document.body.appendChild( renderer.domElement ); // Add canvas to the document
+
+	// Set up clock for animation timing
+	clock = new THREE.Clock();
+	deltaTime = 0;
+	totalTime = 0;
+	
+	////////////////////////////////////////////////////////////
+	// Setup AR Toolkit Source (handles camera input)
+	////////////////////////////////////////////////////////////
+
+	arToolkitSource = new THREEx.ArToolkitSource({
+		sourceType : 'webcam', // Use webcam as the source
+	});
+
+	// Function to handle resizing when the window or device orientation changes
+	function onResize()
+	{
+		arToolkitSource.onResizeElement();	// Resize the AR source
+		arToolkitSource.copyElementSizeTo(renderer.domElement);	// Match renderer size to source
+		if ( arToolkitContext.arController !== null )
+		{
+			arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);	// Match AR controller canvas size
+		}	
+	}
+
+	// Initialize the AR source and handle resize when ready
+	arToolkitSource.init(function onReady(){
+		onResize();
+	});
+	
+	// Add event listener for window resize
+	window.addEventListener('resize', function(){
+		onResize();
+	});
+	
+	////////////////////////////////////////////////////////////
+	// Setup AR Toolkit Context (handles marker detection)
+	////////////////////////////////////////////////////////////	
+
+	// Create AR context with camera parameters
+	arToolkitContext = new THREEx.ArToolkitContext({
+		cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat', // Camera calibration data
+		detectionMode: 'mono' // Use monochrome detection for better performance
+	});
+	
+	// Initialize AR context and copy projection matrix to camera when ready
+	arToolkitContext.init( function onCompleted(){
+		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+	});
+
+	////////////////////////////////////////////////////////////
+	// Setup Marker Roots (anchor points for 3D content)
+	////////////////////////////////////////////////////////////
+
+	// Initialize arrays to hold marker data
+	markerRootArray  = []; // Will hold marker root objects
+	markerGroupArray = []; // Will hold groups attached to markers
+	patternArray = ["letterA", "letterB", "letterC", "letterD", "letterF", "kanji"]; // Pattern files to detect
+	
+	// Rotation values for each face of the cube
+	let rotationArray = [ 
+		new THREE.Vector3(-Math.PI/2, 0, 0), 
+		new THREE.Vector3(0, -Math.PI/2, Math.PI/2), 
+		new THREE.Vector3(Math.PI/2, 0, Math.PI), 
+		new THREE.Vector3(-Math.PI/2, Math.PI/2, 0), 
+		new THREE.Vector3(Math.PI, 0, 0), 
+		new THREE.Vector3(0, 0, 0) 
+	];
+		
+	// Create markers for each of the 6 patterns (cube faces)
+	for (let i = 0; i < 6; i++)
+	{
+		// Create a marker root (anchor point in AR space)
+		let markerRoot = new THREE.Group();
+		markerRootArray.push( markerRoot );
+		scene.add(markerRoot);
+		
+		// Set up AR marker controls to track the pattern
+		let markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+			type : 'pattern', 
+			patternUrl : 'https://stemkoski.github.io/AR-Examples/data/' + patternArray[i] + '.patt', // Load pattern file
+		});
+	
+		// Create a group to hold 3D objects for this marker
+		let markerGroup = new THREE.Group();
+		markerGroupArray.push( markerGroup );
+		markerGroup.position.y = -1.25/2; // Adjust position
+		markerGroup.rotation.setFromVector3( rotationArray[i] ); // Set rotation for this face
+		
+		// Add the group to the marker root
+		markerRoot.add( markerGroup );
+	}
+	
+	////////////////////////////////////////////////////////////
+	// Setup 3D Scene Content
+	////////////////////////////////////////////////////////////
+	
+	// Create a group to hold all the 3D objects
+	sceneGroup = new THREE.Group();
+	// Scale the group to fit appropriately - adjust scale as needed for your model
+	sceneGroup.scale.set(0.5, 0.5, 0.5);
+	
+	// Add a point light to illuminate the scene
+	let pointLight = new THREE.PointLight(0xffffff, 1, 100);
+	pointLight.position.set(5, 5, 5);
+	scene.add(pointLight);
+	
+	// Add a directional light for more illumination
+	let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+	directionalLight.position.set(-5, 5, -5);
+	scene.add(directionalLight);
+	
+	// Load the GLB model
+	const modelUrl = '/probe.glb';
+	
+	// Create a loading manager to track loading progress
+	const loadingManager = new THREE.LoadingManager();
+	loadingManager.onProgress = function(item, loaded, total) {
+		console.log('Loading:', item, loaded, total);
+	};
+	
+	// Create a GLTFLoader instance
+	const loader = new THREE.GLTFLoader(loadingManager);
+	
+	// Load the GLB model
+	loader.load(
+		// URL of the GLB model
+		modelUrl,
+		
+		// Called when the model is loaded
+		function(gltf) {
+			console.log('Model loaded successfully');
+			
+			// Get the model from the loaded data
+			const model = gltf.scene;
+			
+			// You can make adjustments to the model if needed
+			model.position.set(0, 0, 0); // Center the model
+			
+			// You can traverse the model to modify materials or geometries if needed
+			model.traverse(function(node) {
+				if (node.isMesh) {
+					// Add shadows or modify materials here if needed
+					node.castShadow = true;
+					node.receiveShadow = true;
+				}
+			});
+			
+			// Set up animations if the model has them
+			if (gltf.animations && gltf.animations.length > 0) {
+				console.log('Model has animations:', gltf.animations.length);
+				
+				// Create an animation mixer
+				mixer = new THREE.AnimationMixer(model);
+				
+				// Create an action for each animation
+				gltf.animations.forEach((clip) => {
+					console.log('Animation:', clip.name);
+					const action = mixer.clipAction(clip);
+					action.play(); // Auto-play the animation
+				});
+			}
+			
+			// Add the model to our scene group
+			sceneGroup.add(model);
+		},
+		
+		// Called while loading is in progress
+		function(xhr) {
+			console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+		},
+		
+		// Called if there's an error loading the model
+		function(error) {
+			console.error('An error occurred loading the model:', error);
+			
+			// Create a fallback object in case the model fails to load
+			const geometry = new THREE.BoxGeometry(1, 1, 1);
+			const material = new THREE.MeshNormalMaterial();
+			const fallbackCube = new THREE.Mesh(geometry, material);
+			sceneGroup.add(fallbackCube);
+		}
+	);
+}
+
+function update()
+{
+	// Update AR toolkit with current video frame
+	if ( arToolkitSource.ready !== false )
+		arToolkitContext.update( arToolkitSource.domElement );
+	
+	// Remove sceneGroup from all marker groups first to avoid duplication
+	for (let i = 0; i < markerGroupArray.length; i++) {
+		if (markerGroupArray[i].children.includes(sceneGroup)) {
+			markerGroupArray[i].remove(sceneGroup);
+		}
+	}
+	
+	// Check which marker is visible and attach the scene to that marker
+	let visibleMarkerFound = false;
+	for (let i = 0; i < 6; i++)
+	{
+		if ( markerRootArray[i].visible )
+		{
+			markerGroupArray[i].add(sceneGroup); // Add scene to this marker
+			console.log("visible: " + patternArray[i]); // Log which marker is visible
+			visibleMarkerFound = true; 
+			break; // Only attach to the first visible marker
+		}
+	}
+	
+	// Update animation mixer if it exists
+	if (mixer) {
+		mixer.update(deltaTime);
+	}
+}
+
+function render()
+{
+	// Render the scene from the camera's perspective
+	renderer.render( scene, camera );
+}
+
+function animate()
+{
+	// Request the next animation frame
+	requestAnimationFrame(animate);
+	
+	// Calculate time delta and total elapsed time
+	deltaTime = clock.getDelta();
+	totalTime += deltaTime;
+	
+	// Update the scene and render it
+	update();
+	render();
+}
+
+</script>
+
+</body>
+</html>
