@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Magic Cube Adapted - Ultrasound Probe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <script src="https://stemkoski.github.io/AR-Examples/js/three.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.min.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/jsartoolkit5/artoolkit.api.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/threex/threex-artoolkitsource.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/threex/threex-artoolkitcontext.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/threex/threex-arbasecontrols.js"></script>
+  <script src="https://stemkoski.github.io/AR-Examples/threex/threex-armarkercontrols.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
+  <style>body { margin: 0; overflow: hidden; }</style>
+</head>
+<body>
+<script>
+let scene, camera, renderer;
+let arToolkitSource, arToolkitContext;
+let markerRoots = [], markerGroups = [], sceneGroup = new THREE.Group();
+let probeModel = null;
+
+const patterns = ["letterA", "letterB", "letterC", "letterD", "letterF", "kanji"];
+const rotations = [
+  new THREE.Vector3(-Math.PI/2, 0, 0),
+  new THREE.Vector3(0, -Math.PI/2, Math.PI/2),
+  new THREE.Vector3(Math.PI/2, 0, Math.PI),
+  new THREE.Vector3(-Math.PI/2, Math.PI/2, 0),
+  new THREE.Vector3(Math.PI, 0, 0),
+  new THREE.Vector3(0, 0, 0)
+];
+
+init();
+animate();
+
+function init() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera();
+  scene.add(camera);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.domElement.style.position = "absolute";
+  document.body.appendChild(renderer.domElement);
+
+  arToolkitSource = new THREEx.ArToolkitSource({ sourceType: 'webcam' });
+  arToolkitSource.init(onResize);
+  window.addEventListener('resize', onResize);
+
+  arToolkitContext = new THREEx.ArToolkitContext({
+    cameraParametersUrl: 'https://stemkoski.github.io/AR-Examples/data/camera_para.dat',
+    detectionMode: 'mono'
+  });
+  arToolkitContext.init(() => {
+    camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+  });
+
+  for (let i = 0; i < 6; i++) {
+    const markerRoot = new THREE.Group();
+    scene.add(markerRoot);
+    markerRoots.push(markerRoot);
+
+    new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+      type: 'pattern',
+      patternUrl: `https://stemkoski.github.io/AR-Examples/data/${patterns[i]}.patt`
+    });
+
+    const faceGroup = new THREE.Group();
+    faceGroup.position.y = -1.25 / 2;
+    faceGroup.rotation.setFromVector3(rotations[i]);
+    markerRoot.add(faceGroup);
+    markerGroups.push(faceGroup);
+  }
+
+  sceneGroup.scale.set(0.5, 0.5, 0.5);
+
+  const light = new THREE.PointLight(0xffffff, 1, 100);
+  light.position.set(2, 4, 4);
+  scene.add(light);
+
+  const loader = new THREE.GLTFLoader();
+  loader.load('https://cdn.tinyglb.com/models/2ff293225d4a4ef3878d6a631fce6dbc.glb', gltf => {
+    probeModel = gltf.scene;
+    probeModel.scale.set(1, 1, 1);
+    sceneGroup.add(probeModel);
+  });
+}
+
+function onResize() {
+  arToolkitSource.onResize();
+  arToolkitSource.copySizeTo(renderer.domElement);
+  if (arToolkitContext.arController) {
+    arToolkitSource.copySizeTo(arToolkitContext.arController.canvas);
+  }
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (arToolkitSource.ready) {
+    arToolkitContext.update(arToolkitSource.domElement);
+  }
+
+  for (let i = 0; i < 6; i++) {
+    if (markerRoots[i].visible) {
+      if (sceneGroup.parent !== markerGroups[i]) {
+        if (sceneGroup.parent) sceneGroup.parent.remove(sceneGroup);
+        markerGroups[i].add(sceneGroup);
+      }
+      break;
+    }
+  }
+
+  renderer.render(scene, camera);
+}
+</script>
+</body>
+</html>
