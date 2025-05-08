@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SimShare - Medical Simulation File Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+    header { padding: 1rem; background: #004466; color: white; width: 100%; text-align: center; }
+    .container { display: flex; flex-direction: column; align-items: center; padding: 1rem; width: 100%; max-width: 800px; }
+    .upload-box, .gallery, .qr-box { margin-top: 1rem; width: 100%; }
+    .file-item { border: 1px solid #ccc; padding: 1rem; margin: 0.5rem 0; opacity: 0.5; transition: opacity 0.3s; }
+    .file-item.ready { opacity: 1; border-color: green; }
+    .file-item.previewing { border-color: orange; }
+    button { padding: 0.5rem 1rem; margin-left: 1rem; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 2rem; max-width: 90%; max-height: 90%; overflow: auto; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>SimShare - Medical Simulation File Sharing</h1>
+</header>
+
+<div class="container">
+  <div id="role-select">
+    <button onclick="startSession(true)">Start Session (Facilitator)</button>
+    <button onclick="joinSession()">Join Session (Viewer)</button>
+  </div>
+
+  <div id="qr-box" class="qr-box" style="display:none;">
+    <p>Scan this QR to join:</p>
+    <canvas id="qrcode"></canvas>
+  </div>
+
+  <div id="facilitator-ui" style="display:none;">
+    <div class="upload-box">
+      <h3>Upload File</h3>
+      <input type="file" id="fileInput">
+      <input type="text" id="fileTitle" placeholder="Title">
+      <button onclick="uploadFile()">Upload</button>
+    </div>
+    <div class="gallery" id="facilitatorGallery"></div>
+  </div>
+
+  <div id="viewer-ui" style="display:none;">
+    <h3>Simulation Files</h3>
+    <div class="gallery" id="viewerGallery"></div>
+  </div>
+</div>
+
+<div class="modal" id="fileModal" onclick="closeModal()">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+// QR Code generator (qrcode.js replacement)
+function generateQRCode(text, canvas) {
+  const size = 200;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.height = size;
+  const qr = new QRious({ value: text, size });
+  const image = new Image();
+  image.src = qr.toDataURL();
+  image.onload = () => ctx.drawImage(image, 0, 0, size, size);
+}
+
+class QRious {
+  constructor(options) {
+    this.qr = new QRCodeGenerator(0, 'L');
+    this.qr.addData(options.value);
+    this.qr.make();
+    this.size = options.size;
+  }
+  toDataURL() {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = this.size;
+    const ctx = canvas.getContext('2d');
+    const cells = this.qr.modules;
+    const cellSize = this.size / cells.length;
+    for (let r = 0; r < cells.length; r++) {
+      for (let c = 0; c < cells.length; c++) {
+        ctx.fillStyle = cells[r][c] ? '#000' : '#fff';
+        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+      }
+    }
+    return canvas.toDataURL();
+  }
+}
+// Minimal QR code lib (core logic from qrcode-generator)
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
+
+let sessionId = null;
+let isFacilitator = false;
+let fileList = [];
+
+function startSession(facilitator = false) {
+  isFacilitator = facilitator;
+  sessionId = 'simshare-' + Math.random().toString(36).substr(2, 8);
+  location.hash = sessionId;
+  initApp();
+}
+
+function joinSession() {
+  sessionId = location.hash.slice(1);
+  if (!sessionId) {
+    alert("Please open via QR or shared URL.");
+    return;
+  }
+  initApp();
+}
+
+function initApp() {
+  document.getElementById("role-select").style.display = "none";
+  if (isFacilitator) {
+    document.getElementById("facilitator-ui").style.display = "block";
+    document.getElementById("qr-box").style.display = "block";
+    generateQRCode(location.href, document.getElementById('qrcode'));
+  } else {
+    document.getElementById("viewer-ui").style.display = "block";
+    pollDweet();
+    setInterval(pollDweet, 5000);
+  }
+}
+
+async function uploadFile() {
+  const file = document.getElementById("fileInput").files[0];
+  const title = document.getElementById("fileTitle").value;
+  if (!file || !title) return alert("Select file and enter title");
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const item = { title, status: "uploading" };
+  fileList.push(item);
+  renderGallery(true);
+
+  try {
+    const res = await fetch("https://file.io", { method: "POST", body: formData });
+    const data = await res.json();
+    item.url = data.link;
+    item.status = "ready";
+    await postDweet();
+    renderGallery(true);
+  } catch (err) {
+    alert("Upload failed");
+    console.error(err);
+  }
+}
+
+async function postDweet() {
+  await fetch(`https://dweet.io/dweet/for/${sessionId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      files: fileList.map(f => ({ title: f.title, url: f.url, status: f.status }))
+    })
+  });
+}
+
+async function pollDweet() {
+  try {
+    const res = await fetch(`https://dweet.io/get/latest/dweet/for/${sessionId}`);
+    const json = await res.json();
+    const files = json.with[0].content.files || [];
+    fileList = files;
+    renderGallery(false);
+  } catch (e) {
+    console.error("Dweet fetch failed");
+  }
+}
+
+function renderGallery(isFac = false) {
+  const target = isFac ? document.getElementById("facilitatorGallery") : document.getElementById("viewerGallery");
+  target.innerHTML = "";
+  fileList.forEach((file, index) => {
+    const div = document.createElement("div");
+    div.className = "file-item";
+    if (file.status === "ready") div.classList.add("ready");
+    div.innerHTML = `<strong>${file.title}</strong>
+      ${!isFac ? `<button onclick="openModal('${file.url}')">Open</button>` : ""}`;
+    target.appendChild(div);
+  });
+}
+
+function openModal(url) {
+  const modal = document.getElementById("fileModal");
+  const content = document.getElementById("modalContent");
+  content.innerHTML = `<iframe src="${url}" style="width:100%; height:80vh;"></iframe>`;
+  modal.style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("fileModal").style.display = "none";
+}
+</script>
+</body>
+</html>
